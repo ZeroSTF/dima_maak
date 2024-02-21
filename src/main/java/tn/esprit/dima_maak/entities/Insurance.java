@@ -19,6 +19,7 @@ public class Insurance {
     private List<Claim> claims;
     @OneToMany(mappedBy = "insurance", cascade = CascadeType.ALL)
     private List<Premium> premiums;
-    @OneToOne(mappedBy = "insurance", cascade = CascadeType.ALL)
+    @ManyToOne
+    @JoinColumn(name = "insuranceP_id")
     private InsuranceP insuranceP;
 }

@@ -16,7 +16,5 @@ public class InsuranceP {
     private Float premium;
     @Column(columnDefinition = "TEXT")
     private String policy;
-    @ManyToOne
-    @JoinColumn(name = "insurance_id")
-    private Insurance insurance;
 }
+
