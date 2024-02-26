@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 
-@Tag(name = "Gestion User")
+@Tag(name = "User management")
 @RestController
 @AllArgsConstructor
 @RequestMapping("/user")
