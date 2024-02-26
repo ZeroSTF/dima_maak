@@ -1,6 +1,6 @@
 package tn.esprit.dima_maak.entities;
 
-public enum UType {
+public enum Role {
     Customer,
     Admin,
     Fieldworker,
