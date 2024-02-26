@@ -16,34 +16,34 @@ import java.util.List;
 public class UserRestController {
     IUserService userService;
 
-    @Operation(description = "recuperer toutes les user de la base de donnees")
+    @Operation(description = "get all users")
     @GetMapping("/retrieve-all-users")
     public List<User> getUsers() {
         List<User> listUsers = userService.retrieveAllUsers();
         return listUsers;
     }
 
-    @Operation(description = "recuperer le user de la base de donnees")
+    @Operation(description = "get one user")
     @GetMapping("/retrieve-user/{user-id}")
     public User retrieveUser(@PathVariable("user-id") Long userId) {
         User user = userService.retrieveUser(userId);
         return user;
     }
 
-    @Operation(description = "ajouter le user de la base de donnees")
+    @Operation(description = "add a user")
     @PostMapping("/add-user")
     public User addUser(@RequestBody User c) {
         User user = userService.addUser(c);
         return user;
     }
 
-    @Operation(description = "supprimer le user de la base de donnees")
+    @Operation(description = "delete a user")
     @DeleteMapping("/remove-user/{user-id}")
     public void removeUser(@PathVariable("user-id") Long userId) {
         userService.removeUser(userId);
     }
 
-    @Operation(description = "modifier le user de la base de donnees")
+    @Operation(description = "edit a user")
     @PutMapping("/modify-user")
     public User modifyUser(@RequestBody User c) {
         User user = userService.modifyUser(c);
