@@ -1,11 +1,14 @@
 package tn.esprit.dima_maak.controllers;
 
+import org.springframework.http.ResponseEntity;
 import tn.esprit.dima_maak.entities.*;
 import tn.esprit.dima_maak.services.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 import java.util.List;
 
 
@@ -49,4 +52,5 @@ public class UserRestController {
         User user = userService.modifyUser(c);
         return user;
     }
+
 }
