@@ -1,10 +1,14 @@
 package tn.esprit.dima_maak.entities;
 
-import lombok.Data;
+import lombok.*;
 import jakarta.persistence.*;
 
 @Entity
-@Data
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Venture {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,16 +17,13 @@ public class Venture {
     @Enumerated(EnumType.STRING)
     private Sector sector;
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "location_id", referencedColumnName = "id")
     private Location location;
     @Enumerated(EnumType.STRING)
     private Stage stage;
     @Column(columnDefinition = "TEXT")
     private String details;
     @ManyToOne
-    @JoinColumn(name = "user_id")
     private User user;
     @ManyToOne
-    @JoinColumn(name = "investment_id")
     private Investment investment;
 }

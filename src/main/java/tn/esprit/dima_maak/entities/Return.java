@@ -1,20 +1,26 @@
 package tn.esprit.dima_maak.entities;
 
-import lombok.Data;
+import lombok.*;
 import jakarta.persistence.*;
+
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "Treturn")
 public class Return {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Float amount;
-    private java.sql.Date date;
+    private LocalDate date;
     @Enumerated(EnumType.STRING)
     private RType type;
     @ManyToOne
-    @JoinColumn(name = "investment_id")
     private Investment investment;
 }

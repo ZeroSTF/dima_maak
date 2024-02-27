@@ -1,11 +1,16 @@
 package tn.esprit.dima_maak.entities;
 
-import lombok.Data;
+import lombok.*;
 import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 
 @Entity
-@Data
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,6 +21,5 @@ public class Notification {
     private LocalDateTime date;
     private boolean status;
     @ManyToOne
-    @JoinColumn(name = "user_id")
     private User user;
 }
