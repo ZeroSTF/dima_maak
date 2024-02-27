@@ -1,10 +1,14 @@
 package tn.esprit.dima_maak.entities;
 
-import lombok.Data;
+import lombok.*;
 import jakarta.persistence.*;
 
 @Entity
-@Data
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class InsuranceP {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

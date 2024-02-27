@@ -1,11 +1,15 @@
 package tn.esprit.dima_maak.serviceimpl;
 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import tn.esprit.dima_maak.entities.*;
 import tn.esprit.dima_maak.services.*;
 import tn.esprit.dima_maak.repositories.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 

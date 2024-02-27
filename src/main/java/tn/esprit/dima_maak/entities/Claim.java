@@ -1,15 +1,22 @@
 package tn.esprit.dima_maak.entities;
 
-import lombok.Data;
+import lombok.*;
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
+
+
 @Entity
-@Data
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Claim {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private java.sql.Date date;
+    private LocalDate date;
     private String image;
     @Column(columnDefinition = "TEXT")
     private String details;
@@ -17,6 +24,5 @@ public class Claim {
     @Enumerated(EnumType.STRING)
     private CStatus status;
     @ManyToOne
-    @JoinColumn(name = "insurance_id")
     private Insurance insurance;
 }
