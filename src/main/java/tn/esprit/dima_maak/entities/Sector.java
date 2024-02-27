@@ -1,7 +1,8 @@
 package tn.esprit.dima_maak.entities;
 
 public enum Sector {
-    Agriculture,
+
+    AGRICULTURE,
     Retail,
     Technology,
     Other
