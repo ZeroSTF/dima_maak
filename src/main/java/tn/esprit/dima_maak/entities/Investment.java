@@ -1,18 +1,21 @@
 package tn.esprit.dima_maak.entities;
 
-import lombok.Data;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
 public class Investment implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private java.sql.Date date;
+    private LocalDate date;
     private Long purchasedShares;
     private Float amount;
     @Enumerated(EnumType.STRING)

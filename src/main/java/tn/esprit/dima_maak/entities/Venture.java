@@ -1,13 +1,17 @@
 package tn.esprit.dima_maak.entities;
 
-import lombok.Data;
+
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
-@Data
+@Getter
+@Setter
+
 public class Venture implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,6 +21,7 @@ public class Venture implements Serializable {
     @Enumerated(EnumType.STRING)
     private VType ventureType;
     private String description;
+    @Enumerated(EnumType.STRING)
     private Stage stage;
     @Enumerated(EnumType.STRING)
     private Sector sector;
@@ -26,15 +31,15 @@ public class Venture implements Serializable {
     private IStatus status;
     private Float loanAmount;
     private Float interest;
-    private java.sql.Date loanDuration;
+    private LocalDate loanDuration;
     private  Float dividendPerShare;
 
-    /*@OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "location_id", referencedColumnName = "id")
-    private Location location;*/
+    private Location location;
 
-   /* @Column(columnDefinition = "TEXT")
-    private String details;*/
+    @Column(columnDefinition = "TEXT")
+    private String details;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
