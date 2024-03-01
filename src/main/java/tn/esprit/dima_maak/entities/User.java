@@ -46,5 +46,7 @@ public class User {
     private List<Notification> notifications;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Loan> loans;
+    @OneToOne(mappedBy = "user")
+    private Leasing leasing;
 }
 
