@@ -33,20 +33,20 @@ public class VentureRestController {
         ventureServices.deleteVenture(id);
         return "venture deleted !";}*/
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteVenture(@PathVariable("id") Long id) {
-        boolean deleted = ventureServices.deleteVenture(id);
+    @DeleteMapping("/delete/{idV}")
+    public ResponseEntity<String> deleteVenture(@PathVariable("idV") Long idV) {
+        boolean deleted = ventureServices.deleteVenture(idV);
         if (deleted) {
             return ResponseEntity.ok("Venture deleted!");
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Venture with ID " + id + " does not exist.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Venture with ID " + idV + " does not exist.");
         }
     }
 
 
-    @GetMapping("/get/{id}")
-    public Venture getVentureById(@PathVariable("id") Long id) {
-        return ventureServices.getVentureById(id);
+    @GetMapping("/get/{idV}")
+    public Venture getVentureById(@PathVariable("idV") Long idV) {
+        return ventureServices.getVentureById(idV);
     }
 
 

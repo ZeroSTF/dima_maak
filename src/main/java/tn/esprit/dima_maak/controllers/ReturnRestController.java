@@ -1,7 +1,7 @@
 package tn.esprit.dima_maak.controllers;
 
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,9 +12,9 @@ import java.util.List;
 
 @RequestMapping("/return")
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ReturnRestController {
-    private IReturnServices iReturnServices;
+    private final IReturnServices iReturnServices;
 
     @PostMapping("/add")
     public Return addReturn(@RequestBody Return treturn) {
@@ -50,4 +50,18 @@ public class ReturnRestController {
     }
 
 
+    @PutMapping("/assignReturnToInvestment/{idR}/{id}")
+    public Return assignReturnToInvestment(@PathVariable("idR")Long idR, @PathVariable("id")Long id){
+
+        return  iReturnServices.assignReturnToInvestment(idR, id);
+
+    }
+
+    @GetMapping("/calculateMonthlyReturns")
+    public float calculateMonthlyReturns(
+            @RequestParam long loanDuration,
+            @RequestParam float loanAmount,
+            @RequestParam float interest) {
+        return iReturnServices.calculateMonthlyReturns(loanDuration, loanAmount, interest);
+    }
 }

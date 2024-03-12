@@ -1,9 +1,11 @@
 package tn.esprit.dima_maak.serviceimpl;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
+import tn.esprit.dima_maak.entities.Investment;
 import tn.esprit.dima_maak.entities.Return;
+import tn.esprit.dima_maak.repositories.IInvestmentRepository;
 import tn.esprit.dima_maak.repositories.IReturnRepository;
 import tn.esprit.dima_maak.services.IReturnServices;
 
@@ -12,10 +14,12 @@ import java.util.Optional;
 
 @Service
 @RequestMapping("/return")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class IReturnServicesImpl implements IReturnServices {
 
-    private IReturnRepository returnRepository;
+    private final IReturnRepository returnRepository;
+    private final IInvestmentRepository investmentRepository;
+
 
 
     @Override
@@ -48,4 +52,27 @@ public class IReturnServicesImpl implements IReturnServices {
     public Return getReturnById(Long idR) {
         return  returnRepository.findById(idR).orElse(null);
     }
+
+    @Override
+    public Return assignReturnToInvestment(Long idR, Long id) {
+
+            Investment investment = investmentRepository.findById(id).orElse(null);
+            Return aReturn = returnRepository.findById(idR).orElse(null);
+            aReturn.setInvestment(investment);
+            return returnRepository.save(aReturn);
+
+        }
+
+    @Override
+    public float calculateMonthlyReturns(long loanDuration, float loanAmount, float interest) {
+
+        double totalInterest = loanAmount * interest * loanDuration / 12; // Calcul du total des intérêts
+        float monthlyInterest = (float) (totalInterest / loanDuration); // Calcul de l'intérêt mensuel
+        return monthlyInterest;
+
+
+    }
+
+
 }
+

@@ -2,6 +2,7 @@ package tn.esprit.dima_maak.controllers;
 
 
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,16 +13,17 @@ import java.util.List;
 
 @RequestMapping("/investment")
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class InvestmentRestController {
 
 
-    private IInvestmentServices iInvestmentServices;
+    private final IInvestmentServices iInvestmentServices;
 
     @PostMapping("/add")
     public Investment addInvestment(@RequestBody Investment investment) {
 
         return iInvestmentServices.addInvestment(investment);
+
     }
 
     @PutMapping("/update")
@@ -51,8 +53,12 @@ public class InvestmentRestController {
         return ResponseEntity.ok().body(iInvestmentServices.getAllInvestment()).getBody();
 
     }
+    @PutMapping("/assignInvestmentToVenture/{id}/{idV}")
+    public Investment assignInvestmentToVenture(@PathVariable("id")Long id, @PathVariable("idV")Long idV){
 
+        return  iInvestmentServices.assignInvestmentToVenture(id, idV);
 
+    }
 
 
 

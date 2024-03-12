@@ -8,8 +8,8 @@ public interface IInvestmentServices {
 
     Investment addInvestment(Investment investment);
     Investment updateInvestment(Investment investment);
-    boolean deleteInvestment (Long idR);
+    boolean deleteInvestment (Long id);
     List<Investment> getAllInvestment();
     Investment getInvestmentById(Long id);
-
+    Investment assignInvestmentToVenture(Long id, Long idV);
 }

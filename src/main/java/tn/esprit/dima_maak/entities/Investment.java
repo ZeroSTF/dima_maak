@@ -1,5 +1,6 @@
 package tn.esprit.dima_maak.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,6 +24,14 @@ public class Investment implements Serializable {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+   /* @OneToMany(mappedBy = "investment", cascade = CascadeType.ALL)
+    private List<Venture> ventures;*/
+
+    @JsonIgnore
+    @ManyToOne
+    /*@JoinColumn(name = "venture_id")*/
+    Venture venture;
+    @JsonIgnore
     @OneToMany(mappedBy = "investment", cascade = CascadeType.ALL)
-    private List<Venture> ventures;
+    private List<Return> returns;
 }

@@ -1,10 +1,13 @@
 package tn.esprit.dima_maak.serviceimpl;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
 import tn.esprit.dima_maak.entities.Investment;
+import tn.esprit.dima_maak.entities.Venture;
 import tn.esprit.dima_maak.repositories.IInvestmentRepository;
+import tn.esprit.dima_maak.repositories.IVentureRepository;
 import tn.esprit.dima_maak.services.IInvestmentServices;
 
 import java.util.List;
@@ -12,13 +15,17 @@ import java.util.Optional;
 
 @Service
 @RequestMapping("/investment")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class InvestmentServicesImpl implements IInvestmentServices {
 
 
-    private IInvestmentRepository investmentRepository;
+    private final IInvestmentRepository investmentRepository;
+    private final IVentureRepository iVentureRepository;
     @Override
-    public Investment addInvestment(Investment investment){ return investmentRepository.save(investment);}
+    public Investment addInvestment(Investment investment){
+        return investmentRepository.save(investment);
+
+    }
 
     @Override
     public Investment updateInvestment(Investment investment) {
@@ -41,6 +48,16 @@ public class InvestmentServicesImpl implements IInvestmentServices {
     @Override
     public List<Investment> getAllInvestment() {return (List<Investment>) investmentRepository.findAll();
     }
+
+    public Investment assignInvestmentToVenture(Long id, Long idV){
+        Investment investment = investmentRepository.findById(id).orElse(null);
+        Venture venture = iVentureRepository.findById(idV).orElse(null);
+        investment.setVenture(venture);
+        return investmentRepository.save(investment);
+
+    }
+
+
 
 
 }

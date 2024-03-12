@@ -1,12 +1,14 @@
 package tn.esprit.dima_maak.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Getter
@@ -15,7 +17,7 @@ import java.time.LocalDate;
 public class Venture implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long idV;
     private String companyName;
     private String ventureName;
     @Enumerated(EnumType.STRING)
@@ -31,7 +33,7 @@ public class Venture implements Serializable {
     private IStatus status;
     private Float loanAmount;
     private Float interest;
-    private LocalDate loanDuration;
+    private Long loanDuration;
     private  Float dividendPerShare;
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -43,7 +45,10 @@ public class Venture implements Serializable {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-    @ManyToOne
+   /* @ManyToOne
     @JoinColumn(name = "investment_id")
-    private Investment investment;
+    private Investment investment;*/
+   @JsonIgnore
+   @OneToMany(mappedBy = "venture", cascade = CascadeType.ALL)
+    private List<Investment> investments;
 }

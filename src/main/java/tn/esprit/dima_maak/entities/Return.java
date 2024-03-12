@@ -17,7 +17,7 @@ public class Return implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idR;
-    private LocalDate RDate;
+    private LocalDate rDate;
     @Enumerated(EnumType.STRING)
     private RType returnType;
     private Float returnAmount;
