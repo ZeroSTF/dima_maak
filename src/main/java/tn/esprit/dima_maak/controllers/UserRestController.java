@@ -16,6 +16,7 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/user")
+//@CrossOrigin("*")
 public class UserRestController {
     IUserService userService;
 
