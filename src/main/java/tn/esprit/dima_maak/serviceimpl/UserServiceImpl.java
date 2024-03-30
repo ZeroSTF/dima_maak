@@ -1,6 +1,8 @@
 package tn.esprit.dima_maak.serviceimpl;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import tn.esprit.dima_maak.entities.*;
 import tn.esprit.dima_maak.services.*;
@@ -17,6 +19,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class UserServiceImpl  implements IUserService {
     UserRepository userRepository;
+    PasswordEncoder encoder;
     @Override
     public List<User> retrieveAllUsers() {
         return userRepository.findAll();
@@ -45,5 +48,10 @@ public class UserServiceImpl  implements IUserService {
         } else {
             throw new EntityNotFoundException("User not found with id: " + user.getId());
         }
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return userRepository.findByEmail(email).orElseThrow(()->new UsernameNotFoundException("No user by this email exists"));
     }
 }
