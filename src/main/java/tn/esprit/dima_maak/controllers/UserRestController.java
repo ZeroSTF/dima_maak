@@ -1,5 +1,7 @@
 package tn.esprit.dima_maak.controllers;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import tn.esprit.dima_maak.entities.*;
 import tn.esprit.dima_maak.services.*;
 import io.swagger.v3.oas.annotations.Operation;
@@ -48,5 +50,31 @@ public class UserRestController {
     public User modifyUser(@RequestBody User c) {
         User user = userService.modifyUser(c);
         return user;
+    }
+
+
+    /*@PutMapping("/users/{id}/updateBalance")
+    public ResponseEntity<String> updateBalance(@PathVariable Long id,
+                                                @RequestParam float returnAmount,
+                                                @RequestParam float returnInterest,
+                                                @RequestParam long sharesGain,
+                                                @RequestParam float totalInvestment) {
+        userService.updateBalance(id, returnAmount, returnInterest, sharesGain, totalInvestment);
+        return ResponseEntity.ok("Balance updated successfully.");
+    }*/
+    @PutMapping("/users/{id}/updateBalance")
+    public ResponseEntity<String> updateBalance(@PathVariable Long id,
+                                                @RequestParam float returnAmount,
+                                                @RequestParam float returnInterest,
+                                                @RequestParam long sharesGain,
+                                                @RequestParam float totalInvestment) {
+        boolean hasInvestments = userService.hasInvestments(id); // Vérifier si l'utilisateur a des investissements
+
+        if (!hasInvestments) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User does not have any associated investments.");
+        }
+
+        userService.updateBalance(id, returnAmount, returnInterest, sharesGain, totalInvestment);
+        return ResponseEntity.ok("Balance updated successfully.");
     }
 }

@@ -76,5 +76,9 @@ public class InvestmentRestController {
 
 
 
+    @GetMapping("/users/{id}/investments")
+    public List<Investment> getUserInvestments(@PathVariable Long id) {
+        return iInvestmentServices.getUserInvestments(id);
+    }
 
 }

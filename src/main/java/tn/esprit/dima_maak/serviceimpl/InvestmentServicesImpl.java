@@ -4,9 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
 import tn.esprit.dima_maak.entities.Investment;
+import tn.esprit.dima_maak.entities.User;
 import tn.esprit.dima_maak.entities.Venture;
 import tn.esprit.dima_maak.repositories.IInvestmentRepository;
 import tn.esprit.dima_maak.repositories.IVentureRepository;
+import tn.esprit.dima_maak.repositories.UserRepository;
 import tn.esprit.dima_maak.services.IInvestmentServices;
 
 import java.util.List;
@@ -20,6 +22,7 @@ public class InvestmentServicesImpl implements IInvestmentServices {
 
     private final IInvestmentRepository investmentRepository;
     private final IVentureRepository iVentureRepository;
+    private final UserRepository userRepository;
 
 
     @Override
@@ -49,6 +52,8 @@ public class InvestmentServicesImpl implements IInvestmentServices {
         return investmentRepository.findById(id).orElse(null);
     }
 
+
+
     @Override
     public List<Investment> getAllInvestment() {
         return (List<Investment>) investmentRepository.findAll();
@@ -77,7 +82,16 @@ public class InvestmentServicesImpl implements IInvestmentServices {
         return (sharesPrice * purchasedShares) + amount;
     }
 
-
+    @Override
+    public List<Investment> getUserInvestments(Long id) {
+        User user = userRepository.findById(id).orElse(null);
+        if (user != null) {
+            return user.getInvestments(); // Supposant que vous avez une méthode getInvestments() dans la classe User
+        } else {
+            // Gérer le cas où l'utilisateur n'est pas trouvé
+            return null; // ou vous pouvez lancer une exception selon vos besoins
+        }
+    }
 
 
 

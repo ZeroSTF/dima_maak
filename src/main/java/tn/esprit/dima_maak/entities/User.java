@@ -1,5 +1,6 @@
 package tn.esprit.dima_maak.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -39,6 +40,9 @@ public class User implements UserDetails {
     private List<Notification> notifications;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Loan> loans;
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Investment> investments;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

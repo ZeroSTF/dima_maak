@@ -25,8 +25,7 @@ public class Investment implements Serializable {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-   /* @OneToMany(mappedBy = "investment", cascade = CascadeType.ALL)
-    private List<Venture> ventures;*/
+
 
     @JsonIgnore
     @ManyToOne

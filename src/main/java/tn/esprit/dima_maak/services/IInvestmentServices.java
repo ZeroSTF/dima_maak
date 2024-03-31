@@ -18,4 +18,7 @@ public interface IInvestmentServices {
     Investment assignInvestmentToVenture(Long id, Long idV);
     Float calculateTotalInvestment(Long purchasedShares, Float sharesPrice, Float amount);
      Investment addInvestmentAndAssignToVenture(Investment investment, Long idV);
+
+    List<Investment> getUserInvestments(Long id);
+
 }
