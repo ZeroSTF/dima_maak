@@ -7,10 +7,8 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
@@ -30,8 +28,6 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
-import tn.esprit.dima_maak.serviceimpl.UserServiceImpl;
-import tn.esprit.dima_maak.services.IUserService;
 import tn.esprit.dima_maak.utils.RSAKeyProperties;
 
 @Configuration
@@ -51,20 +47,7 @@ public class SecurityConfig {
         daoProvider.setPasswordEncoder(passwordEncoder());
         return new ProviderManager(daoProvider);
     }
-//    @Bean
-//    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//         http
-//                .authorizeHttpRequests(auth->{
-//                    auth.requestMatchers("/auth/**").permitAll();
-//                    auth.anyRequest().authenticated();
-//                });
-//        http.oauth2ResourceServer()
-//                .jwt()
-//                .jwtAuthenticationConverter(jwtAuthenticationConverter());
-//        http.sessionManagement(
-//                session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-//        return http.build();
-//    }
+
 @Bean
 @Order
 public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
@@ -83,18 +66,6 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
     http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
     return http.build();
 }
-    /*@Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, HandlerMappingIntrospector introspector) throws Exception{
-        MvcRequestMatcher.Builder mvcMatcherBuilder = new MvcRequestMatcher.Builder(introspector);
-        return http
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers(mvcMatcherBuilder.pattern("/auth/**")).permitAll()
-                        .anyRequest().authenticated()
-                )
-                .httpBasic(withDefaults())
-                .build();
-    }*/
 
     @Bean
     public JwtDecoder jwtDecoder(){
