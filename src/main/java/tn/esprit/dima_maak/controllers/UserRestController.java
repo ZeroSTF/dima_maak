@@ -1,14 +1,12 @@
 package tn.esprit.dima_maak.controllers;
 
-import org.springframework.http.ResponseEntity;
-import tn.esprit.dima_maak.entities.*;
-import tn.esprit.dima_maak.services.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import tn.esprit.dima_maak.entities.User;
+import tn.esprit.dima_maak.services.IUserService;
 
-import java.security.Principal;
 import java.util.List;
 
 
@@ -23,22 +21,19 @@ public class UserRestController {
     @Operation(description = "get all users")
     @GetMapping("/getAll")
     public List<User> getUsers() {
-        List<User> listUsers = userService.retrieveAllUsers();
-        return listUsers;
+        return userService.retrieveAllUsers();
     }
 
     @Operation(description = "get one user")
     @GetMapping("/get/{user-id}")
     public User retrieveUser(@PathVariable("user-id") Long userId) {
-        User user = userService.retrieveUser(userId);
-        return user;
+        return userService.retrieveUser(userId);
     }
 
     @Operation(description = "add a user")
     @PostMapping("/add")
     public User addUser(@RequestBody User c) {
-        User user = userService.addUser(c);
-        return user;
+        return userService.addUser(c);
     }
 
     @Operation(description = "delete a user")
@@ -50,8 +45,6 @@ public class UserRestController {
     @Operation(description = "edit a user")
     @PutMapping("/update")
     public User modifyUser(@RequestBody User c) {
-        User user = userService.modifyUser(c);
-        return user;
+        return userService.modifyUser(c);
     }
-
 }
