@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -26,9 +28,14 @@ public class AuthenticationController {
     IUserService userService;
     @Operation(description = "register a user")
     @PostMapping("/register")
-    public User registerUser(@RequestBody RegistrationDTO body){
-        User user =new User( null, body.getCin(), body.getName(), body.getSurname(), body.getAddress(),body.getBirthDate(), body.getEmail(), body.getPassword(), body.getSalary(), body.getJob(), null, null, body.getRib(), null, null, null, null, null, null);
-        return userService.registerUser(user);
+    public ResponseEntity<?> registerUser(@RequestBody RegistrationDTO body){
+        User user = new User(null, body.getCin(), body.getName(), body.getSurname(), body.getAddress(), body.getBirthDate(), body.getEmail(), body.getPassword(), body.getSalary(), body.getJob(), null, null, body.getRib(), null, null, null, null, null, null);
+        User registeredUser = userService.registerUser(user);
+        if (registeredUser != null) {
+            return ResponseEntity.ok(registeredUser);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email is already in use");
+        }
     }
     @Operation(description = "login")
     @PostMapping("/login")

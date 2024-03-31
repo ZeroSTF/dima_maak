@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import tn.esprit.dima_maak.DTO.LoginResponseDTO;
 import tn.esprit.dima_maak.entities.*;
 import tn.esprit.dima_maak.services.*;
@@ -20,12 +21,14 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.Principal;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserServiceImpl  implements IUserService, UserDetailsService {
@@ -45,6 +48,7 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
     @Autowired
     @Lazy
     TokenService tokenService;
+    private static final String UPLOAD_DIR = "uploads/profiles/";
     @Override
     public List<User> retrieveAllUsers() {
         return userRepository.findAll();
@@ -83,6 +87,11 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
 
     @Override
     public User registerUser(User user) {
+        //////////////////// Check if the email is unique/////////////////////
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            return null;
+        }
+        //////////////////////////////////////////////////////////////////////
         String encodedPassword = encoder.encode(user.getPassword());
         Role userRole = roleRepository.findByAuthority("USER").get();
         Set<Role> authorities = new HashSet<>();
@@ -110,4 +119,42 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
             return new LoginResponseDTO(null, "");
         }
     }
+
+    @Override
+    public User loadUserByEmail(String email) {return userRepository.findByEmail(email).get();}
+
+/////////////////////////////// PROFILE PICTURE UPLOAD LOGIC///////////////////////////////////////////////////////////
+    // Method to save profile picture
+    public String saveProfilePicture(MultipartFile file) throws IOException {
+        // Create a unique file name to prevent conflicts
+        String fileName = generateUniqueFileName(file.getOriginalFilename());
+
+        // Create the directory if it doesn't exist
+        createUploadDirectoryIfNotExist();
+
+        // Get the file path to save the image
+        String filePath = UPLOAD_DIR + fileName;
+
+        // Save the file to the specified location
+        Path destPath = Paths.get(filePath);
+        Files.copy(file.getInputStream(), destPath);
+
+        return fileName;
+    }
+
+    // Helper method to generate a unique file name
+    private String generateUniqueFileName(String originalFileName) {
+        String uuid = UUID.randomUUID().toString();
+        String extension = originalFileName.substring(originalFileName.lastIndexOf("."));
+        return uuid + extension;
+    }
+
+    // Helper method to create upload directory if it doesn't exist
+    private void createUploadDirectoryIfNotExist() {
+        File directory = new File(UPLOAD_DIR);
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
 }
