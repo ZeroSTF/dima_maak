@@ -19,6 +19,7 @@ public class Investment implements Serializable {
     private LocalDate date;
     private Long purchasedShares;
     private Float amount;
+    private Float totalInvestment;
     @Enumerated(EnumType.STRING)
     private INStatus status;
     @ManyToOne

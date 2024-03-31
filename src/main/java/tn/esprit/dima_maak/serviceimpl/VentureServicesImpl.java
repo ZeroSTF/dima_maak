@@ -1,12 +1,10 @@
 package tn.esprit.dima_maak.serviceimpl;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
-import tn.esprit.dima_maak.entities.Venture;
+import tn.esprit.dima_maak.entities.*;
 import tn.esprit.dima_maak.repositories.IVentureRepository;
 import tn.esprit.dima_maak.services.IVentureServices;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -38,9 +36,38 @@ public class VentureServicesImpl implements IVentureServices {
     public Venture getVentureById(Long idV) {return  ventureRepository.findById(idV).orElse(null);}
 
     @Override
-    public List<Venture> getAllVenture() {return (List<Venture>) ventureRepository.findAll();
+    public List<Venture> getAllVenture() {return ventureRepository.findAll();
+    }
+   @Override
+    public void updateVentureStatus(Long idV) {
+        Venture venture = ventureRepository.findById(idV).orElse(null);
+        if (venture != null) {
+            Long totalPurchasedShares = ventureRepository.getTotalPurchasedSharesForVenture(idV);
+            Long totalInvestmentAmount = ventureRepository.getTotalAmountForVenture(idV);
+
+            if (totalPurchasedShares != null && totalInvestmentAmount != null) {
+                // Vérifier si le total des actions achetées dépasse ou est égal au nombre d'actions disponibles
+                if (totalPurchasedShares >= venture.getAvailableShares()) {
+                    venture.setStatus(IStatus.CLOSED);
+                }
+
+                // Vérifier si le montant total des investissements dépasse ou est égal au montant du prêt
+                if (totalInvestmentAmount >= venture.getLoanAmount()) {
+                    venture.setStatus(IStatus.CLOSED);
+                }
+
+                ventureRepository.save(venture);
+            }
+        }
     }
 
 
 
+
+
 }
+
+
+
+
+

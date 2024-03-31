@@ -1,7 +1,6 @@
 package tn.esprit.dima_maak.controllers;
 
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -53,12 +52,27 @@ public class InvestmentRestController {
         return ResponseEntity.ok().body(iInvestmentServices.getAllInvestment()).getBody();
 
     }
-    @PutMapping("/assignInvestmentToVenture/{id}/{idV}")
+
+   @PutMapping("/assignInvestmentToVenture/{id}/{idV}")
     public Investment assignInvestmentToVenture(@PathVariable("id")Long id, @PathVariable("idV")Long idV){
 
         return  iInvestmentServices.assignInvestmentToVenture(id, idV);
 
     }
+   @PostMapping("/addInvestmentAndAssignToVenture/{idV}")
+   public Investment addInvestmentAndAssignToVenture(@RequestBody Investment investment, @PathVariable Long idV) {
+       return iInvestmentServices.addInvestmentAndAssignToVenture(investment, idV);
+   }
+   @PostMapping("/calculateTotalInvestment")
+    public ResponseEntity<Float> calculateTotalInvestment(@RequestParam Long purchasedShares, @RequestParam Float sharesPrice, @RequestParam Float amount) {
+        Float totalInvestment = iInvestmentServices.calculateTotalInvestment(purchasedShares, sharesPrice, amount);
+        return ResponseEntity.ok(totalInvestment);
+    }
+   /* @GetMapping("/calculateTotalInvestment")
+    public float calculateTotalInvestment(
+            @RequestParam Long purchasedShares, @RequestParam Float sharesPrice, @RequestParam Float amount) {
+        return iInvestmentServices.calculateTotalInvestment(purchasedShares, sharesPrice, amount);
+    }*/
 
 
 

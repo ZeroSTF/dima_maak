@@ -6,7 +6,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.dima_maak.entities.Return;
+import tn.esprit.dima_maak.repositories.IReturnRepository;
 import tn.esprit.dima_maak.services.IReturnServices;
+
 
 import java.util.List;
 
@@ -15,20 +17,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReturnRestController {
     private final IReturnServices iReturnServices;
-
     @PostMapping("/add")
     public Return addReturn(@RequestBody Return treturn) {
 
         return iReturnServices.addReturn(treturn);
     }
-
     @PutMapping("/update")
-    public Return updateReturn (@RequestBody Return treturn){
+    public Return updateReturn(@RequestBody Return treturn) {
 
         return iReturnServices.updateReturn(treturn);
     }
-
-
     @DeleteMapping("/delete/{idR}")
     public ResponseEntity<String> deleteReturn(@PathVariable("idR") Long idR) {
         boolean deleted = iReturnServices.deleteReturn(idR);
@@ -49,13 +47,20 @@ public class ReturnRestController {
         return ResponseEntity.ok().body(iReturnServices.getAllReturn()).getBody();
     }
 
-
     @PutMapping("/assignReturnToInvestment/{idR}/{id}")
-    public Return assignReturnToInvestment(@PathVariable("idR")Long idR, @PathVariable("id")Long id){
-
-        return  iReturnServices.assignReturnToInvestment(idR, id);
-
+    public ResponseEntity<Return> assignReturnToInvestment(@PathVariable("idR") Long idR,
+                                                           @PathVariable("id") Long id,
+                                                           @RequestParam("loanDuration") long loanDuration,
+                                                           @RequestParam("loanAmount") float loanAmount,
+                                                           @RequestParam("interest") float interest) {
+        Return updatedReturn = iReturnServices.assignReturnToInvestment(idR, id, loanDuration, loanAmount, interest);
+        if (updatedReturn != null) {
+            return ResponseEntity.ok(updatedReturn);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
+
 
     @GetMapping("/calculateMonthlyReturns")
     public float calculateMonthlyReturns(
@@ -64,4 +69,44 @@ public class ReturnRestController {
             @RequestParam float interest) {
         return iReturnServices.calculateMonthlyReturns(loanDuration, loanAmount, interest);
     }
+
+
+   /* @GetMapping("/{id}/pdf")
+    public ResponseEntity<byte[]> generatePdfForReturn(@PathVariable("id") Long returnId) {
+        Optional<Return> returnOptional = returnRepository.findById(returnId);
+        if (returnOptional.isPresent()) {
+            Return returnObject = returnOptional.get();
+            byte[] pdfBytes = iReturnServices.generatePdf(returnObject);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDispositionFormData("filename", "return_" + returnId + ".pdf");
+
+            return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+    }*/
+
+
+    @PutMapping("/addReturnAndAssignToInvestment/{id}")
+    public ResponseEntity<Return> addReturnAndAssignToInvestment(@PathVariable("id") Long id,
+                                                                 @RequestBody Return aReturn,
+                                                                 @RequestParam("loanDuration") long loanDuration,
+                                                                 @RequestParam("loanAmount") float loanAmount,
+                                                                 @RequestParam("interest") float interest) {
+        Return updatedReturn = iReturnServices.addReturnAndAssignToInvestment(id, aReturn, loanDuration, loanAmount, interest);
+        if (updatedReturn != null) {
+            return ResponseEntity.ok(updatedReturn);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
 }
+
+
+
+

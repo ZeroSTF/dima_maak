@@ -1,7 +1,6 @@
 package tn.esprit.dima_maak.serviceimpl;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
 import tn.esprit.dima_maak.entities.Investment;
@@ -21,8 +20,10 @@ public class InvestmentServicesImpl implements IInvestmentServices {
 
     private final IInvestmentRepository investmentRepository;
     private final IVentureRepository iVentureRepository;
+
+
     @Override
-    public Investment addInvestment(Investment investment){
+    public Investment addInvestment(Investment investment) {
         return investmentRepository.save(investment);
 
     }
@@ -42,22 +43,48 @@ public class InvestmentServicesImpl implements IInvestmentServices {
             return false; // L'identifiant spécifié n'existe pas
         }
     }
-    @Override
-    public Investment getInvestmentById(Long id) {return  investmentRepository.findById(id).orElse(null);}
 
     @Override
-    public List<Investment> getAllInvestment() {return (List<Investment>) investmentRepository.findAll();
+    public Investment getInvestmentById(Long id) {
+        return investmentRepository.findById(id).orElse(null);
     }
 
-    public Investment assignInvestmentToVenture(Long id, Long idV){
+    @Override
+    public List<Investment> getAllInvestment() {
+        return (List<Investment>) investmentRepository.findAll();
+    }
+
+   public Investment assignInvestmentToVenture(Long id, Long idV){
         Investment investment = investmentRepository.findById(id).orElse(null);
         Venture venture = iVentureRepository.findById(idV).orElse(null);
         investment.setVenture(venture);
         return investmentRepository.save(investment);
+     }
 
+    @Override
+    public Investment addInvestmentAndAssignToVenture(Investment investment, Long idV) {
+        Venture venture = iVentureRepository.findById(idV).orElse(null);
+        if (venture != null) {
+            investment.setVenture(venture);
+            return investmentRepository.save(investment);
+        } else {
+            // Gérer le cas où la Venture n'existe pas
+            return null;
+        }
     }
+    @Override
+    public Float calculateTotalInvestment(Long purchasedShares, Float sharesPrice, Float amount) {
+        return (sharesPrice * purchasedShares) + amount;
+    }
+
+
 
 
 
 
 }
+
+
+
+
+

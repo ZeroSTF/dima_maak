@@ -28,10 +28,7 @@ public class VentureRestController {
         return ventureServices.updateVenture(venture);
     }
 
-   /* @DeleteMapping("/delete/{id}")
-    public String deleteVenture(@PathVariable("id") Long id){
-        ventureServices.deleteVenture(id);
-        return "venture deleted !";}*/
+
 
     @DeleteMapping("/delete/{idV}")
     public ResponseEntity<String> deleteVenture(@PathVariable("idV") Long idV) {
@@ -57,4 +54,12 @@ public class VentureRestController {
     }
 
 
-}
+
+    @PostMapping("/{idV}/updateStatus")
+    public ResponseEntity<String> updateVentureStatus(@PathVariable Long idV) {
+        ventureServices.updateVentureStatus(idV);
+        return ResponseEntity.ok("Venture status updated successfully");
+    }
+    }
+
+

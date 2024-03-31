@@ -10,6 +10,10 @@ public interface IVentureServices {
     boolean deleteVenture (Long idV);
     List<Venture> getAllVenture();
     Venture getVentureById(Long idV);
+    void updateVentureStatus(Long idV);
+
+    /*void addVentureFromExcel(String filepath);*/
+    /*void addVenturesFromExcel(String filePath) throws IOException;*/
 
 
 }
