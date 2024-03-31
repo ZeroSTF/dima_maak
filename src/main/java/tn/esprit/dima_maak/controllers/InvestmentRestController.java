@@ -1,13 +1,18 @@
 package tn.esprit.dima_maak.controllers;
 
 
+import com.lowagie.text.DocumentException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.dima_maak.entities.Investment;
 import tn.esprit.dima_maak.services.IInvestmentServices;
 
+import java.io.IOException;
 import java.util.List;
 
 @RequestMapping("/investment")
@@ -26,7 +31,7 @@ public class InvestmentRestController {
     }
 
     @PutMapping("/update")
-    public Investment updateInvestment (@RequestBody Investment investment){
+    public Investment updateInvestment(@RequestBody Investment investment) {
 
         return iInvestmentServices.updateInvestment(investment);
     }
@@ -53,17 +58,19 @@ public class InvestmentRestController {
 
     }
 
-   @PutMapping("/assignInvestmentToVenture/{id}/{idV}")
-    public Investment assignInvestmentToVenture(@PathVariable("id")Long id, @PathVariable("idV")Long idV){
+    @PutMapping("/assignInvestmentToVenture/{id}/{idV}")
+    public Investment assignInvestmentToVenture(@PathVariable("id") Long id, @PathVariable("idV") Long idV) {
 
-        return  iInvestmentServices.assignInvestmentToVenture(id, idV);
+        return iInvestmentServices.assignInvestmentToVenture(id, idV);
 
     }
-   @PostMapping("/addInvestmentAndAssignToVenture/{idV}")
-   public Investment addInvestmentAndAssignToVenture(@RequestBody Investment investment, @PathVariable Long idV) {
-       return iInvestmentServices.addInvestmentAndAssignToVenture(investment, idV);
-   }
-   @PostMapping("/calculateTotalInvestment")
+
+    @PostMapping("/addInvestmentAndAssignToVenture/{idV}")
+    public Investment addInvestmentAndAssignToVenture(@RequestBody Investment investment, @PathVariable Long idV) {
+        return iInvestmentServices.addInvestmentAndAssignToVenture(investment, idV);
+    }
+
+    @PostMapping("/calculateTotalInvestment")
     public ResponseEntity<Float> calculateTotalInvestment(@RequestParam Long purchasedShares, @RequestParam Float sharesPrice, @RequestParam Float amount) {
         Float totalInvestment = iInvestmentServices.calculateTotalInvestment(purchasedShares, sharesPrice, amount);
         return ResponseEntity.ok(totalInvestment);
@@ -75,10 +82,33 @@ public class InvestmentRestController {
     }*/
 
 
-
     @GetMapping("/users/{id}/investments")
     public List<Investment> getUserInvestments(@PathVariable Long id) {
         return iInvestmentServices.getUserInvestments(id);
     }
 
+
+
+   /* @Autowired
+    public InvestmentRestController(IInvestmentServices investmentService) {
+        this.iInvestmentServices = investmentService;
+    }*/
+
+    @GetMapping("/generatePDF")
+    public ResponseEntity<byte[]> generatePDF() {
+        try {
+            Investment investment = new Investment(); // Supposons que vous ayez une instance d'Investment ici
+            byte[] pdfBytes = iInvestmentServices.generateInvestmentPDF(investment);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDispositionFormData("filename", "investment_details.pdf");
+            headers.setContentLength(pdfBytes.length);
+            return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
+        } catch (DocumentException e) {
+            e.printStackTrace(); // Gérez l'erreur de manière appropriée
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
+
+

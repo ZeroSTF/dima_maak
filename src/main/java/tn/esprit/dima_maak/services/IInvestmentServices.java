@@ -1,5 +1,6 @@
 package tn.esprit.dima_maak.services;
 
+import com.lowagie.text.DocumentException;
 import tn.esprit.dima_maak.entities.Investment;
 
 import java.util.List;
@@ -20,5 +21,6 @@ public interface IInvestmentServices {
      Investment addInvestmentAndAssignToVenture(Investment investment, Long idV);
 
     List<Investment> getUserInvestments(Long id);
+    byte[] generateInvestmentPDF(Investment investment) throws DocumentException;
 
 }
