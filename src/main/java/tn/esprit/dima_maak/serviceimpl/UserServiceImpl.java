@@ -30,7 +30,11 @@ import java.util.Set;
 @Service
 public class UserServiceImpl  implements IUserService, UserDetailsService {
 
+    @Autowired
+    @Lazy
     UserRepository userRepository;
+    @Autowired
+    @Lazy
     RoleRepository roleRepository;
     @Lazy
     @Autowired
@@ -38,6 +42,8 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
     @Lazy
     @Autowired
     AuthenticationManager authenticationManager;
+    @Autowired
+    @Lazy
     TokenService tokenService;
     @Override
     public List<User> retrieveAllUsers() {
@@ -100,6 +106,7 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
             return new LoginResponseDTO(userRepository.findByEmail(email).get(), token);
 
         } catch (AuthenticationException e){
+            e.printStackTrace();
             return new LoginResponseDTO(null, "");
         }
     }
