@@ -3,7 +3,6 @@ package tn.esprit.dima_maak.controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.dima_maak.entities.Notification;
 import tn.esprit.dima_maak.services.INotificationService;

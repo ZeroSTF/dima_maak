@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 
 @Tag(name = "User management")
@@ -69,6 +70,19 @@ public class UserRestController {
         }
     }
 
+    @Operation(description = "assess user risk")
+    @GetMapping("/assess/{user-id}")
+    public ResponseEntity<String> assessUserRisk(@PathVariable("user-id") Long userId){
+        String riskCategory;
+        try {
+            riskCategory = userService.assessRisk(userId);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Error assessing risk: " + e.getMessage());
+        }
+
+        return ResponseEntity.ok("Risk Category: " + riskCategory);
+    }
+
     ///////////////////////////////////////////////////////////////PROFILE RELATED WORK (IN PROGRESS?)//////////////////////////////////////////////////////
     @Operation(description = "update your own profile")
     @PutMapping("/updateProfile")
@@ -112,5 +126,4 @@ public class UserRestController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload profile picture");
         }
     }
-
 }

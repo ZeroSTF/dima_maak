@@ -198,4 +198,63 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
         userRepository.save(user);
         return Boolean.TRUE;
     }
+
+    ////////////////////////Risk assessment algorithm///////////////////////////////////////////////////////////
+    public String assessRisk(Long userId) {
+        // Check if user exists
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (!userOptional.isPresent()) {
+            return "User not found"; // Handle user not found scenario
+        }
+
+        User user = userOptional.get();
+
+        // **Income Score Calculation**
+        int incomeScore;
+        if (user.getSalary() != null && user.getSalary() >= 4000) {
+            incomeScore = 5; // High income
+        } else if (user.getSalary() != null && user.getSalary() >= 1000) {
+            incomeScore = 3; // Medium income
+        } else {
+            incomeScore = 1; // Low income (or missing salary data)
+        }
+
+        // **Job Stability Score Calculation**
+        int jobStabilityScore;
+        if (List.of("Doctor", "Engineer", "Teacher").contains(user.getJob())) {
+            jobStabilityScore = 3; // Stable job
+        } else {
+            jobStabilityScore = 1; // Less stable job (assuming all others are less stable)
+        }
+
+        // **Debt Score Calculation**
+        int debtScore;
+        if (user.getBalance() == null || user.getBalance() == 0) {
+            debtScore = 5; // No debt
+        } else if ((float) user.getBalance() / user.getSalary() < 0.3) {
+            debtScore = 3; // Low debt-to-income ratio
+        } else {
+            debtScore = 1; // High debt-to-income ratio
+        }
+
+        // **Calculate Total Score with Weights**
+        float totalScore = (float) (incomeScore + jobStabilityScore * 2 + debtScore * 1.5);
+
+        // **Determine Risk Category based on Score**
+        System.out.println("TOTAL SCORE IS: " +totalScore);
+        return determineRiskCategory(totalScore);
+    }
+
+    private String determineRiskCategory(float totalScore) {
+        //I calculated the max to be 18.5 and the median to be 14
+        if (totalScore >= 15.5) {
+            return "Low Risk";
+        } else if (totalScore >= 9.25) {
+            return "Medium Risk";
+        } else {
+            return "High Risk";
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+
 }
