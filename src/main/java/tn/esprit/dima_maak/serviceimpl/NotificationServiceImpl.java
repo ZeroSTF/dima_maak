@@ -3,6 +3,7 @@ package tn.esprit.dima_maak.serviceimpl;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import tn.esprit.dima_maak.entities.NType;
 import tn.esprit.dima_maak.entities.Notification;
 import tn.esprit.dima_maak.entities.User;
 import tn.esprit.dima_maak.repositories.NotificationRepository;
@@ -46,6 +47,15 @@ public class NotificationServiceImpl implements INotificationService {
             return notificationRepository.save(notification);
         } else {
             throw new EntityNotFoundException("Notification not found with id: " + notification.getId());
+        }
+    }
+
+    ///////////////Custom Services///////////////////:
+    @Override
+    public void sendLowBalanceNotification(User user, float threshold) {
+        if (user.getBalance() < threshold) {
+            Notification notification = new Notification(user, NType.Alert, "Your account balance is low. Please top up soon.");
+            notificationRepository.save(notification);
         }
     }
 }

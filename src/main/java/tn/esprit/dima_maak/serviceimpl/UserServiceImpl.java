@@ -54,9 +54,10 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
     private ConfirmationRepository confirmationRepository;
 
     private final IEmailService emailService;
-
-    public UserServiceImpl(IEmailService emailService) {
+    private final INotificationService notificationService;
+    public UserServiceImpl(IEmailService emailService, INotificationService notificationService) {
         this.emailService = emailService;
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -137,14 +138,11 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
     @Override
     public LoginResponseDTO login(String email, String password) {
         try{
-            Authentication auth = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(email, password)
-            );
-
+            Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
             String token = tokenService.generateJwt(auth);
-
-            return new LoginResponseDTO(userRepository.findByEmail(email).get(), token);
-
+            User user = userRepository.findByEmail(email).get();
+            notificationService.sendLowBalanceNotification(user, 100);//100 is the random threshold I chose
+            return new LoginResponseDTO(user, token);
         } catch (AuthenticationException e){
             e.printStackTrace();
             return new LoginResponseDTO(null, "");
