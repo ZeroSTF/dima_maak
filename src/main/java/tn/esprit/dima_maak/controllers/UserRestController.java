@@ -20,7 +20,7 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/user")
-//@CrossOrigin("*")
+@CrossOrigin("*")
 public class UserRestController {
     IUserService userService;
 
@@ -76,14 +76,16 @@ public class UserRestController {
     @PostMapping("/upload")
     @Operation(description = "upload your own profile picture")
     public ResponseEntity<String> uploadProfilePicture(@RequestParam("file") MultipartFile file) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentEmail = authentication.getName();
         // Check if file is empty
         if (file.isEmpty()) {
             return ResponseEntity.badRequest().body("Please upload a file");
         }
         try {
             ////////////retrieving current user/////////////////////////////////
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String currentEmail = authentication.getName();
+//            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//            String currentEmail = authentication.getName();
             User currentUser = userService.loadUserByEmail(currentEmail);
             ////////////////////////////////////////////////////////////////////
             String fileName = userService.saveProfilePicture(file);
