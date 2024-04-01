@@ -18,6 +18,7 @@ public class EmailServiceImpl implements IEmailService {
     @Override
     public void sendSimpleMailMessage(String name, String to, String token) {
         try{
+            ////////TODO work on the mailing//////////////
         } catch(Exception exception){
             throw new RuntimeException(exception);
         }

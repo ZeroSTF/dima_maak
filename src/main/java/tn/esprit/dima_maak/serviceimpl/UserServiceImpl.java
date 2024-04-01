@@ -122,7 +122,7 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
         Confirmation confirmation = new Confirmation(user);
         confirmationRepository.save(confirmation);
         /////////////////MAILING//////////////////////////
-        emailService.sendSimpleMailMessage("","",confirmation.getToken());
+        emailService.sendSimpleMailMessage(user.getSurname()+ " "+ user.getName(),user.getEmail(),confirmation.getToken());
         /////////////////////////////////////////////////
         return userRepository.save(user);
     }
