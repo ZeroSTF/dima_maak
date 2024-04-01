@@ -20,12 +20,11 @@ import tn.esprit.dima_maak.services.IUserService;
 
 @Tag(name = "Authentication")
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping("/auth")
 @CrossOrigin("*")
 public class AuthenticationController {
-    @Lazy
-    IUserService userService;
+    private final IUserService userService;
     @Operation(description = "register a user")
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody RegistrationDTO body){

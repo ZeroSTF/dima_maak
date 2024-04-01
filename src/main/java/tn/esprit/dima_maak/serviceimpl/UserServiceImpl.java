@@ -32,30 +32,25 @@ import java.util.*;
 
 @Service
 public class UserServiceImpl  implements IUserService, UserDetailsService {
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder encoder;
 
-    @Autowired
-    @Lazy
-    UserRepository userRepository;
-    @Autowired
-    @Lazy
-    RoleRepository roleRepository;
-    @Lazy
-    @Autowired
-    PasswordEncoder encoder;
     @Lazy
     @Autowired
     AuthenticationManager authenticationManager;
-    @Autowired
-    @Lazy
-    ITokenService tokenService;
+    private final ITokenService tokenService;
     private static final String UPLOAD_DIR = "uploads/profiles/";
 
-    @Autowired
-    private ConfirmationRepository confirmationRepository;
-
+    private final ConfirmationRepository confirmationRepository;
     private final IEmailService emailService;
     private final INotificationService notificationService;
-    public UserServiceImpl(IEmailService emailService, INotificationService notificationService) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder encoder, ITokenService tokenService, ConfirmationRepository confirmationRepository, IEmailService emailService, INotificationService notificationService) {
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.encoder = encoder;
+        this.tokenService = tokenService;
+        this.confirmationRepository = confirmationRepository;
         this.emailService = emailService;
         this.notificationService = notificationService;
     }
