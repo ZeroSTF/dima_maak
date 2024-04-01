@@ -79,8 +79,13 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
         c.setPassword(encoder.encode(c.getPassword()));
         c.setStatus(UStatus.Pending);
         Confirmation confirmation = new Confirmation(c);
+        userRepository.save(c);
         confirmationRepository.save(confirmation);
-        return userRepository.save(c);
+        /////////////////MAILING//////////////////////////
+        //emailService.sendSimpleMailMessage(c.getSurname()+ " "+ c.getName(),c.getEmail(),confirmation.getToken());
+        emailService.sendHtmlEmail(c.getSurname()+ " "+ c.getName(), c.getEmail(), confirmation.getToken());
+        /////////////////////////////////////////////////
+        return c;
     }
 
     @Override
@@ -123,7 +128,8 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
         userRepository.save(user);
         confirmationRepository.save(confirmation);
         /////////////////MAILING//////////////////////////
-        emailService.sendSimpleMailMessage(user.getSurname()+ " "+ user.getName(),user.getEmail(),confirmation.getToken());
+        //emailService.sendSimpleMailMessage(user.getSurname()+ " "+ user.getName(),user.getEmail(),confirmation.getToken());
+        emailService.sendHtmlEmail(user.getSurname()+ " "+ user.getName(),user.getEmail(),confirmation.getToken());
         /////////////////////////////////////////////////
         return user;
     }

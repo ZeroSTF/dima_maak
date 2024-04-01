@@ -8,7 +8,7 @@ public class EmailUtility {
                 +"\n\nThe Dima Maak support Team";
     }
 
-    private static String getVerificationUrl(String host, String token) {
+    public static String getVerificationUrl(String host, String token) {
         return host + "/user?token="+token;
     }
 }
