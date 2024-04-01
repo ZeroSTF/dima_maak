@@ -73,7 +73,7 @@ public class InvestmentServicesImpl implements IInvestmentServices {
         return investmentRepository.save(investment);
      }
 
-    @Override
+   /* @Override
     public Investment addInvestmentAndAssignToVenture(Investment investment, Long idV) {
         Venture venture = iVentureRepository.findById(idV).orElse(null);
         if (venture != null) {
@@ -83,7 +83,7 @@ public class InvestmentServicesImpl implements IInvestmentServices {
             // Gérer le cas où la Venture n'existe pas
             return null;
         }
-    }
+    }*/
     @Override
     public Float calculateTotalInvestment(Long purchasedShares, Float sharesPrice, Float amount) {
         return (sharesPrice * purchasedShares) + amount;
@@ -109,7 +109,7 @@ public class InvestmentServicesImpl implements IInvestmentServices {
         PdfWriter.getInstance(document, baos);
         document.open();
 
-        document.add(new Paragraph("Investment Details"));
+        document.add(new Paragraph("__________Below, you'll find the details of your investment__________"));
         document.add(new Paragraph("ID: " + investment.getId()));
         document.add(new Paragraph("Date: " + (investment.getDate() != null ? investment.getDate().toString() : "N/A")));
         document.add(new Paragraph("Purchased Shares: " + investment.getPurchasedShares()));
@@ -127,6 +127,47 @@ public class InvestmentServicesImpl implements IInvestmentServices {
 
         return baos.toByteArray();
     }
+
+    /*@Override
+    public byte[] addInvestmentAndAssignToVenture(Investment investment, Long idV) throws DocumentException {
+        Venture venture = iVentureRepository.findById(idV).orElse(null);
+        if (venture != null) {
+            investment.setVenture(venture);
+            Investment savedInvestment = investmentRepository.save(investment);
+            // Generate PDF for the saved investment
+            return generateInvestmentPDF(savedInvestment);
+        } else {
+            // Gérer le cas où la Venture n'existe pas
+            return null;
+        }
+    }*/
+
+    @Override
+    public byte[] addInvestmentAndAssignToVenture(Investment investment, Long idV) throws DocumentException {
+        Venture venture = iVentureRepository.findById(idV).orElse(null);
+        if (venture != null) {
+            // Calcul du montant total de l'investissement
+            Float totalInvestment = calculateTotalInvestment(investment.getPurchasedShares(), venture.getSharesPrice(), investment.getAmount());
+
+            // Attribution de la valeur calculée à l'attribut totalInvestment de l'objet investment
+            investment.setTotalInvestment(totalInvestment);
+
+            // Attribution de la venture à l'investissement
+            investment.setVenture(venture);
+
+            // Enregistrement de l'investissement
+            Investment savedInvestment = investmentRepository.save(investment);
+
+            // Génération du PDF pour l'investissement enregistré
+            return generateInvestmentPDF(savedInvestment);
+        } else {
+            // Gérer le cas où la Venture n'existe pas
+            return null;
+        }
+    }
+
+
+
 
 
 

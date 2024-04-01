@@ -8,7 +8,6 @@ import tn.esprit.dima_maak.services.IEmailServices;
 
 @RequestMapping("/mail")
 @RestController
-
 public class EmailRestController {
 
 

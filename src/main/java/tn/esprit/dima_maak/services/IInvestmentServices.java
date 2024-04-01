@@ -18,9 +18,10 @@ public interface IInvestmentServices {
     Investment getInvestmentById(Long id);
     Investment assignInvestmentToVenture(Long id, Long idV);
     Float calculateTotalInvestment(Long purchasedShares, Float sharesPrice, Float amount);
-     Investment addInvestmentAndAssignToVenture(Investment investment, Long idV);
+    /* Investment addInvestmentAndAssignToVenture(Investment investment, Long idV);*/
 
     List<Investment> getUserInvestments(Long id);
     byte[] generateInvestmentPDF(Investment investment) throws DocumentException;
+    public byte[] addInvestmentAndAssignToVenture(Investment investment, Long idV) throws DocumentException;
 
 }
