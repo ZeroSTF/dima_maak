@@ -49,6 +49,16 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
     @Lazy
     ITokenService tokenService;
     private static final String UPLOAD_DIR = "uploads/profiles/";
+
+    @Autowired
+    private ConfirmationRepository confirmationRepository;
+
+    private final IEmailService emailService;
+
+    public UserServiceImpl(IEmailService emailService) {
+        this.emailService = emailService;
+    }
+
     @Override
     public List<User> retrieveAllUsers() {
         return userRepository.findAll();
@@ -61,7 +71,15 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
 
     @Override
     public User addUser(User c) {
+        //////////////////// Check if the email is unique/////////////////////
+        if (userRepository.findByEmail(c.getEmail()).isPresent()) {
+            return null;
+        }
+        //////////////////////////////////////////////////////////////////////
         c.setPassword(encoder.encode(c.getPassword()));
+        c.setStatus(UStatus.Pending);
+        Confirmation confirmation = new Confirmation(c);
+        confirmationRepository.save(confirmation);
         return userRepository.save(c);
     }
 
@@ -97,9 +115,15 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
         Set<Role> authorities = new HashSet<>();
         authorities.add(userRole);
         user.setPassword(encodedPassword);
+        user.setStatus(UStatus.Pending);
         user.setRole(authorities);
         user.setBalance(0f);
         user.setLp(0);
+        Confirmation confirmation = new Confirmation(user);
+        confirmationRepository.save(confirmation);
+        /////////////////MAILING//////////////////////////
+        emailService.sendSimpleMailMessage("","",confirmation.getToken());
+        /////////////////////////////////////////////////
         return userRepository.save(user);
     }
 
@@ -157,4 +181,14 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
         }
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public Boolean verifyToken(String token) {
+        Confirmation confirmation = confirmationRepository.findByToken(token);
+        User user = userRepository.findByEmail(confirmation.getUser().getEmail()).get();
+        user.setStatus(UStatus.Active);
+        userRepository.save(user);
+        //confirmationRepository.delete(confirmation);
+        return Boolean.TRUE;
+    }
 }

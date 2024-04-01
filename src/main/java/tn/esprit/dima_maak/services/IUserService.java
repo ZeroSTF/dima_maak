@@ -19,4 +19,5 @@ public interface IUserService {
     public LoginResponseDTO login(String email, String password);
     public User loadUserByEmail(String email);
     public String saveProfilePicture(MultipartFile file)throws IOException;
+    public Boolean verifyToken(String token);
 }

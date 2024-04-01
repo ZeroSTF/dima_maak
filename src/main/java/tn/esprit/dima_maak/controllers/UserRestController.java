@@ -11,9 +11,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import tn.esprit.dima_maak.entities.User;
 import tn.esprit.dima_maak.services.IUserService;
+import java.net.URI;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 
 @Tag(name = "User management")
@@ -53,6 +56,17 @@ public class UserRestController {
     @PutMapping("/update")
     public User modifyUser(@RequestBody User c) {
         return userService.modifyUser(c);
+    }
+
+    @Operation(description = "confirm account")
+    @GetMapping
+    public ResponseEntity<?> confirmUserAccount(@RequestParam("token") String token) {
+        Boolean isSuccess = userService.verifyToken(token);
+        if (isSuccess) {
+            return ResponseEntity.ok("Account confirmed successfully.");
+        } else {
+            return ResponseEntity.badRequest().body("Invalid or expired token.");
+        }
     }
 
     ///////////////////////////////////////////////////////////////PROFILE RELATED WORK (IN PROGRESS?)//////////////////////////////////////////////////////
