@@ -11,4 +11,10 @@ public interface IPremiumService {
     void deletePremium (Long id);
     List<Premium> getALL();
     Premium updatePremium (Premium p);
+    Long getTotalPremiumCount();
+    Long countpremiumsbystatus (boolean satus);
+    List<Premium> findallpremiumsofuser (Long iduser);
+    List<Premium> finduserpremiumsbystatus(Long iduser, boolean status);
+    Premium assignpremiumtoinsurance (Long idpremium,Long idinsurance );
+
 }

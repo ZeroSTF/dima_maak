@@ -2,6 +2,7 @@ package tn.esprit.dima_maak.controllers;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import tn.esprit.dima_maak.entities.CStatus;
 import tn.esprit.dima_maak.entities.Claim;
 import tn.esprit.dima_maak.entities.Insurance;
 import tn.esprit.dima_maak.services.IClaimService;
@@ -38,5 +39,24 @@ public class ClaimController {
     public Claim updateclaim(@RequestBody Claim c)
     {
         return claimservice.updateclaim(c);
+    }
+   /* @GetMapping("/analyze/{userId}")
+    public String analyzeRisk(@PathVariable Long userId) {
+        return claimservice.analyzeRisk(userId);
+    }*/
+    @PutMapping ("/addclaimandassigntoinsurance/{idin}")
+    public Claim addclaimandassigntoinsurance (@RequestBody Claim c, @PathVariable Long idin)
+    {
+        return claimservice.addclaimandassigntoinsurance(c,idin);
+    }
+    @GetMapping("/gettotalclaim")
+    public Long gettotalclaims ()
+    {
+        return claimservice.getTotalClaimCount();
+    }
+    @GetMapping("/countclaimsbystatus/{cstatus}")
+    public Long countclaimsbystatus(@PathVariable CStatus cstatus)
+    {
+        return claimservice.countclaimsbystatus(cstatus);
     }
 }

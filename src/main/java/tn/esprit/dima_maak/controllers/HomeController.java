@@ -1,4 +1,4 @@
-package tn.esprit.dima_maak.controllers;
+/*package tn.esprit.dima_maak.controllers;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,4 +16,4 @@ public class HomeController {
     public String secured(){
         return "hello admin";
     }
-}
+}*/

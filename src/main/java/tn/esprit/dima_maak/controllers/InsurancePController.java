@@ -1,7 +1,9 @@
 package tn.esprit.dima_maak.controllers;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import tn.esprit.dima_maak.entities.IType;
 import tn.esprit.dima_maak.entities.Insurance;
 import tn.esprit.dima_maak.entities.InsuranceP;
 import tn.esprit.dima_maak.services.IInsurancePService;
@@ -39,4 +41,20 @@ public class InsurancePController {
     {
         return ipservices.updateInsuranceP(insurancep);
     }
+    @GetMapping("/gettotalinsurancepackscount")
+    public  Long gettotalinsurancepackscount ()
+    {
+        return ipservices.gettotalinsurancepackscount();
+    }
+    @GetMapping("/countInsurancePacksByType/{type}")
+    public Long countInsurancePacksByType(@PathVariable IType type)
+    {
+        return ipservices.countInsurancePacksByType(type);
+    }
+    @GetMapping("/calculatePercentageByType/{type}")
+    public String calculatePercentageByType(@PathVariable IType type)
+    {
+        return ipservices.calculatePercentageByType(type);
+    }
+
 }

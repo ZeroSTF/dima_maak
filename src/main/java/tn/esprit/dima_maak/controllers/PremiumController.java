@@ -39,4 +39,30 @@ public class PremiumController {
     {
         return premiumservice.updatePremium(p);
     }
+    @GetMapping("/gettotalpremiums")
+    public Long getTotalPremiumCount()
+
+    {
+        return premiumservice.getTotalPremiumCount();
+    }
+    @GetMapping("/countpremiumsbystatus/{status}")
+    public Long countpremiumsbystatus(@PathVariable boolean status)
+    {
+        return premiumservice.countpremiumsbystatus(status);
+    }
+    @GetMapping("/findallpremiumsofuser/{iduser}")
+    public List<Premium> findallpremiumsofuser(@PathVariable Long iduser)
+    {
+        return premiumservice.findallpremiumsofuser(iduser);
+    }
+    @GetMapping("/finduserpremiumsbystatus/{iduser}/{status}")
+    public  List<Premium> finduserpremiumsbystatus(@PathVariable Long iduser,@PathVariable boolean status)
+    {
+        return premiumservice.finduserpremiumsbystatus(iduser,status);
+    }
+    @PutMapping("/assignpremiumtoinsurance/{idpremium}/{idinsurance}")
+    public Premium assignpremiumtoinsurance(@PathVariable Long idpremium,@PathVariable Long idinsurance)
+    {
+        return premiumservice.assignpremiumtoinsurance(idpremium,idinsurance);
+    }
 }

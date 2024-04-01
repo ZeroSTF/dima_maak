@@ -1,5 +1,6 @@
 package tn.esprit.dima_maak.services;
 
+import tn.esprit.dima_maak.entities.IType;
 import tn.esprit.dima_maak.entities.Insurance;
 import tn.esprit.dima_maak.entities.InsuranceP;
 
@@ -11,4 +12,7 @@ public interface IInsurancePService {
     void deleteInsuranceP (Long idp);
     List<InsuranceP> getALL();
     InsuranceP updateInsuranceP (InsuranceP iP);
+    Long gettotalinsurancepackscount();
+    long countInsurancePacksByType(IType type);
+    String calculatePercentageByType(IType type);
 }
