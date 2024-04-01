@@ -55,7 +55,7 @@ public class UserRestController {
         return userService.modifyUser(c);
     }
 
-    ///////////////////////////////////////////////////////////////PROFILE RELATED WORK (IN PROGRESS)//////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////PROFILE RELATED WORK (IN PROGRESS?)//////////////////////////////////////////////////////
     @Operation(description = "update your own profile")
     @PutMapping("/updateProfile")
     public ResponseEntity<?> modifyProfile(@RequestBody User c) {
@@ -76,16 +76,14 @@ public class UserRestController {
     @PostMapping("/upload")
     @Operation(description = "upload your own profile picture")
     public ResponseEntity<String> uploadProfilePicture(@RequestParam("file") MultipartFile file) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentEmail = authentication.getName();
         // Check if file is empty
         if (file.isEmpty()) {
             return ResponseEntity.badRequest().body("Please upload a file");
         }
         try {
             ////////////retrieving current user/////////////////////////////////
-//            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//            String currentEmail = authentication.getName();
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String currentEmail = authentication.getName();
             User currentUser = userService.loadUserByEmail(currentEmail);
             ////////////////////////////////////////////////////////////////////
             String fileName = userService.saveProfilePicture(file);

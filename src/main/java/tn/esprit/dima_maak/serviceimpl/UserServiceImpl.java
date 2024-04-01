@@ -47,7 +47,7 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
     AuthenticationManager authenticationManager;
     @Autowired
     @Lazy
-    TokenService tokenService;
+    ITokenService tokenService;
     private static final String UPLOAD_DIR = "uploads/profiles/";
     @Override
     public List<User> retrieveAllUsers() {

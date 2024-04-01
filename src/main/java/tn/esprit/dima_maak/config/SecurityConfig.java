@@ -56,9 +56,9 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
             //.securityMatcher("/test/**")
             .authorizeHttpRequests(auth -> {
                 auth.requestMatchers("/auth/**").permitAll();
-                auth.requestMatchers("/swagger-ui/**").permitAll();
-                auth.requestMatchers("/admin/**").hasRole("ADMIN");
-                auth.requestMatchers("/user/**").hasAnyRole("ADMIN", "USER");
+                auth.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll();
+                //auth.requestMatchers("/admin/**").hasRole("ADMIN");
+                //auth.requestMatchers("/user/**").hasAnyRole("ADMIN", "USER");
                 auth.anyRequest().authenticated();
             });
     http.oauth2ResourceServer()
@@ -67,6 +67,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
     http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
     return http.build();
 }
+
 
     @Bean
     public JwtDecoder jwtDecoder(){
