@@ -120,11 +120,12 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
         user.setBalance(0f);
         user.setLp(0);
         Confirmation confirmation = new Confirmation(user);
+        userRepository.save(user);
         confirmationRepository.save(confirmation);
         /////////////////MAILING//////////////////////////
         emailService.sendSimpleMailMessage(user.getSurname()+ " "+ user.getName(),user.getEmail(),confirmation.getToken());
         /////////////////////////////////////////////////
-        return userRepository.save(user);
+        return user;
     }
 
     @Override
@@ -187,8 +188,8 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
         Confirmation confirmation = confirmationRepository.findByToken(token);
         User user = userRepository.findByEmail(confirmation.getUser().getEmail()).get();
         user.setStatus(UStatus.Active);
+        confirmationRepository.delete(confirmation);
         userRepository.save(user);
-        //confirmationRepository.delete(confirmation);
         return Boolean.TRUE;
     }
 }
