@@ -21,5 +21,5 @@ public interface IUserService {
     public String saveProfilePicture(MultipartFile file)throws IOException;
     public Boolean verifyToken(String token);
     public String assessRisk(Long userId);
-    public String generateAffiliateLink();
+    public String generateAffiliateLink(User user);
 }

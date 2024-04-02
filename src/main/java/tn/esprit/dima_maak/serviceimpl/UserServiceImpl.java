@@ -140,10 +140,10 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
             String token = tokenService.generateJwt(auth);
             User user = userRepository.findByEmail(email).get();
             notificationService.sendLowBalanceNotification(user, 100);//100 is the random threshold I chose
-            return new LoginResponseDTO(user, token);
+            return new LoginResponseDTO(user.getSurname()+" "+user.getName(), token);
         } catch (AuthenticationException e){
-            e.printStackTrace();
-            return new LoginResponseDTO(null, "");
+            //e.printStackTrace();
+            return new LoginResponseDTO("No email to return", "Invalid email/password supplied");
         }
     }
 
@@ -252,18 +252,9 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
         }
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////
-    public String generateAffiliateLink(){
-        ////////////retrieving current user/////////////////////////////////
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentEmail = authentication.getName();
-        User currentUser = loadUserByEmail(currentEmail);
-        ////////////////////////////////////////////////////////////////////
-        if (currentUser != null ) {
-            String affiliateLink="http://localhost:8080/register/"+currentUser.getId();
-            return affiliateLink;
-        } else {
-            return null;
-        }
+    public String generateAffiliateLink(User user){
+            return "http://localhost:8080/register/"+user.getId();
+
     }
 
 }

@@ -84,16 +84,6 @@ public class UserRestController {
         return ResponseEntity.ok("Risk Category: " + riskCategory);
     }
 
-    @Operation(description = "generate affiliate link")
-    @GetMapping("/generateAffiliateLink")
-    public ResponseEntity<String> generateAffiliateLink(){
-        if (userService.generateAffiliateLink() != null ) {
-            return ResponseEntity.ok(userService.generateAffiliateLink());
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized access");
-        }
-    }
-
 
     ///////////////////////////////////////////////////////////////PROFILE RELATED WORK (IN PROGRESS?)//////////////////////////////////////////////////////
     @Operation(description = "update your own profile")
@@ -136,6 +126,20 @@ public class UserRestController {
                     +currentUser.getPhoto());
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload profile picture");
+        }
+    }
+    @Operation(description = "generate affiliate link")
+    @GetMapping("/generateAffiliateLink")
+    public ResponseEntity<String> generateAffiliateLink(){
+        ////////////retrieving current user/////////////////////////////////
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentEmail = authentication.getName();
+        User currentUser = userService.loadUserByEmail(currentEmail);
+        ////////////////////////////////////////////////////////////////////
+        if (currentUser != null ) {
+            return ResponseEntity.ok(userService.generateAffiliateLink(currentUser));
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized access");
         }
     }
 }

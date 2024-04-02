@@ -11,6 +11,6 @@ import tn.esprit.dima_maak.entities.User;
 @Getter
 @Setter
 public class LoginResponseDTO {
-    private User user;
+    private String fullName;
     private String jwt;
 }
