@@ -2,9 +2,14 @@ package tn.esprit.dima_maak.entities;
 
 import lombok.Data;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Getter
+@Setter
 @Entity
 @Data
 public class Loan {
@@ -21,6 +26,8 @@ public class Loan {
     private LType purpose;
     @Enumerated(EnumType.STRING)
     private LStatus status;
+    @Enumerated
+    private LMethod PaimentMethod;
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = true)
     private User user;
