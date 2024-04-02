@@ -1,33 +1,36 @@
 package tn.esprit.dima_maak.controllers;
 
-import lombok.AllArgsConstructor ;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import tn.esprit.dima_maak.entities.Asset;
+import tn.esprit.dima_maak.entities.AssetType;
+import tn.esprit.dima_maak.entities.Leasing;
+import tn.esprit.dima_maak.repositories.IAssetRepository;
 import tn.esprit.dima_maak.serviceimpl.AssetServiceImpl;
-import tn.esprit.dima_maak.services.IAssetService;
+import tn.esprit.dima_maak.serviceimpl.LeasingServiceImpl;
+import tn.esprit.dima_maak.services.ILeasingService;
 
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/assets")
+@AllArgsConstructor
 public class AssetRestController {
 
-    private final AssetServiceImpl assetService;
+    public final AssetServiceImpl assetService;
+    public final ILeasingService leasingService;
 
-    @Autowired
-    public AssetRestController(AssetServiceImpl assetService) {
-        this.assetService = assetService;
-    }
 
-    @PostMapping
-    public ResponseEntity<Asset> createAsset(@RequestBody Asset asset) {
-        Asset createdAsset = assetService.createAsset(asset);
-        return new ResponseEntity<>(createdAsset, HttpStatus.CREATED);
+    @PostMapping("/save")
+    public Asset createAsset(@RequestBody Asset asset) {
+        return assetService.createAsset(asset);
     }
 
     @GetMapping("/{assetid}")
@@ -39,7 +42,7 @@ public class AssetRestController {
 
     @PutMapping("/{assetid}")
     public ResponseEntity<Asset> updateAsset(@PathVariable("assetid") Long id, @RequestBody Asset updatedAsset) {
-        updatedAsset.setAsstid(id);
+        updatedAsset.setAssetid(id);
         Asset asset = assetService.updateAsset(updatedAsset);
         return new ResponseEntity<>(asset, HttpStatus.OK);
     }
@@ -55,4 +58,76 @@ public class AssetRestController {
         List<Asset> assets = assetService.getAll();
         return new ResponseEntity<>(assets, HttpStatus.OK);
     }
+
+    @GetMapping("/leasing/{id}/duration")
+    public int calculateLeaseDuration(@PathVariable Long id) {
+        Optional<Leasing> leasingOptional = leasingService.getLeasingById(id);
+        if (leasingOptional.isPresent()) {
+            Leasing leasing = leasingOptional.get();
+            return assetService.calculateLeaseDuration(leasing);
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Leasing with ID " + id + " not found");
+        }
+    }
+
+    @GetMapping("/leasing/{id}/residualvalue")
+    public float calculateResidualValue(@PathVariable Long id, @RequestParam("initialValue") float initialValue) {
+
+        Optional<Leasing> leasingOptional = leasingService.getLeasingById(id);
+
+        if (leasingOptional.isPresent()) {
+            Leasing leasing = leasingOptional.get();
+
+            return assetService.calculateResidualValue(initialValue, leasing);
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Leasing with ID " + id + " not found");
+        }
+    }
+
+    @GetMapping("/compare/{beforeAssetId}/{afterAssetId}")
+    public String compareEquipmentCondition(@PathVariable Long beforeAssetId, @PathVariable Long afterAssetId) {
+        Optional<Asset> beforeAssetOptional = assetService.getAssetById(beforeAssetId);
+        Optional<Asset> afterAssetOptional = assetService.getAssetById(afterAssetId);
+
+        if (!beforeAssetOptional.isPresent() || !afterAssetOptional.isPresent()) {
+            return "Assets not found";
+        }
+
+        Asset beforeAsset = beforeAssetOptional.get();
+        Asset afterAsset = afterAssetOptional.get();
+        String comparisonResult = assetService.compareEquipmentCondition(beforeAsset, afterAsset);
+
+        return comparisonResult;
+    }
+    @GetMapping("/type_distribution")
+    public ResponseEntity<Map<AssetType, Long>> getAssetTypeDistribution() {
+        Map<AssetType, Long> distribution = assetService.getAssetTypeDistribution();
+        return ResponseEntity.ok(distribution);
+    }
+    @GetMapping("/{assetId}/monthlyPay")
+    public ResponseEntity<Float> calculateMonthlyPayment(@PathVariable Long assetId) {
+        Optional<Asset> optionalAsset = assetService.getAssetById(assetId);
+        Asset asset = optionalAsset.orElseThrow(() -> new IllegalArgumentException("L'actif avec l'ID spécifié n'existe pas."));
+
+
+        // Vérifiez si l'actif et le contrat de location associé existent
+        if (asset == null || asset.getLeasing() == null) {
+            throw new IllegalArgumentException("L'actif ou le contrat de location associé est null.");
+        }
+
+        // Calculez le paiement mensuel
+        float monthlyPayment = assetService.calculateMonthlyPayment(asset);
+
+        // Retournez le paiement mensuel dans la réponse
+        return ResponseEntity.ok(monthlyPayment);
+    }
+
 }
+
+
+
+
+
+
+
+

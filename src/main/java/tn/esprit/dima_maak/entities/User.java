@@ -2,9 +2,7 @@ package tn.esprit.dima_maak.entities;
 
 import lombok.*;
 import jakarta.persistence.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+
 
 import java.time.LocalDate;
 import java.util.Collection;
@@ -34,6 +32,7 @@ public class User {
     private String job;
     private String photo;
     private Float balance;
+    private  Float CreditScore ;
     private Long rib;
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -48,5 +47,8 @@ public class User {
     private List<Loan> loans;
     @OneToOne(mappedBy = "user")
     private Leasing leasing;
+
 }
+
+
 

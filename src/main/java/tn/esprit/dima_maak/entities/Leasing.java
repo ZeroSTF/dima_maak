@@ -15,8 +15,9 @@ import java.time.LocalDate;
 @Setter
 public class Leasing {
 
-   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   @GeneratedValue(strategy = GenerationType.AUTO)
    @Id
+   @Column(unique = true)
     private  Long leaseid ;
 
     private LocalDate startdate;

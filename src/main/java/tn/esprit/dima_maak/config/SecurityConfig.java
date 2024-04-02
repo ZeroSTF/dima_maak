@@ -1,4 +1,4 @@
-package tn.esprit.dima_maak.config;
+/*package tn.esprit.dima_maak.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,6 +29,7 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
+                .securityMatcher("/user/**")
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/home_page_todo").permitAll();
                     auth.anyRequest().authenticated();
@@ -38,4 +39,4 @@ public class SecurityConfig {
                 .build();
     }
 
-}
+}*/

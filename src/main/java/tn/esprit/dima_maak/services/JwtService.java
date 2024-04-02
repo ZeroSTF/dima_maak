@@ -1,13 +1,12 @@
 package tn.esprit.dima_maak.services;
 
-import io.jsonwebtoken.Claims;
-import org.springframework.security.core.userdetails.UserDetails;
+
 
 import java.security.Key;
 import java.util.Map;
 import java.util.function.Function;
 
-public interface JwtService {
+/*public interface JwtService {
 
     public boolean isTokenValid(String token, UserDetails userDetails) ;
     public boolean isTokenExpired(String token) ;
@@ -33,4 +32,4 @@ public interface JwtService {
 
     public Key getSignInkey() ;
 
-}
+}*/

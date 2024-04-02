@@ -10,4 +10,9 @@ public interface ILeasingService {
     Optional<Leasing> getLeasingById(Long leaseid);
     Leasing updateLeasing(Leasing updatedLeasing);
     void deleteLeasingById(Long leaseid);
+
+    Leasing assignUserToLeasing(Long id, Long leaseid) ;
+    float calculateAnnualInterestRate(Leasing leasing);
+    public float calculateLatePaymentPercentage(Leasing leasing);
+
 }

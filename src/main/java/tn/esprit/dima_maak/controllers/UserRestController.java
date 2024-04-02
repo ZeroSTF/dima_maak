@@ -1,4 +1,4 @@
-package tn.esprit.dima_maak.controllers;
+
 
 import org.springframework.http.ResponseEntity;
 import tn.esprit.dima_maak.entities.*;
@@ -12,8 +12,8 @@ import java.security.Principal;
 import java.util.List;
 
 
-@Tag(name = "User management")
-@RestController
+/*@Tag(name = "User management")
+@RestControll er
 @AllArgsConstructor
 @RequestMapping("/user")
 public class UserRestController {
@@ -53,4 +53,4 @@ public class UserRestController {
         return user;
     }
 
-}
+}*/
