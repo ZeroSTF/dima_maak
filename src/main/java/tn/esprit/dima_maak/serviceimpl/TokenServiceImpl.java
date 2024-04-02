@@ -1,7 +1,6 @@
 package tn.esprit.dima_maak.serviceimpl;
 
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -16,7 +15,7 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-public class TokenService implements ITokenService {
+public class TokenServiceImpl implements ITokenService {
     private JwtEncoder jwtEncoder;
     private JwtDecoder jwtDecoder;
 
