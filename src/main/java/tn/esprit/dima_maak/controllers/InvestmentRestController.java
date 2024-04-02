@@ -112,14 +112,17 @@ public class InvestmentRestController {
     }
 
 
-
-
-
-
-    @PostMapping("/AddAndDoInvestment/{idV}")
+    /* @PostMapping("/AddAndDoInvestment/{idV}")
     public Investment AddAndDoInvestment(@RequestBody Investment investment, @PathVariable Long idV) {
         return iInvestmentServices.AddAndDoInvestment(investment, idV);
+    }*/
+
+    @PutMapping("/AddAndDoInvestment/{idV}")
+    public String AddAndDoInvestment(@RequestBody Investment investment, @PathVariable Long idV) {
+        String resultMessage = iInvestmentServices.AddAndDoInvestment(investment, idV);
+        return resultMessage;
     }
+
 
 
 

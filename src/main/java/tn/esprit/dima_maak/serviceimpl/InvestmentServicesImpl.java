@@ -116,10 +116,7 @@ public class InvestmentServicesImpl implements IInvestmentServices {
         return "The investment has been successfully allocated to the venture.";
     }
 
-
-
-
-     @Override
+    @Override
     public Float calculateTotalInvestment(Long purchasedShares, Float sharesPrice, Float amount) {
         return (sharesPrice * purchasedShares) + amount;
     }
@@ -134,7 +131,6 @@ public class InvestmentServicesImpl implements IInvestmentServices {
             return null; // ou vous pouvez lancer une exception selon vos besoins
         }
     }
-
 
     @Override
     public byte[] generateInvestmentPDF(Investment investment) throws DocumentException {
@@ -214,9 +210,7 @@ public class InvestmentServicesImpl implements IInvestmentServices {
         return userScores;
     }
 
-
-
-     @Override
+    /* @Override
     public Investment AddAndDoInvestment(Investment investment, Long idV) {
         Venture venture = iVentureRepository.findById(idV).orElse(null);
         if (venture != null) {
@@ -225,6 +219,45 @@ public class InvestmentServicesImpl implements IInvestmentServices {
         } else {
             // Gérer le cas où la Venture n'existe pas
             return null;
+        }
+    }*/
+    @Override
+    public String AddAndDoInvestment(Investment investment, Long idV) {
+        Venture venture = iVentureRepository.findById(idV).orElse(null);
+        if (venture != null) {
+            if (venture.getStatus() == IStatus.CLOSED) {
+                return "You cannot invest as the venture is closed";
+            }
+
+            long purchasedShares = investment.getPurchasedShares();
+            long availableShares = venture.getAvailableShares() != null ? venture.getAvailableShares() - purchasedShares : 0;
+            float investmentAmount = investment.getAmount();
+            float loanAmount = venture.getLoanAmount() != null ? venture.getLoanAmount() - investmentAmount : 0;
+
+            if (availableShares < 0 || loanAmount < 0) {
+                return "High investment amount";
+            }
+
+            venture.setAvailableShares(availableShares);
+            venture.setLoanAmount(loanAmount);
+
+            // Mettre à jour le statut de la venture à CLOSED si les conditions sont remplies
+            if (venture.getAvailableShares() == 0 && venture.getLoanAmount() == 0) {
+                venture.setStatus(IStatus.CLOSED);
+            }
+            // Calcul du montant total de l'investissement
+            Float totalInvestment = calculateTotalInvestment(investment.getPurchasedShares(), venture.getSharesPrice(), investment.getAmount());
+
+            // Attribution de la valeur calculée à l'attribut totalInvestment de l'objet investment
+            investment.setTotalInvestment(totalInvestment);
+
+
+            investment.setVenture(venture);
+            investmentRepository.save(investment);
+            return "The investment has been successfully added and allocated to the venture.";
+        } else {
+            // Gérer le cas où la Venture n'existe pas
+            return "Venture not exist";
         }
     }
 

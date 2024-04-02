@@ -25,6 +25,7 @@ public interface IInvestmentServices {
      byte[] addInvestmentAndAssignToVenture(Investment investment, Long idV) throws DocumentException;
      List<UserScore> calculateUserScores();
     public String doInvestment(@PathVariable Long investmentId, @PathVariable Long ventureId);
-    public Investment AddAndDoInvestment(Investment investment, Long idV);
+   /* public Investment AddAndDoInvestment(Investment investment, Long idV);*/
+   public String AddAndDoInvestment(Investment investment, Long idV);
 
 }
