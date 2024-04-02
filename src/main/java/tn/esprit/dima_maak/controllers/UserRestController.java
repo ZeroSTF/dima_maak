@@ -84,6 +84,17 @@ public class UserRestController {
         return ResponseEntity.ok("Risk Category: " + riskCategory);
     }
 
+    @Operation(description = "generate affiliate link")
+    @GetMapping("/generateAffiliateLink")
+    public ResponseEntity<String> generateAffiliateLink(){
+        if (userService.generateAffiliateLink() != null ) {
+            return ResponseEntity.ok(userService.generateAffiliateLink());
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized access");
+        }
+    }
+
+
     ///////////////////////////////////////////////////////////////PROFILE RELATED WORK (IN PROGRESS?)//////////////////////////////////////////////////////
     @Operation(description = "update your own profile")
     @PutMapping("/updateProfile")
