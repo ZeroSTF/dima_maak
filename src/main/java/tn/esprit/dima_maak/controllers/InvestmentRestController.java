@@ -9,7 +9,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.dima_maak.Configuration.UserScore;
+import tn.esprit.dima_maak.entities.IStatus;
 import tn.esprit.dima_maak.entities.Investment;
+import tn.esprit.dima_maak.entities.Venture;
+import tn.esprit.dima_maak.repositories.IInvestmentRepository;
+import tn.esprit.dima_maak.repositories.IVentureRepository;
 import tn.esprit.dima_maak.services.IInvestmentServices;
 
 import java.util.List;
@@ -21,6 +25,9 @@ public class InvestmentRestController {
 
 
     private final IInvestmentServices iInvestmentServices;
+    private final IInvestmentRepository investmentRepository;
+    private final IVentureRepository ventureRepository;
+
 
     @PostMapping("/add")
     public Investment addInvestment(@RequestBody Investment investment) {
@@ -64,27 +71,57 @@ public class InvestmentRestController {
 
     }
 
-    /*@PostMapping("/addInvestmentAndAssignToVenture/{idV}")
-    public Investment addInvestmentAndAssignToVenture(@RequestBody Investment investment, @PathVariable Long idV) {
-        return iInvestmentServices.addInvestmentAndAssignToVenture(investment, idV);
-    }*/
 
-    /* @PostMapping("/addInvestmentAndAssignToVenture/{idV}")
-    public ResponseEntity<byte[]> addInvestmentAndAssignToVenture(@RequestBody Investment investment, @PathVariable Long idV) {
-        try {
-            byte[] pdfContent = iInvestmentServices.addInvestmentAndAssignToVenture(investment, idV);
-            if (pdfContent != null) {
-                HttpHeaders headers = new HttpHeaders();
-                headers.setContentType(MediaType.APPLICATION_PDF);
-                headers.setContentDispositionFormData("filename", "investment_details.pdf");
-                return new ResponseEntity<>(pdfContent, headers, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Venture not found
-            }
-        } catch (DocumentException e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // Error generating PDF
+    @PutMapping("/doInvestment/{investmentId}/{ventureId}")
+    public String doInvestment(@PathVariable Long investmentId, @PathVariable Long ventureId) {
+        Investment investment = investmentRepository.findById(investmentId).orElse(null);
+        Venture venture = ventureRepository.findById(ventureId).orElse(null);
+
+        if (investment == null || venture == null) {
+            return "The investment opportunity or venture is unavailable.";
         }
-    }*/
+
+        if (venture.getStatus() == IStatus.CLOSED) {
+            return "You cannot invest as the venture is closed";
+        }
+
+        long purchasedShares = investment.getPurchasedShares();
+        long availableShares = venture.getAvailableShares() != null ? venture.getAvailableShares() - purchasedShares : 0;
+        float investmentAmount = investment.getAmount();
+        float loanAmount = venture.getLoanAmount() != null ? venture.getLoanAmount() - investmentAmount : 0;
+
+        if (availableShares < 0 || loanAmount < 0) {
+            return "High investment amount";
+        }
+
+        // Update availableShares and loanAmount
+        venture.setAvailableShares(availableShares);
+        venture.setLoanAmount(loanAmount);
+
+        // Update status to CLOSED if both availableShares and loanAmount are 0
+        if (venture.getAvailableShares() == 0 && venture.getLoanAmount() == 0) {
+            venture.setStatus(IStatus.CLOSED);
+        }
+
+        investment.setVenture(venture);
+
+        investment = investmentRepository.save(investment);
+        venture = ventureRepository.save(venture);
+
+        return "The investment has been successfully allocated to the venture.";
+    }
+
+
+
+
+
+
+    @PostMapping("/AddAndDoInvestment/{idV}")
+    public Investment AddAndDoInvestment(@RequestBody Investment investment, @PathVariable Long idV) {
+        return iInvestmentServices.AddAndDoInvestment(investment, idV);
+    }
+
+
 
     @PostMapping("/calculateTotalInvestment")
     public ResponseEntity<Float> calculateTotalInvestment(@RequestParam Long purchasedShares, @RequestParam Float sharesPrice, @RequestParam Float amount) {

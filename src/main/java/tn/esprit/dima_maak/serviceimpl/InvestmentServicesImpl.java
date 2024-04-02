@@ -10,6 +10,7 @@ import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
 import tn.esprit.dima_maak.Configuration.UserScore;
+import tn.esprit.dima_maak.entities.IStatus;
 import tn.esprit.dima_maak.entities.Investment;
 import tn.esprit.dima_maak.entities.User;
 import tn.esprit.dima_maak.entities.Venture;
@@ -74,6 +75,50 @@ public class InvestmentServicesImpl implements IInvestmentServices {
         investment.setVenture(venture);
         return investmentRepository.save(investment);
      }
+
+
+    @Override
+    public String doInvestment(Long investmentId, Long ventureId) {
+        Investment investment = investmentRepository.findById(investmentId).orElse(null);
+        Venture venture = iVentureRepository.findById(ventureId).orElse(null);
+
+        if (investment == null || venture == null) {
+            return "The investment opportunity or venture is unavailable.";
+        }
+
+        if (venture.getStatus() == IStatus.CLOSED) {
+            return "You cannot invest as the venture is closed";
+        }
+
+        long purchasedShares = investment.getPurchasedShares();
+        long availableShares = venture.getAvailableShares() != null ? venture.getAvailableShares() - purchasedShares : 0;
+        float investmentAmount = investment.getAmount();
+        float loanAmount = venture.getLoanAmount() != null ? venture.getLoanAmount() - investmentAmount : 0;
+
+        if (availableShares < 0 || loanAmount < 0) {
+            return "High investment amount";
+        }
+
+        // Update availableShares and loanAmount
+        venture.setAvailableShares(availableShares);
+        venture.setLoanAmount(loanAmount);
+
+        // Update status to CLOSED if both availableShares and loanAmount are 0
+        if (venture.getAvailableShares() == 0 && venture.getLoanAmount() == 0) {
+            venture.setStatus(IStatus.CLOSED);
+        }
+
+        investment.setVenture(venture);
+
+        investment = investmentRepository.save(investment);
+        venture = iVentureRepository.save(venture);
+
+        return "The investment has been successfully allocated to the venture.";
+    }
+
+
+
+
      @Override
     public Float calculateTotalInvestment(Long purchasedShares, Float sharesPrice, Float amount) {
         return (sharesPrice * purchasedShares) + amount;
@@ -170,21 +215,9 @@ public class InvestmentServicesImpl implements IInvestmentServices {
     }
 
 
- /*@Override
-    public byte[] addInvestmentAndAssignToVenture(Investment investment, Long idV) throws DocumentException {
-        Venture venture = iVentureRepository.findById(idV).orElse(null);
-        if (venture != null) {
-            investment.setVenture(venture);
-            Investment savedInvestment = investmentRepository.save(investment);
-            // Generate PDF for the saved investment
-            return generateInvestmentPDF(savedInvestment);
-        } else {
-            // Gérer le cas où la Venture n'existe pas
-            return null;
-        }
-    }*/
-    /* @Override
-    public Investment addInvestmentAndAssignToVenture(Investment investment, Long idV) {
+
+     @Override
+    public Investment AddAndDoInvestment(Investment investment, Long idV) {
         Venture venture = iVentureRepository.findById(idV).orElse(null);
         if (venture != null) {
             investment.setVenture(venture);
@@ -193,7 +226,7 @@ public class InvestmentServicesImpl implements IInvestmentServices {
             // Gérer le cas où la Venture n'existe pas
             return null;
         }
-    }*/
+    }
 
 }
 

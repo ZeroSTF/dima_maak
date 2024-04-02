@@ -1,6 +1,7 @@
 package tn.esprit.dima_maak.services;
 
 import com.lowagie.text.DocumentException;
+import org.springframework.web.bind.annotation.PathVariable;
 import tn.esprit.dima_maak.Configuration.UserScore;
 import tn.esprit.dima_maak.entities.Investment;
 
@@ -23,5 +24,7 @@ public interface IInvestmentServices {
     byte[] generateInvestmentPDF(Investment investment) throws DocumentException;
      byte[] addInvestmentAndAssignToVenture(Investment investment, Long idV) throws DocumentException;
      List<UserScore> calculateUserScores();
+    public String doInvestment(@PathVariable Long investmentId, @PathVariable Long ventureId);
+    public Investment AddAndDoInvestment(Investment investment, Long idV);
 
 }
