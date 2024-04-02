@@ -15,6 +15,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class ReturnRestController {
+
     private final IReturnServices iReturnServices;
     @PostMapping("/add")
     public Return addReturn(@RequestBody Return treturn) {
@@ -47,11 +48,11 @@ public class ReturnRestController {
     }
 
     @PutMapping("/assignReturnToInvestment/{idR}/{id}")
-    public ResponseEntity<Return> assignReturnToInvestment(@PathVariable("idR") Long idR,
-                                                           @PathVariable("id") Long id,
+    public ResponseEntity<Return> assignReturnToInvestment(@PathVariable("idR") Long idR, @PathVariable("id") Long id,
                                                            @RequestParam("loanDuration") long loanDuration,
                                                            @RequestParam("loanAmount") float loanAmount,
-                                                           @RequestParam("interest") float interest) {
+                                                           @RequestParam("interest") float interest)
+    {
         Return updatedReturn = iReturnServices.assignReturnToInvestment(idR, id, loanDuration, loanAmount, interest);
         if (updatedReturn != null) {
             return ResponseEntity.ok(updatedReturn);
@@ -60,34 +61,10 @@ public class ReturnRestController {
         }
     }
 
-
     @GetMapping("/calculateMonthlyReturns")
-    public float calculateMonthlyReturns(
-            @RequestParam long loanDuration,
-            @RequestParam float loanAmount,
-            @RequestParam float interest) {
+    public float calculateMonthlyReturns(@RequestParam long loanDuration, @RequestParam float loanAmount, @RequestParam float interest) {
         return iReturnServices.calculateMonthlyReturns(loanDuration, loanAmount, interest);
     }
-
-
-   /* @GetMapping("/{id}/pdf")
-    public ResponseEntity<byte[]> generatePdfForReturn(@PathVariable("id") Long returnId) {
-        Optional<Return> returnOptional = returnRepository.findById(returnId);
-        if (returnOptional.isPresent()) {
-            Return returnObject = returnOptional.get();
-            byte[] pdfBytes = iReturnServices.generatePdf(returnObject);
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_PDF);
-            headers.setContentDispositionFormData("filename", "return_" + returnId + ".pdf");
-
-            return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-    }*/
-
 
     @PutMapping("/addReturnAndAssignToInvestment/{id}")
     public ResponseEntity<Return> addReturnAndAssignToInvestment(@PathVariable("id") Long id,

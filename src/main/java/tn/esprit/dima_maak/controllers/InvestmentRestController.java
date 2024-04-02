@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tn.esprit.dima_maak.Configuration.UserScore;
 import tn.esprit.dima_maak.entities.Investment;
 import tn.esprit.dima_maak.services.IInvestmentServices;
 
@@ -68,23 +69,33 @@ public class InvestmentRestController {
         return iInvestmentServices.addInvestmentAndAssignToVenture(investment, idV);
     }*/
 
+    /* @PostMapping("/addInvestmentAndAssignToVenture/{idV}")
+    public ResponseEntity<byte[]> addInvestmentAndAssignToVenture(@RequestBody Investment investment, @PathVariable Long idV) {
+        try {
+            byte[] pdfContent = iInvestmentServices.addInvestmentAndAssignToVenture(investment, idV);
+            if (pdfContent != null) {
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_PDF);
+                headers.setContentDispositionFormData("filename", "investment_details.pdf");
+                return new ResponseEntity<>(pdfContent, headers, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Venture not found
+            }
+        } catch (DocumentException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // Error generating PDF
+        }
+    }*/
+
     @PostMapping("/calculateTotalInvestment")
     public ResponseEntity<Float> calculateTotalInvestment(@RequestParam Long purchasedShares, @RequestParam Float sharesPrice, @RequestParam Float amount) {
         Float totalInvestment = iInvestmentServices.calculateTotalInvestment(purchasedShares, sharesPrice, amount);
         return ResponseEntity.ok(totalInvestment);
     }
-   /* @GetMapping("/calculateTotalInvestment")
-    public float calculateTotalInvestment(
-            @RequestParam Long purchasedShares, @RequestParam Float sharesPrice, @RequestParam Float amount) {
-        return iInvestmentServices.calculateTotalInvestment(purchasedShares, sharesPrice, amount);
-    }*/
-
 
     @GetMapping("/users/{id}/investments")
     public List<Investment> getUserInvestments(@PathVariable Long id) {
         return iInvestmentServices.getUserInvestments(id);
     }
-
 
     @GetMapping("/generatePDF")
     public ResponseEntity<byte[]> generatePDF() {
@@ -102,26 +113,7 @@ public class InvestmentRestController {
         }
     }
 
-   /* @PostMapping("/addInvestmentAndAssignToVenture/{idV}")
-    public ResponseEntity<byte[]> addInvestmentAndAssignToVenture(@RequestBody Investment investment, @PathVariable Long idV) {
-        try {
-            byte[] pdfContent = iInvestmentServices.addInvestmentAndAssignToVenture(investment, idV);
-            if (pdfContent != null) {
-                HttpHeaders headers = new HttpHeaders();
-                headers.setContentType(MediaType.APPLICATION_PDF);
-                headers.setContentDispositionFormData("filename", "investment_details.pdf");
-                return new ResponseEntity<>(pdfContent, headers, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Venture not found
-            }
-        } catch (DocumentException e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // Error generating PDF
-        }
-    }*/
-
-
-
-    @PostMapping("/{idV}/add")
+    @PostMapping("/{idV}/addInvestmentAndAssignToVenture-generatepdf&totalInvest")
     public ResponseEntity<byte[]> addInvestmentAndAssignToVenture(@RequestBody Investment investment, @PathVariable Long idV) {
         try {
             byte[] pdfBytes = iInvestmentServices.addInvestmentAndAssignToVenture(investment, idV);
@@ -139,9 +131,10 @@ public class InvestmentRestController {
         }
     }
 
-
-
-
+    @GetMapping("/user/scores")
+    public List<UserScore> getUserScores() {
+        return iInvestmentServices.calculateUserScores();
+    }
 
 }
 

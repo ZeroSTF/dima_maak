@@ -1,6 +1,8 @@
 package tn.esprit.dima_maak.services;
+import org.springframework.web.multipart.MultipartFile;
 import tn.esprit.dima_maak.entities.Venture;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface IVentureServices {
@@ -11,9 +13,5 @@ public interface IVentureServices {
     List<Venture> getAllVenture();
     Venture getVentureById(Long idV);
     void updateVentureStatus(Long idV);
-
-    /*void addVentureFromExcel(String filepath);*/
-    /*void addVenturesFromExcel(String filePath) throws IOException;*/
-
-
+    void processExcelFile(MultipartFile filepath) throws IOException;
 }

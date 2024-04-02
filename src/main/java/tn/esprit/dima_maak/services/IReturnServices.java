@@ -16,7 +16,6 @@ public interface IReturnServices {
     float calculateMonthlyReturns(long loanDuration, float loanAmount, float interest);
     Return addReturnAndAssignToInvestment(Long id, Return aReturn, long loanDuration, float loanAmount, float interest);
 
-    /*byte[] generatePdf(Return returnObject);*/
 
 
 

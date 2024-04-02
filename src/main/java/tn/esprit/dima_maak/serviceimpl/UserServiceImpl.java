@@ -44,18 +44,7 @@ public class UserServiceImpl  implements IUserService {
         }
     }
 
-   /* @Transactional
-    public void updateBalance(Long id, float returnAmount, float returnInterest, long sharesGain, float totalInvestment) {
-        User user = userRepository.findById(id).orElse(null);
-        if (user != null) {
-            float newBalance =user.getBalance()+ returnAmount + returnInterest + sharesGain - totalInvestment;
-            user.setBalance(newBalance);
-            userRepository.save(user);
-        } else {
-            // Gérer le cas où l'utilisateur n'est pas trouvé
-            // Vous pouvez lancer une exception ou gérer d'une autre manière selon vos besoins
-        }
-    }*/
+
 
 
     @Transactional
@@ -78,5 +67,8 @@ public class UserServiceImpl  implements IUserService {
         User user = userRepository.findById(id).orElse(null);
         return user != null && !user.getInvestments().isEmpty();
     }
+
+
+
 
 }

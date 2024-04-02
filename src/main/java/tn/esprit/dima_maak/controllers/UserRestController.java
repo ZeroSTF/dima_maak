@@ -52,16 +52,6 @@ public class UserRestController {
         return user;
     }
 
-
-    /*@PutMapping("/users/{id}/updateBalance")
-    public ResponseEntity<String> updateBalance(@PathVariable Long id,
-                                                @RequestParam float returnAmount,
-                                                @RequestParam float returnInterest,
-                                                @RequestParam long sharesGain,
-                                                @RequestParam float totalInvestment) {
-        userService.updateBalance(id, returnAmount, returnInterest, sharesGain, totalInvestment);
-        return ResponseEntity.ok("Balance updated successfully.");
-    }*/
     @PutMapping("/users/{id}/updateBalance")
     public ResponseEntity<String> updateBalance(@PathVariable Long id,
                                                 @RequestParam float returnAmount,

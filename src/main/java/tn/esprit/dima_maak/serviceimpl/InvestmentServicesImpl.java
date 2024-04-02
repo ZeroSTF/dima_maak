@@ -2,12 +2,14 @@ package tn.esprit.dima_maak.serviceimpl;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
+import com.lowagie.text.Image;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfWriter;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
+import tn.esprit.dima_maak.Configuration.UserScore;
 import tn.esprit.dima_maak.entities.Investment;
 import tn.esprit.dima_maak.entities.User;
 import tn.esprit.dima_maak.entities.Venture;
@@ -16,8 +18,8 @@ import tn.esprit.dima_maak.repositories.IVentureRepository;
 import tn.esprit.dima_maak.repositories.UserRepository;
 import tn.esprit.dima_maak.services.IInvestmentServices;
 
-import java.io.IOException;
-import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -72,19 +74,7 @@ public class InvestmentServicesImpl implements IInvestmentServices {
         investment.setVenture(venture);
         return investmentRepository.save(investment);
      }
-
-   /* @Override
-    public Investment addInvestmentAndAssignToVenture(Investment investment, Long idV) {
-        Venture venture = iVentureRepository.findById(idV).orElse(null);
-        if (venture != null) {
-            investment.setVenture(venture);
-            return investmentRepository.save(investment);
-        } else {
-            // Gérer le cas où la Venture n'existe pas
-            return null;
-        }
-    }*/
-    @Override
+     @Override
     public Float calculateTotalInvestment(Long purchasedShares, Float sharesPrice, Float amount) {
         return (sharesPrice * purchasedShares) + amount;
     }
@@ -116,6 +106,14 @@ public class InvestmentServicesImpl implements IInvestmentServices {
         document.add(new Paragraph("Amount: " + investment.getAmount()));
         document.add(new Paragraph("Total Investment: " + investment.getTotalInvestment()));
 
+        try {
+            Image image = Image.getInstance("C:\\Users\\ramil\\Downloads\\Logo Marketing Agency Digital..png");
+            document.add(image);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
         // Vérifiez si le statut n'est pas null avant d'appeler toString()
         if (investment.getStatus() != null) {
             document.add(new Paragraph("Status: " + investment.getStatus().toString()));
@@ -127,20 +125,6 @@ public class InvestmentServicesImpl implements IInvestmentServices {
 
         return baos.toByteArray();
     }
-
-    /*@Override
-    public byte[] addInvestmentAndAssignToVenture(Investment investment, Long idV) throws DocumentException {
-        Venture venture = iVentureRepository.findById(idV).orElse(null);
-        if (venture != null) {
-            investment.setVenture(venture);
-            Investment savedInvestment = investmentRepository.save(investment);
-            // Generate PDF for the saved investment
-            return generateInvestmentPDF(savedInvestment);
-        } else {
-            // Gérer le cas où la Venture n'existe pas
-            return null;
-        }
-    }*/
 
     @Override
     public byte[] addInvestmentAndAssignToVenture(Investment investment, Long idV) throws DocumentException {
@@ -166,10 +150,50 @@ public class InvestmentServicesImpl implements IInvestmentServices {
         }
     }
 
+    public List<UserScore> calculateUserScores() {
+        List<UserScore> userScores = new ArrayList<>();
+
+        // Récupérer tous les utilisateurs de la base de données
+        List<User> users = userRepository.findAll();
+
+        // Calculer le score pour chaque utilisateur
+        for (User user : users) {
+            List<Investment> investments = getUserInvestments(user.getId());
+            int investmentCount = investments != null ? investments.size() : 0;
+            userScores.add(new UserScore(user.getId(), investmentCount));
+        }
+
+        // Trier la liste des scores par ordre décroissant de score
+        userScores.sort(Comparator.comparingInt(UserScore::getInvestmentCount).reversed());
+
+        return userScores;
+    }
 
 
-
-
+ /*@Override
+    public byte[] addInvestmentAndAssignToVenture(Investment investment, Long idV) throws DocumentException {
+        Venture venture = iVentureRepository.findById(idV).orElse(null);
+        if (venture != null) {
+            investment.setVenture(venture);
+            Investment savedInvestment = investmentRepository.save(investment);
+            // Generate PDF for the saved investment
+            return generateInvestmentPDF(savedInvestment);
+        } else {
+            // Gérer le cas où la Venture n'existe pas
+            return null;
+        }
+    }*/
+    /* @Override
+    public Investment addInvestmentAndAssignToVenture(Investment investment, Long idV) {
+        Venture venture = iVentureRepository.findById(idV).orElse(null);
+        if (venture != null) {
+            investment.setVenture(venture);
+            return investmentRepository.save(investment);
+        } else {
+            // Gérer le cas où la Venture n'existe pas
+            return null;
+        }
+    }*/
 
 }
 

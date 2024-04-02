@@ -1,10 +1,20 @@
 package tn.esprit.dima_maak.serviceimpl;
 import lombok.RequiredArgsConstructor;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.multipart.MultipartFile;
 import tn.esprit.dima_maak.entities.*;
 import tn.esprit.dima_maak.repositories.IVentureRepository;
 import tn.esprit.dima_maak.services.IVentureServices;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,9 +71,67 @@ public class VentureServicesImpl implements IVentureServices {
         }
     }
 
+    @Transactional
+    public void processExcelFile(MultipartFile file) throws IOException {
+        try (InputStream inputStream = file.getInputStream();
+             Workbook workbook = new XSSFWorkbook(inputStream)) {
+            Sheet sheet = workbook.getSheetAt(0); // Assuming the data is on the first sheet
 
+            Iterator<Row> rowIterator = sheet.iterator();
+            rowIterator.next(); // Skip header row if present
 
+            while (rowIterator.hasNext()) {
+                Row row = rowIterator.next();
+                Venture venture = createVentureFromRow(row);
+                ventureRepository.save(venture);
+            }
+        }
+    }
 
+    private Venture createVentureFromRow(Row row) {
+        Venture venture = new Venture();
+        if (row.getCell(0) != null) {
+            venture.setCompanyName(row.getCell(0).getStringCellValue());
+        }
+        if (row.getCell(1) != null) {
+            venture.setVentureName(row.getCell(1).getStringCellValue());
+        }
+        if (row.getCell(2) != null) {
+            venture.setVentureType(VType.valueOf(row.getCell(2).getStringCellValue()));
+        }
+        if (row.getCell(3) != null) {
+            venture.setDescription(row.getCell(3).getStringCellValue());
+        }
+        if (row.getCell(4) != null) {
+            venture.setStage(Stage.valueOf(row.getCell(4).getStringCellValue()));
+        }
+        if (row.getCell(5) != null) {
+            venture.setSector(Sector.valueOf(row.getCell(5).getStringCellValue()));
+        }
+        if (row.getCell(6) != null) {
+            venture.setAvailableShares((long) row.getCell(6).getNumericCellValue());
+        }
+        if (row.getCell(7) != null) {
+            venture.setSharesPrice((float) row.getCell(7).getNumericCellValue());
+        }
+        if (row.getCell(8) != null) {
+            venture.setStatus(IStatus.valueOf(row.getCell(8).getStringCellValue()));
+        }
+        if (row.getCell(9) != null) {
+            venture.setLoanAmount((float) row.getCell(9).getNumericCellValue());
+        }
+        if (row.getCell(10) != null) {
+            venture.setInterest((float) row.getCell(10).getNumericCellValue());
+        }
+        if (row.getCell(11) != null) {
+            venture.setLoanDuration((long) row.getCell(11).getNumericCellValue());
+        }
+        if (row.getCell(12) != null) {
+            venture.setDividendPerShare((float) row.getCell(12).getNumericCellValue());
+        }
+
+        return venture;
+    }
 
 }
 

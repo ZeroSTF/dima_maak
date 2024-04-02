@@ -7,6 +7,7 @@ import tn.esprit.dima_maak.entities.Investment;
 import tn.esprit.dima_maak.entities.Return;
 import tn.esprit.dima_maak.repositories.IInvestmentRepository;
 import tn.esprit.dima_maak.repositories.IReturnRepository;
+import tn.esprit.dima_maak.repositories.UserRepository;
 import tn.esprit.dima_maak.services.IReturnServices;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class IReturnServicesImpl implements IReturnServices {
 
     private final IReturnRepository returnRepository;
     private final IInvestmentRepository investmentRepository;
+    private final UserRepository userRepository;
 
 
 
@@ -88,29 +90,6 @@ public class IReturnServicesImpl implements IReturnServices {
 
     }
 
-
-    /*@Override
-    public byte[] generatePdf(Return returnObject) {
-        // Logique de génération du PDF à partir des attributs de la classe Return
-        // Utilisez Apache PDFBox, iText ou une autre bibliothèque de génération de PDF
-        // Retournez les données du PDF sous forme de tableau de bytes
-        return generatePdfBytes(returnObject);
-    }*/
-
-   /* private byte[] generatePdfBytes(Return returnObject) {
-        // Implémentation de la logique de génération du PDF
-        // Utilisez une bibliothèque comme Apache PDFBox ou iText
-        // Retournez les données du PDF sous forme de tableau de bytes
-        // Exemple fictif :
-        String pdfContent = "ID: " + returnObject.getIdR() + "\n"
-                + "Date: " + returnObject.getRDate() + "\n"
-                + "Type: " + returnObject.getReturnType() + "\n"
-                + "Amount: " + returnObject.getReturnAmount() + "\n"
-                + "Interest: " + returnObject.getReturnInterest() + "\n"
-                + "Shares Gain: " + returnObject.getSharesGain() + "\n";
-
-        return pdfContent.getBytes(); // Retourne une version simplifiée sous forme de bytes
-    }*/
     @Override
     public Return addReturnAndAssignToInvestment(Long id, Return aReturn, long loanDuration, float loanAmount, float interest) {
         Investment investment = investmentRepository.findById(id).orElse(null);
@@ -132,6 +111,9 @@ public class IReturnServicesImpl implements IReturnServices {
         }
     }
 
-
+   // @Scheduled(cron = "0 */2 * * * *")
+   /* public void scheduleAddReturnAndAssignToInvestment() {
+        // Appeler la méthode sans argument pour effectuer la tâche planifiée
+        addReturnAndAssignToInvestment(1232L, new Return(), 5, 10, 12);}*/
 }
 

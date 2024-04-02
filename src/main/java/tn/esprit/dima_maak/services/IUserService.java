@@ -16,4 +16,5 @@ public interface IUserService {
 
     void updateBalance(Long id, float returnAmount, float returnInterest, long sharesGain, float totalInvestment);
     public boolean hasInvestments(Long id);
+
 }
