@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -28,6 +29,7 @@ public class Venture implements Serializable {
     private Sector sector;
     private  Long availableShares;
     private Float sharesPrice;
+    private LocalDate dateExp;
     @Enumerated(EnumType.STRING)
     private IStatus status;
     private Float loanAmount;

@@ -14,4 +14,7 @@ public interface IVentureServices {
     Venture getVentureById(Long idV);
     void updateVentureStatus(Long idV);
     void processExcelFile(MultipartFile filepath) throws IOException;
+
+     boolean updateAllVenture();
+     boolean deleteVenturesExpired();
 }

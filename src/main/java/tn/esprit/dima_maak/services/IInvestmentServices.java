@@ -4,8 +4,10 @@ import com.lowagie.text.DocumentException;
 import org.springframework.web.bind.annotation.PathVariable;
 import tn.esprit.dima_maak.Configuration.UserScore;
 import tn.esprit.dima_maak.entities.Investment;
+import tn.esprit.dima_maak.entities.User;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IInvestmentServices {
 
@@ -27,5 +29,8 @@ public interface IInvestmentServices {
     public String doInvestment(@PathVariable Long investmentId, @PathVariable Long ventureId);
    /* public Investment AddAndDoInvestment(Investment investment, Long idV);*/
    public String AddAndDoInvestment(Investment investment, Long idV);
+
+
+    /*public Map<User, Investment.ReturnStats> getReturnStatisticsByUserId();*/
 
 }

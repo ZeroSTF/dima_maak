@@ -25,4 +25,6 @@ public class Return implements Serializable {
     private Long sharesGain;
     @ManyToOne
     private Investment investment;
+
+
 }

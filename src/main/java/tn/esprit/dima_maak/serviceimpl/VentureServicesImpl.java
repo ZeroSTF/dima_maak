@@ -14,9 +14,11 @@ import tn.esprit.dima_maak.services.IVentureServices;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDate;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequestMapping("/venture")
@@ -133,7 +135,41 @@ public class VentureServicesImpl implements IVentureServices {
         return venture;
     }
 
+    public boolean updateAllVenture() {
+        List<Venture> ventures = ventureRepository.findAll();
+        List<Venture> venturesToUpdate = ventures.stream()
+                .filter(venture -> venture.getDateExp() != null && LocalDate.now().isAfter(venture.getDateExp()))
+                .collect(Collectors.toList());
+
+        if (!venturesToUpdate.isEmpty()) {
+            venturesToUpdate.forEach(venture -> venture.setStatus(IStatus.CLOSED));
+            ventureRepository.saveAll(venturesToUpdate);
+            return true; // La mise à jour a été effectuée avec succès
+        } else {
+            return false; // Aucune Venture n'a été trouvée avec une date d'expiration dépassée
+        }
+    }
+
+
+    @Override
+    public boolean deleteVenturesExpired() {
+        List<Venture> ventures = ventureRepository.findAll();
+        List<Venture> expiredVentures = ventures.stream()
+                .filter(venture -> venture.getDateExp() != null && LocalDate.now().isAfter(venture.getDateExp()))
+                .collect(Collectors.toList());
+
+        if (!expiredVentures.isEmpty()) {
+            ventureRepository.deleteAll(expiredVentures);
+            return true; // La suppression a été effectuée avec succès
+        } else {
+            return false; // Aucun Venture n'a été trouvé avec une date d'expiration dépassée
+        }
+    }
+
+
 }
+
+
 
 
 

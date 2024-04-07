@@ -34,4 +34,17 @@ public class Investment implements Serializable {
     @JsonIgnore
     @OneToMany(mappedBy = "investment", cascade = CascadeType.ALL)
     private List<Return> returns;
+
+   /* public static class ReturnStats {
+        private int numberOfReturns;
+        private float totalReturnInterest;
+
+        public ReturnStats(int numberOfReturns, double totalReturnInterest) {
+            this.numberOfReturns = numberOfReturns;
+            this.totalReturnInterest = (float) totalReturnInterest;
+        }
+    }*/
+
+
+
 }

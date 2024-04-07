@@ -1,11 +1,13 @@
 package tn.esprit.dima_maak.controllers;
 
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import tn.esprit.dima_maak.entities.Venture;
+import tn.esprit.dima_maak.serviceimpl.VentureServicesImpl;
 import tn.esprit.dima_maak.services.IVentureServices;
 
 import java.io.IOException;
@@ -72,4 +74,19 @@ public class VentureRestController {
                     .body("Error processing Excel file: " + e.getMessage());
         }
     }
+
+
+
+    @PutMapping("/updateAllStatus")
+    public boolean updateAllVentureStatus() {
+        return ventureServices.updateAllVenture();
+    }
+
+
+    @DeleteMapping("/deleteExpired")
+    public boolean deleteExpiredVentures() {
+        return ventureServices.deleteVenturesExpired();
+    }
 }
+
+

@@ -10,19 +10,15 @@ import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
 import tn.esprit.dima_maak.Configuration.UserScore;
-import tn.esprit.dima_maak.entities.IStatus;
-import tn.esprit.dima_maak.entities.Investment;
-import tn.esprit.dima_maak.entities.User;
-import tn.esprit.dima_maak.entities.Venture;
+
+import tn.esprit.dima_maak.entities.*;
 import tn.esprit.dima_maak.repositories.IInvestmentRepository;
 import tn.esprit.dima_maak.repositories.IVentureRepository;
 import tn.esprit.dima_maak.repositories.UserRepository;
 import tn.esprit.dima_maak.services.IInvestmentServices;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequestMapping("/investment")
@@ -261,7 +257,42 @@ public class InvestmentServicesImpl implements IInvestmentServices {
         }
     }
 
+
+    /////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+   /* public Map<User, Investment.ReturnStats> getReturnStatisticsByUserId() {
+        List<Investment> investments = investmentRepository.getAllInvestmentsWithReturns();
+
+        // Groupement des retours par utilisateur
+        Map<User, List<Return>> returnsByUser = investments.stream()
+                .flatMap(investment -> investment.getReturns().stream())
+                .collect(Collectors.groupingBy(return -> retrieveUser(investment, return.getUserId())));
+
+        // Calcul de la somme des returnInterest pour chaque utilisateur
+        return returnsByUser.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> {
+                            List<Return> returns = entry.getValue();
+                            int numberOfReturns = returns.size();
+                            double totalReturnInterest = returns.stream().mapToDouble(Return::getReturnInterest).sum();
+                            return new Investment.ReturnStats(numberOfReturns, totalReturnInterest);
+                        }
+                ));
+    }*/
 }
+
+
+
+
+
+
+
 
 
 

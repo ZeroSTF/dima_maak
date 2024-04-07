@@ -11,12 +11,14 @@ import org.springframework.web.bind.annotation.*;
 import tn.esprit.dima_maak.Configuration.UserScore;
 import tn.esprit.dima_maak.entities.IStatus;
 import tn.esprit.dima_maak.entities.Investment;
+import tn.esprit.dima_maak.entities.User;
 import tn.esprit.dima_maak.entities.Venture;
 import tn.esprit.dima_maak.repositories.IInvestmentRepository;
 import tn.esprit.dima_maak.repositories.IVentureRepository;
 import tn.esprit.dima_maak.services.IInvestmentServices;
 
 import java.util.List;
+import java.util.Map;
 
 @RequestMapping("/investment")
 @RestController
@@ -176,5 +178,18 @@ public class InvestmentRestController {
         return iInvestmentServices.calculateUserScores();
     }
 
+    //////////////////////////////////////////
+   /* @GetMapping("/return-statistics")
+    public Map<User, Investment.ReturnStats> getReturnStatisticsByUserId() {
+        return iInvestmentServices.getReturnStatisticsByUserId();
+    }*/
+
 }
+
+
+
+
+
+
+
 
