@@ -200,7 +200,7 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
         // Check if user exists
         Optional<User> userOptional = userRepository.findById(userId);
         if (!userOptional.isPresent()) {
-            return "User not found"; // Handle user not found scenario
+            return "User not found";
         }
 
         User user = userOptional.get();
