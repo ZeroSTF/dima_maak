@@ -1,11 +1,11 @@
 package tn.esprit.dima_maak.entities;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
 import lombok.*;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import java.time.LocalDate;
 import java.util.*;
 
@@ -43,6 +43,9 @@ public class User implements UserDetails{
     private List<Notification> notifications;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Loan> loans;
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Investment> investments;
 
     @Override
     public boolean equals(Object o) {
