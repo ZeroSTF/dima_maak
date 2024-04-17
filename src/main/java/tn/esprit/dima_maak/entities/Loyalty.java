@@ -1,11 +1,16 @@
 package tn.esprit.dima_maak.entities;
 
-import lombok.Data;
+import lombok.*;
 import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 
 @Entity
-@Data
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Loyalty {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,7 +18,7 @@ public class Loyalty {
     private LocalDateTime date;
     @Enumerated(EnumType.STRING)
     private Reason reason;
+    private Long value;
     @ManyToOne
-    @JoinColumn(name = "user_id")
     private User user;
 }

@@ -1,10 +1,9 @@
 package tn.esprit.dima_maak.entities;
-
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Getter

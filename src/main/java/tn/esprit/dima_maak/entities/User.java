@@ -1,17 +1,21 @@
 package tn.esprit.dima_maak.entities;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.*;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.Collection;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.*;
 
 @Entity
-@Data
-public class User implements UserDetails {
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class User implements UserDetails{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,9 +23,8 @@ public class User implements UserDetails {
     private String name;
     private String surname;
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "address_id", referencedColumnName = "id")
     private Location address;
-    private java.sql.Date birthDate;
+    private LocalDate birthDate;
     private String email;
     private String password;
     private Float salary;
@@ -29,8 +32,8 @@ public class User implements UserDetails {
     private String photo;
     private Float balance;
     private Long rib;
-    @Enumerated(EnumType.STRING)
-    private Role role;
+    @ManyToMany(fetch=FetchType.EAGER)
+    private Set<Role> role;
     @Enumerated(EnumType.STRING)
     private UStatus status;
     private Integer lp;
@@ -45,33 +48,46 @@ public class User implements UserDetails {
     private List<Investment> investments;
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(email, user.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(email);
+    }
+
+    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return this.role;
     }
 
     @Override
     public String getUsername() {
-        return null;
+        return this.email;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 }
 

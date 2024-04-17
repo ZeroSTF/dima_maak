@@ -1,20 +1,25 @@
 package tn.esprit.dima_maak.entities;
 
-import lombok.Data;
+import lombok.*;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+
 @Entity
-@Data
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Complaint {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private java.sql.Timestamp date;
+    private LocalDateTime date;
     private String subject;
     @Column(columnDefinition = "TEXT")
     private String description;
     private boolean status;
     @ManyToOne
-    @JoinColumn(name = "user_id")
     private User user;
 }
