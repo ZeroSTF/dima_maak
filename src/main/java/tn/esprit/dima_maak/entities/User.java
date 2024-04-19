@@ -26,8 +26,6 @@ public class User {
     private Long cin;
     private String name;
     private String surname;
-    @OneToOne(cascade = CascadeType.ALL)
-    private Location address;
     private LocalDate birthDate;
     private String email;
     private String password;
@@ -41,10 +39,16 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UStatus status;
     private Integer lp;
+    @JsonIgnore
+    @OneToOne(cascade = CascadeType.ALL)
+    private Location address;
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Loyalty> loyalties;
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Notification> notifications;
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Loan> loans;
     @JsonIgnore

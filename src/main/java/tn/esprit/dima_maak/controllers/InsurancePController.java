@@ -2,6 +2,7 @@ package tn.esprit.dima_maak.controllers;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.dima_maak.entities.IType;
 import tn.esprit.dima_maak.entities.Insurance;
@@ -15,6 +16,7 @@ import java.util.List;
 @RequestMapping("/InsuranceP")
 
 public class InsurancePController {
+    @Autowired
     private IInsurancePService ipservices;
 
     @PostMapping("/save")

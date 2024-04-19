@@ -8,6 +8,7 @@ import tn.esprit.dima_maak.repositories.InsuranceRepository;
 import tn.esprit.dima_maak.repositories.PremiumRepository;
 import tn.esprit.dima_maak.services.IPremiumService;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -41,6 +42,29 @@ public class PremiumServiceImpl implements IPremiumService {
     @Override
     public Premium updatePremium(Premium p) {
         return premrep.save(p);
+    }
+    @Override
+    public String retardamount(Long idins) {
+        LocalDate currentDate = LocalDate.now();
+        Iterable<Premium> premiums = premrep.findAll();
+
+        for (Premium premium : premiums) {
+            if (premium.getDate().isBefore(currentDate) && premium.getInsurance().getId().equals(idins)) {
+                float total = premium.getAmount() * (premium.getAccumulatedInterest());
+                premium.setAmount(total);
+                premrep.save(premium);
+            }
+        }
+
+        return "Ok ....";
+    }
+
+    @Override
+    public Premium payment(Long idPremium) {
+        Premium premium=premrep.findById(idPremium).get();
+        premium.setAmount(0f);
+        premium.setStatus(false);
+        return premrep.save(premium);
     }
 
     @Override

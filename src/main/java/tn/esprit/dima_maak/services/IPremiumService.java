@@ -6,6 +6,8 @@ import tn.esprit.dima_maak.entities.Premium;
 import java.util.List;
 
 public interface IPremiumService {
+    public String retardamount(Long idins);
+    public Premium payment(Long idPremium);
     Premium addPremium (Premium p);
     Premium getPremiumById (Long id);
     void deletePremium (Long id);

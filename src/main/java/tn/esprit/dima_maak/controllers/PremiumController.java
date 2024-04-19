@@ -20,6 +20,16 @@ public class PremiumController {
         return premiumservice.addPremium(premium);
 
     }
+    @PostMapping("/retard/{idins}")
+    public String retard (@PathVariable  Long idins ){
+        return premiumservice.retardamount(idins);
+
+    }
+    @PostMapping("/payment/{idPremium}")
+    public Premium payment (@PathVariable Long idPremium ){
+        return premiumservice.payment(idPremium);
+
+    }
     @GetMapping("/findbyid/{idpremium}")
     public Premium findpremiumbyid(@PathVariable Long idpremium){
         return premiumservice.getPremiumById(idpremium);

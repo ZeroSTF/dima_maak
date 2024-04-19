@@ -2,6 +2,7 @@ package tn.esprit.dima_maak.controllers;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.dima_maak.entities.IType;
 import tn.esprit.dima_maak.entities.Insurance;
@@ -18,10 +19,21 @@ import java.util.Map;
 @RequestMapping("/Insurance")
 
 public class InsuranceController {
+    @Autowired
     private IInsuranceService insuranceservice;
     @PostMapping("/save")
     public Insurance addInsurance(@RequestBody Insurance insurance ){
         return insuranceservice.addInsurance(insurance);
+
+    }
+    @PostMapping("/savepackanduser/{idpack}/{iduser}")
+    public Insurance savepackanduser(@RequestBody Insurance insurance , @PathVariable Long idpack,@PathVariable Long iduser ){
+        return insuranceservice.createInsurance(insurance,idpack,iduser);
+
+    }
+    @PutMapping ("/updatedinc/{Idinsurance}")
+    public Insurance updatedinc(@PathVariable Long Idinsurance ){
+        return insuranceservice.updatedInsurance(Idinsurance);
 
     }
     @GetMapping("/findbyid/{idinsurance}")

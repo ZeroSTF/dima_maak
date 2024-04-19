@@ -1,7 +1,9 @@
 package tn.esprit.dima_maak.serviceimpl;
 
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import tn.esprit.dima_maak.entities.CStatus;
 import tn.esprit.dima_maak.entities.Claim;
 import tn.esprit.dima_maak.entities.Insurance;
@@ -11,9 +13,14 @@ import tn.esprit.dima_maak.repositories.InsuranceRepository;
 import tn.esprit.dima_maak.repositories.UserRepository;
 import tn.esprit.dima_maak.services.IClaimService;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -124,5 +131,24 @@ public class ClaimServiceImpl implements IClaimService {
 
         return recommendations;
     }*/
+
+    // Save image in a local directory
+    @Override
+    public String saveImageToStorage(String uploadDirectory, MultipartFile imageFile) throws IOException {
+        String uniqueFileName = UUID.randomUUID().toString() + "_" + imageFile.getOriginalFilename();
+
+        Path uploadPath = Path.of(uploadDirectory);
+        Path filePath = uploadPath.resolve(uniqueFileName);
+
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath);
+        }
+
+        Files.copy(imageFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+        System.out.println(filePath);
+        return filePath.toString();
+    }
+
 
 }
