@@ -5,8 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import tn.esprit.dima_maak.entities.*;
 import tn.esprit.dima_maak.services.*;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
+//import io.swagger.v3.oas.annotations.Operation;
+//import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,7 +25,9 @@ import java.util.Map;
 import java.util.Optional;
 
 
+
 @Tag(name = "User management")
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
@@ -33,33 +35,40 @@ import java.util.Optional;
 public class UserRestController {
     private final IUserService userService;
 
+
     ///////////////////////////////////////////////////////////ADMIN DASHBOARD RELATED WORK/////////////////////////////////////////
     @Operation(description = "get all users")
     @GetMapping("/getAll")
+
     public List<User> getUsers() {
         return userService.retrieveAllUsers();
-    }
 
     @Operation(description = "get one user")
     @GetMapping("/get/{user-id}")
+
     public User retrieveUser(@PathVariable("user-id") Long userId) {
         return userService.retrieveUser(userId);
     }
 
+
     @Operation(description = "add a user")
     @PostMapping("/add")
+
     public User addUser(@RequestBody User c) {
         return userService.addUser(c);
     }
 
     @Operation(description = "delete a user")
     @DeleteMapping("/delete/{user-id}")
+
     public void removeUser(@PathVariable("user-id") Long userId) {
         userService.removeUser(userId);
     }
 
+
     @Operation(description = "edit a user")
     @PutMapping("/update")
+
     public User modifyUser(@RequestBody User c) {
         return userService.modifyUser(c);
     }
