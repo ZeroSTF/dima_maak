@@ -113,7 +113,7 @@ public class ClaimController {
 
             //double temp= 1f;
           // double temp= 45f;
-            //System.out.println("temp = "+ temp);
+            System.out.println("temp = "+ temp);
             if (claim.getInsurance().getInsuranceP().getType().equals(IType.Agriculteur_Insurance) && temp >=40){
                 Claim claim1=new Claim();
                 claim1.setStatus(CStatus.Auto);
