@@ -1,8 +1,10 @@
 package tn.esprit.dima_maak.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import jakarta.persistence.*;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -12,7 +14,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Comment {
+public class Comment implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,6 +22,7 @@ public class Comment {
     private LocalDateTime createdDate;
     @ManyToOne
     private User user;
+    @JsonIgnore
     @ManyToOne
     private Post post;
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)

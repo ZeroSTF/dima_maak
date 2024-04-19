@@ -1,7 +1,7 @@
-package tn.esprit.dima_maak.services;
+/*package tn.esprit.dima_maak.services;
 
-import io.jsonwebtoken.Claims;
-import org.springframework.security.core.userdetails.UserDetails;
+//import io.jsonwebtoken.Claims;
+//import org.springframework.security.core.userdetails.UserDetails;
 
 import java.security.Key;
 import java.util.Map;
@@ -33,4 +33,4 @@ public interface JwtService {
 
     public Key getSignInkey() ;
 
-}
+}*/
