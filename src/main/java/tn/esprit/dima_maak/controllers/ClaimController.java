@@ -109,10 +109,10 @@ public class ClaimController {
         ){
             Weather weather = weatherService.getWeather(claim.getInsurance().getUser().getAddress().getCity());
             Map<String, Object> main = weather.getMain();
-            //double temp = (double) main.get("temp") ;
+            double temp = (double) main.get("temp") ;
 
             //double temp= 1f;
-           double temp= 45f;
+          // double temp= 45f;
             //System.out.println("temp = "+ temp);
             if (claim.getInsurance().getInsuranceP().getType().equals(IType.Agriculteur_Insurance) && temp >=40){
                 Claim claim1=new Claim();
