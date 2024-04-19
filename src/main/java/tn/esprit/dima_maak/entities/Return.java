@@ -1,20 +1,29 @@
 package tn.esprit.dima_maak.entities;
-
-import lombok.Data;
 import jakarta.persistence.*;
+import lombok.*;
+import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Data
-public class Return {
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "Treturn")
+public class Return implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private Float amount;
-    private java.sql.Date date;
+    private Long idR;
+    private LocalDate rDate;
     @Enumerated(EnumType.STRING)
-    private RType type;
+    private RType returnType;
+    private Float returnAmount;
+    private Float returnInterest;
+    private Long sharesGain;
     @ManyToOne
-    @JoinColumn(name = "investment_id")
     private Investment investment;
+
+
 }

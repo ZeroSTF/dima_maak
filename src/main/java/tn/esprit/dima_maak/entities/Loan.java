@@ -1,17 +1,25 @@
 package tn.esprit.dima_maak.entities;
 
-import lombok.Data;
+import lombok.*;
 import jakarta.persistence.*;
+
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+
+import java.time.LocalDate;
+
+
 import java.util.List;
 
 @Getter
 @Setter
 @Entity
-@Data
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Loan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,7 +37,6 @@ public class Loan {
     @Enumerated
     private LMethod PaimentMethod;
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = true)
     private User user;
     @OneToMany(mappedBy = "loan", cascade = CascadeType.ALL)
     private List<Portion> portions;

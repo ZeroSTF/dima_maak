@@ -1,19 +1,24 @@
 package tn.esprit.dima_maak.entities;
 
-import lombok.Data;
+import lombok.*;
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
+
 @Entity
-@Data
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Premium {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private java.sql.Date date;
+    private LocalDate date;
     private Float amount;
     private boolean status;
     private Float accumulatedInterest;
     @ManyToOne
-    @JoinColumn(name = "insurance_id")
     private Insurance insurance;
 }

@@ -1,10 +1,14 @@
 package tn.esprit.dima_maak.entities;
 
-import lombok.Data;
+import lombok.*;
 import jakarta.persistence.*;
 
 @Entity
-@Data
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Location {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
