@@ -19,7 +19,6 @@ import java.util.Set;
 @EnableAsync
 public class DimaMaakApplication {
 
-
     public static void main(String[] args) {
         SpringApplication.run(DimaMaakApplication.class, args);
     }
