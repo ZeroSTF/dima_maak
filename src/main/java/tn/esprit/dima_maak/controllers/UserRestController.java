@@ -1,10 +1,5 @@
 package tn.esprit.dima_maak.controllers;
 
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import tn.esprit.dima_maak.entities.*;
-import tn.esprit.dima_maak.services.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -18,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import tn.esprit.dima_maak.entities.User;
 import tn.esprit.dima_maak.services.IUserService;
 import java.net.URI;
+
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -145,21 +141,5 @@ public class UserRestController {
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized access");
         }
-    }
-
-    @PutMapping("/users/{id}/updateBalance")
-    public ResponseEntity<String> updateBalance(@PathVariable Long id,
-                                                @RequestParam float returnAmount,
-                                                @RequestParam float returnInterest,
-                                                @RequestParam long sharesGain,
-                                                @RequestParam float totalInvestment) {
-        boolean hasInvestments = userService.hasInvestments(id); // Vérifier si l'utilisateur a des investissements
-
-        if (!hasInvestments) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User does not have any associated investments.");
-        }
-
-        userService.updateBalance(id, returnAmount, returnInterest, sharesGain, totalInvestment);
-        return ResponseEntity.ok("Balance updated successfully.");
     }
 }

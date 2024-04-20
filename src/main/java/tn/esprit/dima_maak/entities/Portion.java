@@ -1,6 +1,8 @@
 package tn.esprit.dima_maak.entities;
-import jakarta.persistence.*;
+
 import lombok.*;
+import jakarta.persistence.*;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 

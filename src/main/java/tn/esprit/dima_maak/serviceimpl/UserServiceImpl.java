@@ -1,5 +1,5 @@
 package tn.esprit.dima_maak.serviceimpl;
-import jakarta.transaction.Transactional;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -102,35 +102,6 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
         }
     }
 
-
-
-
-    @Transactional
-    public void updateBalance(Long id, float returnAmount, float returnInterest, long sharesGain, float totalInvestment) {
-        User user = userRepository.findById(id).orElse(null);
-        if (user != null) {
-            // Vérifier si l'utilisateur a des investissements associés
-            if (!user.getInvestments().isEmpty()) {
-                float newBalance = user.getBalance() + returnAmount + returnInterest + sharesGain - totalInvestment;
-                user.setBalance(newBalance);
-                userRepository.save(user);
-            }
-        } else {
-            // Gérer le cas où l'utilisateur n'est pas trouvé
-            // Vous pouvez lancer une exception ou gérer d'une autre manière selon vos besoins
-        }
-    }
-
-    public boolean hasInvestments(Long id) {
-        User user = userRepository.findById(id).orElse(null);
-        return user != null && !user.getInvestments().isEmpty();
-    }
-
-
-
-
-}
-=======
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return userRepository.findByEmail(email).orElseThrow(()->new UsernameNotFoundException("No user by this email exists"));
