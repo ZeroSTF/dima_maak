@@ -154,44 +154,7 @@ public class LoanServiceImpl implements ILoanService {
         }
 
         }
-        else if (loan.getPaimentMethod()==LMethod.Monthly_Progressive){
-            PdfPCell MensLibelle = new PdfPCell(new Phrase("Mensualité"));
-            MensLibelle.setBorderWidth(1f);
-            table.addCell(MensLibelle);
-            md= loan.getAmount();
-            mens = loan.getAmount()*((loan.getInterest()*Math.pow((1+loan.getInterest()),loan.getTermInMonths())/(Math.pow((1+loan.getInterest()),loan.getTermInMonths())-1)));
 
-            for(int i=1;i<=loan.getTermInMonths();i++){
-                md=md-amorti;
-                inte=md*loan.getInterest();
-                amorti=mens -inte;
-
-
-
-
-
-                PdfPCell number = new PdfPCell(new Phrase(i));
-                number.setBorderWidth(1f);
-                table.addCell(number);
-
-                PdfPCell montantrest = new PdfPCell(new Phrase(String.format("%.2f",md)));
-                montantrest.setBorderWidth(1f);
-                table.addCell(montantrest);
-
-                PdfPCell interet = new PdfPCell(new Phrase(String.format("%.2f",inte)));
-                interet.setBorderWidth(1f);
-                table.addCell(interet);
-
-                PdfPCell ammort = new PdfPCell(new Phrase(String.format("%.2f",amorti)));
-                ammort.setBorderWidth(1f);
-                table.addCell(ammort);
-
-                PdfPCell mensualite1 = new PdfPCell(new Phrase(String.format("%.2f",mens)));
-                mensualite1.setBorderWidth(1f);
-                table.addCell(mensualite1);
-
-            }
-        }
         else if (loan.getPaimentMethod()==LMethod.Bloc_Annual){
             PdfPCell MensLibelle = new PdfPCell(new Phrase("Annuité"));
             MensLibelle.setBorderWidth(1f);

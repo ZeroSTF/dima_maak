@@ -19,5 +19,5 @@ public interface ILoanService {
     public ByteArrayOutputStream simulateLoan(Loan loan) throws DocumentException;
     @Transactional
     public void UpdateLoanStatus(Long id) throws ParseException;
-public void penalityCalculation();
+    public void penalityCalculation();
 }
