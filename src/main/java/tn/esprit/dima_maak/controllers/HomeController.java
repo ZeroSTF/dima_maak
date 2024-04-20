@@ -1,4 +1,4 @@
-package tn.esprit.dima_maak.controllers;
+/*package tn.esprit.dima_maak.controllers;
 
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,4 +31,4 @@ public class HomeController {
     public String secured(){
         return "hello admin";
     }
-}
+}*/

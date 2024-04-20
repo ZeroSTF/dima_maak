@@ -1,5 +1,6 @@
 package tn.esprit.dima_maak.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -25,8 +26,6 @@ public class User implements UserDetails{
     private Long cin;
     private String name;
     private String surname;
-    @OneToOne(cascade = CascadeType.ALL)
-    private Location address;
     private LocalDate birthDate;
     private String email;
     private String password;
@@ -40,12 +39,21 @@ public class User implements UserDetails{
     @Enumerated(EnumType.STRING)
     private UStatus status;
     private Integer lp;
+    @JsonIgnore
+    @OneToOne(cascade = CascadeType.ALL)
+    private Location address;
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Loyalty> loyalties;
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Notification> notifications;
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Loan> loans;
+    @JsonIgnore
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    private Set<Insurance> insurances;
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
