@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -15,7 +16,9 @@ import java.util.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+
 public class User implements UserDetails{
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -43,7 +46,6 @@ public class User implements UserDetails{
     private List<Notification> notifications;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Loan> loans;
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -86,5 +88,6 @@ public class User implements UserDetails{
     public boolean isEnabled() {
         return true;
     }
+
 }
 
