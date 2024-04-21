@@ -7,7 +7,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -33,6 +32,7 @@ public class User implements UserDetails{
     private String job;
     private String photo;
     private Float balance;
+    private  Float CreditScore ;
     private Long rib;
     @ManyToMany(fetch=FetchType.EAGER)
     private Set<Role> role;
@@ -51,6 +51,8 @@ public class User implements UserDetails{
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Loan> loans;
+    @OneToOne(mappedBy = "user")
+    private Leasing leasing;
     @JsonIgnore
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private Set<Insurance> insurances;
@@ -98,4 +100,6 @@ public class User implements UserDetails{
     }
 
 }
+
+
 

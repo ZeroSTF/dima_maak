@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Optional;
 
 
-//@Tag(name = "User management")
+@Tag(name = "User management")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
@@ -32,11 +32,9 @@ public class UserRestController {
     ///////////////////////////////////////////////////////////ADMIN DASHBOARD RELATED WORK/////////////////////////////////////////
     @Operation(description = "get all users")
     @GetMapping("/getAll")
-
     public List<User> getUsers() {
         return userService.retrieveAllUsers();
     }
-
 
     @Operation(description = "get one user")
     @GetMapping("/get/{user-id}")
@@ -44,20 +42,17 @@ public class UserRestController {
         return userService.retrieveUser(userId);
     }
 
-
     @Operation(description = "add a user")
     @PostMapping("/add")
     public User addUser(@RequestBody User c) {
         return userService.addUser(c);
     }
 
-
     @Operation(description = "delete a user")
     @DeleteMapping("/delete/{user-id}")
     public void removeUser(@PathVariable("user-id") Long userId) {
         userService.removeUser(userId);
     }
-
 
     @Operation(description = "edit a user")
     @PutMapping("/update")
