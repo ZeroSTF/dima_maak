@@ -35,7 +35,7 @@ public class AuthenticationController {
     @Operation(description = "register a user")
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody RegistrationDTO body){
-        User user = new User(null, body.getCin(), body.getName(), body.getSurname(), body.getAddress(), body.getBirthDate(), body.getEmail(), body.getPassword(), body.getSalary(), body.getJob(), null, null, body.getRib(), null, null, null, null, null, null);
+        User user = new User(body.getCin(), body.getName(), body.getSurname(), body.getAddress(), body.getBirthDate(), body.getEmail(), body.getPassword(), body.getSalary(), body.getJob(), body.getRib());
         User registeredUser = userService.registerUser(user);
         if (registeredUser != null) {
             return ResponseEntity.ok(registeredUser);
@@ -47,7 +47,7 @@ public class AuthenticationController {
     @Operation(description = "register a user with affiliate link")
     @PostMapping("/register/{id-user}")
     public ResponseEntity<?> registerUserWithAffiliateLink(@RequestBody RegistrationDTO body,@PathVariable("id-user") Long userId){
-        User user = new User(null, body.getCin(), body.getName(), body.getSurname(), body.getAddress(), body.getBirthDate(), body.getEmail(), body.getPassword(), body.getSalary(), body.getJob(), null, null, body.getRib(), null, null, null, null, null, null);
+        User user = new User(body.getCin(), body.getName(), body.getSurname(), body.getAddress(), body.getBirthDate(), body.getEmail(), body.getPassword(), body.getSalary(), body.getJob(), body.getRib());
         User registeredUser = userService.registerUser(user);
         User affiliateUser = userService.retrieveUser(userId);
         affiliateUser.setLp(affiliateUser.getLp()+5);

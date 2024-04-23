@@ -99,6 +99,29 @@ public class User implements UserDetails{
         return true;
     }
 
+    public User(Long cin, String name, String surname, Location address, LocalDate birthDate, String email, String password, Float salary, String job, Long rib) {
+        this.cin = cin;
+        this.name = name;
+        this.surname = surname;
+        this.address = address;
+        this.birthDate = birthDate;
+        this.email = email;
+        this.password = password;
+        this.salary = salary;
+        this.job = job;
+        this.rib = rib;
+
+        // Set default values for other fields
+        this.role = new HashSet<>(); // Initialize empty set for roles
+        this.status = UStatus.Pending; // Set default status to PENDING
+        this.lp = 0; // Set loyalty points to 0
+        this.balance = 0f; // Set balance to 0
+        this.CreditScore = 0f; // Set credit score to 0
+        this.loyalties = new ArrayList<>(); // Initialize empty list for loyalties
+        this.notifications = new ArrayList<>(); // Initialize empty list for notifications
+        this.loans = new ArrayList<>(); // Initialize empty list for loans
+        this.insurances = new HashSet<>(); // Initialize empty set for insurances
+    }
 }
 
 
