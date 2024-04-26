@@ -2,6 +2,7 @@ package tn.esprit.dima_maak.serviceimpl;
 
 
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -16,23 +17,18 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import tn.esprit.dima_maak.DTO.LoginResponseDTO;
 import tn.esprit.dima_maak.entities.*;
 import tn.esprit.dima_maak.services.*;
 import tn.esprit.dima_maak.repositories.*;
 import jakarta.persistence.EntityNotFoundException;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.Principal;
-import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -148,7 +144,10 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
             return new LoginResponseDTO("No email to return", "Invalid email/password supplied");
         }
     }
-
+    @Override
+    public void logout() {
+        SecurityContextHolder.clearContext();
+    }
     @Override
     public User loadUserByEmail(String email) {return userRepository.findByEmail(email).get();}
 

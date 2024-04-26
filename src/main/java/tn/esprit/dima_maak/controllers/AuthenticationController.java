@@ -2,15 +2,10 @@ package tn.esprit.dima_maak.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.websocket.server.PathParam;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.dima_maak.DTO.LoginDTO;
 import tn.esprit.dima_maak.DTO.LoginResponseDTO;
@@ -18,10 +13,8 @@ import tn.esprit.dima_maak.DTO.RegistrationDTO;
 import tn.esprit.dima_maak.entities.Loyalty;
 import tn.esprit.dima_maak.entities.Reason;
 import tn.esprit.dima_maak.entities.User;
-import tn.esprit.dima_maak.serviceimpl.UserServiceImpl;
 import tn.esprit.dima_maak.services.ILoyaltyService;
 import tn.esprit.dima_maak.services.IUserService;
-
 import java.time.LocalDateTime;
 
 @Tag(name = "Authentication")
@@ -65,5 +58,18 @@ public class AuthenticationController {
     @PostMapping("/login")
     public LoginResponseDTO loginUser(@RequestBody LoginDTO body){
         return userService.login(body.getEmail(), body.getPassword());
+    }
+    @Operation(description = "logout")
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout()
+    {
+        ResponseCookie cookie ;
+        try {
+            userService.logout();
+        }catch(Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage()) ;
+        }
+
+        return ResponseEntity.ok().body("You've been signed out!");
     }
 }
