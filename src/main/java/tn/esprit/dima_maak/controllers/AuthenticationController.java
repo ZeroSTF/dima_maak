@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.dima_maak.DTO.LoginDTO;
 import tn.esprit.dima_maak.DTO.LoginResponseDTO;
+import tn.esprit.dima_maak.DTO.LogoutResponseDTO;
 import tn.esprit.dima_maak.DTO.RegistrationDTO;
 import tn.esprit.dima_maak.entities.Loyalty;
 import tn.esprit.dima_maak.entities.Reason;
@@ -60,13 +61,12 @@ public class AuthenticationController {
     }
     @Operation(description = "logout")
     @PostMapping("/logout")
-    public ResponseEntity<?> logout()
-    {
+    public ResponseEntity<LogoutResponseDTO> logout() {
         try {
-            userService.logout();
-        }catch(Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage()) ;
+            userService.logout(); // Perform logout logic
+            return ResponseEntity.ok(new LogoutResponseDTO(true, "Logout successful!"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new LogoutResponseDTO(false, e.getMessage()));
         }
-        return ResponseEntity.ok().body("You've been signed out!");
     }
 }
