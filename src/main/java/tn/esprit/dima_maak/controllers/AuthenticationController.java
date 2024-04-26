@@ -63,13 +63,11 @@ public class AuthenticationController {
     @PostMapping("/logout")
     public ResponseEntity<?> logout()
     {
-        ResponseCookie cookie ;
         try {
             userService.logout();
         }catch(Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage()) ;
         }
-
         return ResponseEntity.ok().body("You've been signed out!");
     }
 }
