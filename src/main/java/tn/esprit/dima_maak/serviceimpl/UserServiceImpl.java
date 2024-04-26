@@ -35,6 +35,7 @@ import java.util.*;
 public class UserServiceImpl  implements IUserService, UserDetailsService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final LocationRepository locationRepository;
     private final PasswordEncoder encoder;
 
     @Lazy
@@ -46,7 +47,7 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
     private final ConfirmationRepository confirmationRepository;
     private final IEmailService emailService;
     private final INotificationService notificationService;
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder encoder, ITokenService tokenService, ConfirmationRepository confirmationRepository, IEmailService emailService, INotificationService notificationService) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder encoder, ITokenService tokenService, ConfirmationRepository confirmationRepository, IEmailService emailService, INotificationService notificationService, LocationRepository locationRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.encoder = encoder;
@@ -54,6 +55,7 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
         this.confirmationRepository = confirmationRepository;
         this.emailService = emailService;
         this.notificationService = notificationService;
+        this.locationRepository=locationRepository;
     }
 
     @Override
@@ -122,6 +124,7 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
         user.setBalance(0f);
         user.setLp(0);
         Confirmation confirmation = new Confirmation(user);
+        locationRepository.save(user.getAddress());
         userRepository.save(user);
         confirmationRepository.save(confirmation);
         /////////////////MAILING//////////////////////////
