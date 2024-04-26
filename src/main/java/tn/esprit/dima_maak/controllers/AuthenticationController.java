@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
-@CrossOrigin("*")
+@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 public class AuthenticationController {
     private final IUserService userService;
     private final ILoyaltyService loyaltyService;
