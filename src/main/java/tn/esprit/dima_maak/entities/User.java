@@ -39,7 +39,6 @@ public class User implements UserDetails{
     @Enumerated(EnumType.STRING)
     private UStatus status;
     private Integer lp;
-    @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL)
     private Location address;
     @JsonIgnore
