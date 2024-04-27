@@ -58,4 +58,8 @@ public class NotificationServiceImpl implements INotificationService {
             notificationRepository.save(notification);
         }
     }
+    @Override
+    public List<Notification> getUnread(User user){
+        return notificationRepository.findByUserAndStatus(user,false);
+    }
 }
