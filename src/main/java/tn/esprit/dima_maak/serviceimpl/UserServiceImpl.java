@@ -43,7 +43,7 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
     @Autowired
     AuthenticationManager authenticationManager;
     private final ITokenService tokenService;
-    private static final String UPLOAD_DIR = "uploads/profiles/";
+    public static final String UPLOAD_DIR = "uploads/profiles/";
     private final IEmailService emailService;
     private final INotificationService notificationService;
     public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder encoder, ITokenService tokenService, ConfirmationRepository confirmationRepository, IEmailService emailService, INotificationService notificationService, LocationRepository locationRepository) {
@@ -167,13 +167,10 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
     public String saveProfilePicture(MultipartFile file) throws IOException {
         // Create a unique file name to prevent conflicts
         String fileName = generateUniqueFileName(file.getOriginalFilename());
-
         // Create the directory if it doesn't exist
         createUploadDirectoryIfNotExist();
-
         // Get the file path to save the image
         String filePath = UPLOAD_DIR + fileName;
-
         // Save the file to the specified location
         Path destPath = Paths.get(filePath);
         Files.copy(file.getInputStream(), destPath);

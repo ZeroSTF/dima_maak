@@ -2,23 +2,26 @@ package tn.esprit.dima_maak.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 import tn.esprit.dima_maak.entities.User;
 import tn.esprit.dima_maak.services.IUserService;
-import java.net.URI;
+
+import java.io.File;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.nio.file.Files;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+
+import static tn.esprit.dima_maak.serviceimpl.UserServiceImpl.UPLOAD_DIR;
 
 
 @Tag(name = "User management")
@@ -28,6 +31,7 @@ import java.util.Optional;
 @CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 public class UserRestController {
     private final IUserService userService;
+    private final ResourceLoader resourceLoader;
 
     ///////////////////////////////////////////////////////////ADMIN DASHBOARD RELATED WORK/////////////////////////////////////////
     @Operation(description = "get all users")
@@ -141,5 +145,33 @@ public class UserRestController {
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized access");
         }
+    }
+    @Operation(description = "Get the current user")
+    @GetMapping("/current")
+    public ResponseEntity<?> getCurrent() {
+        User currentUser;
+        try {
+            ////////////retrieving current user/////////////////////////////////
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String currentEmail = authentication.getName();
+             currentUser = userService.loadUserByEmail(currentEmail);
+            ////////////////////////////////////////////////////////////////////
+        }catch(Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage()) ;
+        }
+        return ResponseEntity.ok().body(currentUser) ;
+    }
+
+    @Operation(description = "Get photo as blob")
+    @GetMapping("/getPhoto/{fileName}")
+    public ResponseEntity<byte[]> getImage(@PathVariable String fileName) throws IOException {
+        String filePath = UPLOAD_DIR + fileName;
+        File file = new File(filePath);
+        if (!file.exists()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Image not found");
+        }
+        byte[] imageData = Files.readAllBytes(file.toPath());
+        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG)
+                .body(imageData);
     }
 }
