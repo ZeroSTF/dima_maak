@@ -41,14 +41,19 @@ public class User implements UserDetails{
     private Integer lp;
     @OneToOne(cascade = CascadeType.ALL)
     private Location address;
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Loyalty> loyalties;
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Notification> notifications;
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Loan> loans;
+    @JsonIgnore
     @OneToOne(mappedBy = "user")
     private Leasing leasing;
+    @JsonIgnore
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private Set<Insurance> insurances;
     @Override
