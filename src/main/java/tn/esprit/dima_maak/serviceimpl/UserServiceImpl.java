@@ -36,6 +36,7 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final LocationRepository locationRepository;
+    private final ConfirmationRepository confirmationRepository;
     private final PasswordEncoder encoder;
 
     @Lazy
@@ -43,8 +44,6 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
     AuthenticationManager authenticationManager;
     private final ITokenService tokenService;
     private static final String UPLOAD_DIR = "uploads/profiles/";
-
-    private final ConfirmationRepository confirmationRepository;
     private final IEmailService emailService;
     private final INotificationService notificationService;
     public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder encoder, ITokenService tokenService, ConfirmationRepository confirmationRepository, IEmailService emailService, INotificationService notificationService, LocationRepository locationRepository) {
@@ -89,6 +88,10 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
 
     @Override
     public void removeUser(Long id) {
+        Confirmation c = confirmationRepository.findConfirmationByUser(userRepository.findById(id).get());
+        if(c!=null){
+            confirmationRepository.delete(c);
+        }
         userRepository.deleteById(id);
     }
 
@@ -124,7 +127,12 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
         user.setBalance(0f);
         user.setLp(0);
         Confirmation confirmation = new Confirmation(user);
-        locationRepository.save(user.getAddress());
+        if(user.getAddress()!=null) {
+            locationRepository.save(user.getAddress());
+        }
+        else{
+            System.out.println("NO LOCATION PASSED");
+        }
         userRepository.save(user);
         confirmationRepository.save(confirmation);
         /////////////////MAILING//////////////////////////
