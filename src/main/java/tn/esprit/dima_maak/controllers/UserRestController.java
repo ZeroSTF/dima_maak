@@ -162,7 +162,7 @@ public class UserRestController {
         return ResponseEntity.ok().body(currentUser) ;
     }
 
-    @Operation(description = "Get photo as blob")
+    @Operation(description = "Get photo")
     @GetMapping("/getPhoto/{fileName}")
     public ResponseEntity<byte[]> getImage(@PathVariable String fileName) throws IOException {
         String filePath = UPLOAD_DIR + fileName;
