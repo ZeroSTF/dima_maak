@@ -29,8 +29,8 @@ public class AssetRestController {
 
 
     @PostMapping("/save")
-    public Asset createAsset(@RequestBody Asset asset) {
-        return assetService.createAsset(asset);
+    public Asset createAsset(@RequestBody Asset asset,@RequestParam("id") Long id) {
+        return assetService.createAsset(asset,id);
     }
 
     @GetMapping("/{assetid}")
@@ -40,14 +40,14 @@ public class AssetRestController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PutMapping("/{assetid}")
-    public ResponseEntity<Asset> updateAsset(@PathVariable("assetid") Long id, @RequestBody Asset updatedAsset) {
-        updatedAsset.setAssetid(id);
-        Asset asset = assetService.updateAsset(updatedAsset);
+    @PutMapping("/update")
+    public ResponseEntity<Asset> updateAsset(@RequestParam("idasset") Long id, @RequestBody Asset updatedAsset) {
+
+        Asset asset = assetService.updateAsset(updatedAsset,id);
         return new ResponseEntity<>(asset, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{assetid}")
+    @DeleteMapping("/delete/{assetid}")
     public ResponseEntity<Void> deleteAsset(@PathVariable("assetid") Long id) {
         assetService.deleteAssetById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -70,15 +70,15 @@ public class AssetRestController {
         }
     }
 
-    @GetMapping("/leasing/{id}/residualvalue")
-    public float calculateResidualValue(@PathVariable Long id, @RequestParam("initialValue") float initialValue) {
+    @GetMapping("/{id}/residualvalue")
+    public float calculateResidualValue(@PathVariable Long id) {
 
         Optional<Leasing> leasingOptional = leasingService.getLeasingById(id);
 
         if (leasingOptional.isPresent()) {
             Leasing leasing = leasingOptional.get();
 
-            return assetService.calculateResidualValue(initialValue, leasing);
+            return assetService.calculateResidualValue(leasing);
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Leasing with ID " + id + " not found");
         }
@@ -110,8 +110,8 @@ public class AssetRestController {
         Asset asset = optionalAsset.orElseThrow(() -> new IllegalArgumentException("L'actif avec l'ID spécifié n'existe pas."));
 
 
-        // Vérifiez si l'actif et le contrat de location associé existent
-        if (asset == null || asset.getLeasing() == null) {
+        // Vérifiez si l'actif et le contrat de location associé existent || asset.getLeasing() == null
+        if (asset == null ) {
             throw new IllegalArgumentException("L'actif ou le contrat de location associé est null.");
         }
 

@@ -2,10 +2,7 @@ package tn.esprit.dima_maak.serviceimpl;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import tn.esprit.dima_maak.entities.Asset;
-import tn.esprit.dima_maak.entities.AssetType;
-import tn.esprit.dima_maak.entities.Leasing;
-import tn.esprit.dima_maak.entities.User;
+import tn.esprit.dima_maak.entities.*;
 import tn.esprit.dima_maak.repositories.IAssetRepository;
 import tn.esprit.dima_maak.repositories.ILeasingRepository;
 import tn.esprit.dima_maak.repositories.UserRepository;
@@ -27,9 +24,13 @@ public class AssetServiceImpl implements IAssetService {
 
     private IAssetRepository assetRepository;
     private final UserRepository userRepository;
+    private final ILeasingRepository leasingRepository;
 
-
-    public Asset createAsset(Asset asset) {
+    public Asset createAsset(Asset asset,Long iduser) {
+       // Leasing leasing =leasingRepository.findById(idlea).orElse(null);
+        User user=userRepository.findById(iduser).orElse(null);
+        //asset.setLeasing(leasing);
+        asset.setUser(user);
         return assetRepository.save(asset);
     }
 
@@ -37,8 +38,27 @@ public class AssetServiceImpl implements IAssetService {
         return assetRepository.findById(idasset);
     }
 
-    public Asset updateAsset(Asset updatedAsset) {
-        return assetRepository.save(updatedAsset);
+    public Asset updateAsset(Asset updatedAsset,Long idasset) {
+
+        Asset asset= assetRepository.findById(idasset).orElse(null);
+        asset.setType(updatedAsset.getType());
+        asset.setDescription(updatedAsset.getDescription());
+        asset.setInitialAmount(updatedAsset.getInitialAmount());
+        asset.setPurchasedate(updatedAsset.getPurchasedate());
+        asset.setWarrantyExpirationDate(updatedAsset.getWarrantyExpirationDate());
+        asset.setMaintenanceStatus(updatedAsset.getMaintenanceStatus());
+        asset.setLastMaintenanceDate(updatedAsset.getLastMaintenanceDate());
+    asset.setFunctions(updatedAsset.getFunctions());
+    asset.setPower(updatedAsset.getPower());
+    asset.setProductionCapacity(updatedAsset.getProductionCapacity());
+    asset.setOperationalEfficiency(updatedAsset.getOperationalEfficiency());
+    asset.setServiceLevel(updatedAsset.getServiceLevel());
+    asset.setFuelConsumption(updatedAsset.getFuelConsumption());
+    asset.setEngineCondition(updatedAsset.getEngineCondition());
+    asset.setMileage(updatedAsset.getMileage());
+    asset.setAnnualInterestRate(updatedAsset.getAnnualInterestRate());
+
+        return assetRepository.save(asset);
     }
 
     public void deleteAssetById(Long id) {
@@ -64,13 +84,13 @@ public class AssetServiceImpl implements IAssetService {
 
 
     @Override
-    public float calculateResidualValue(float initialValue, Leasing leasing) {
-        // Calcul de la durée du leasing
+    public float calculateResidualValue( Leasing leasing) {
+
         int leaseDuration = calculateLeaseDuration(leasing);
 
 
-        // Supposons une dépréciation linéaire sur la durée du leasing
-        float annualDepreciation = initialValue / leaseDuration;
+
+        float annualDepreciation = leasing.getInitialValue() / leaseDuration;
 
 
         // Calcul de la dépréciation totale sur la durée du leasing
@@ -78,30 +98,31 @@ public class AssetServiceImpl implements IAssetService {
 
 
         // Calcul de la valeur résiduelle
-        float residualValue = initialValue - totalDepreciation;
+        float residualValue = leasing.getInitialValue() - totalDepreciation;
 
 
         return residualValue;
 
     }
-
+//|| asset.getLeasing() == null
     public float calculateMonthlyPayment(Asset asset) {
-        if (asset == null || asset.getLeasing() == null) {
-            throw new IllegalArgumentException("L'actif ou le contrat de location associé est null.");
-        }
-
-        Leasing leasing = asset.getLeasing();
-        float totalAmount = asset.getInitialAmount() != null ? asset.getInitialAmount() : 0.0f;
-        float additionalFees = leasing.getAdditionalfee() != null ? leasing.getAdditionalfee() : 0.0f;
-        int durationMonths = calculateLeaseDuration(leasing);
-
-
-       float monthlyInterestRate = asset.getAnnualInterestRate() / 12 / 100;
-
-        float monthlyPayment = (totalAmount + additionalFees) * monthlyInterestRate /
-                (1 - (float) Math.pow(1 + monthlyInterestRate, -durationMonths));
-
-        return Math.round(monthlyPayment * 100) / 100.0f;
+//        if (asset == null ) {
+//            throw new IllegalArgumentException("L'actif ou le contrat de location associé est null.");
+//        }
+//
+//        Leasing leasing = asset.getLeasing();
+//        float totalAmount = asset.getInitialAmount() != null ? asset.getInitialAmount() : 0.0f;
+//        float additionalFees = leasing.getAdditionalfee() != null ? leasing.getAdditionalfee() : 0.0f;
+//        int durationMonths = calculateLeaseDuration(leasing);
+//
+//
+//       float monthlyInterestRate = asset.getAnnualInterestRate() / 12 / 100;
+//
+//        float monthlyPayment = (totalAmount + additionalFees) * monthlyInterestRate /
+//                (1 - (float) Math.pow(1 + monthlyInterestRate, -durationMonths));
+//
+//        return Math.round(monthlyPayment * 100) / 100.0f;
+        return 0f;
     }
 
     public float getInitialAmount(Asset asset) {
@@ -112,7 +133,7 @@ public class AssetServiceImpl implements IAssetService {
 
 
 
-    public float calculateAdditionalFees(Leasing leasing) {
+    /*public float calculateAdditionalFees(Leasing leasing) {
         AssetType assetType = leasing.getAsset().getType();
         int leaseDurationMonths = calculateLeaseDuration(leasing);
 
@@ -139,7 +160,8 @@ public class AssetServiceImpl implements IAssetService {
         }
 
         return additionalFees;
-    }
+    }*/
+
 
 
 
@@ -224,13 +246,7 @@ public class AssetServiceImpl implements IAssetService {
         StringBuilder comparisonResult = new StringBuilder();
 
 
-        if (!before.getFunctions().equals(after.getFunctions())) {
-            comparisonResult.append("Changement des fonctions médicales disponibles: ")
-                    .append(before.getFunctions())
-                    .append(" -> ")
-                    .append(after.getFunctions())
-                    .append("\n");
-        }
+
 
 
         if (!before.getMaintenanceStatus().equals(after.getMaintenanceStatus())) {
@@ -251,13 +267,8 @@ public class AssetServiceImpl implements IAssetService {
         }
 
 
-        if (!before.getLastMaintenanceDate().equals(after.getLastMaintenanceDate())) {
-            comparisonResult.append("Changement de la dernière date de maintenance: ")
-                    .append(before.getLastMaintenanceDate())
-                    .append(" -> ")
-                    .append(after.getLastMaintenanceDate())
-                    .append("\n");
-        }
+
+
 
         return comparisonResult.toString();
     }
@@ -267,7 +278,7 @@ public class AssetServiceImpl implements IAssetService {
     private String compareVehicleEquipment(Asset before, Asset after) {
         StringBuilder comparisonResult = new StringBuilder();
 
-        // Comparaison spécifique pour les véhicules
+
         // Comparaison de la consommation de carburant
         if (before.getFuelConsumption() != after.getFuelConsumption()) {
             comparisonResult.append("Changement de la consommation de carburant: ")
@@ -303,8 +314,7 @@ public class AssetServiceImpl implements IAssetService {
 
     public Map<AssetType, Long> getAssetTypeDistribution() {
         List<Asset> leasedAssets = getAll(); // Obtenez tous les actifs loués
-       // logger.info("Nombre d'actifs récupérés : {}", leasedAssets.size());
-        // Initialisez un HashMap pour stocker la répartition des types d'actifs
+
         Map<AssetType, Long> assetTypeDistribution = new HashMap<>();
 
         // Parcourez la liste des actifs loués et comptez le nombre d'actifs pour chaque type

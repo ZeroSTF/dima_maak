@@ -1,5 +1,6 @@
 package tn.esprit.dima_maak.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import jakarta.persistence.*;
 
@@ -39,14 +40,25 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UStatus status;
     private Integer lp;
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Loyalty> loyalties;
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Notification> notifications;
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Loan> loans;
-    @OneToOne(mappedBy = "user")
-    private Leasing leasing;
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    private List<Leasing> leasing;
+
+    @OneToMany(mappedBy = "user")
+    List<Asset> assets;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    List<Demande> demandeList;
+
 
 }
 

@@ -12,12 +12,12 @@ import java.util.Optional;
 
 
     public interface IAssetService {
-        Asset createAsset(Asset a);
+        public Asset createAsset(Asset asset,Long iduser)  ;
         Optional<Asset> getAssetById(Long id);
-        Asset updateAsset(Asset updatedAsset);
+        public Asset updateAsset(Asset updatedAsset,Long idasset);
         void deleteAssetById(Long id);
         List<Asset> getAll();
-        float calculateResidualValue(float initialValue, Leasing leasing) ;
+        float calculateResidualValue(Leasing leasing) ;
 
       //  public float calculateMonthlyPayment(Asset asset) ;
       float getInitialAmount(Asset asset) ;

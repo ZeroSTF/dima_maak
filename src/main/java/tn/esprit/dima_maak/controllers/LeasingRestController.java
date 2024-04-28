@@ -23,8 +23,8 @@ public class LeasingRestController {
 
 
     @PostMapping("/add")
-    public Leasing createLeasing(@RequestBody Leasing leasing) {
-        return leasingService.createLeasing(leasing);
+    public Leasing createLeasing(@RequestBody Leasing leasing,@RequestParam("iduser") Long iduser,@RequestParam("iddemende") Long iddemende) {
+        return leasingService.createLeasing(leasing,iduser,iddemende);
     }
 
     @GetMapping("/{leaseid}")
@@ -50,7 +50,7 @@ public class LeasingRestController {
         }
     }
     @PutMapping("/assignusertoleasing/{id}/{leaseid}")
-    public Leasing assignUserToLeasing(@PathVariable Long id, @PathVariable Long leaseid) {
+    public String assignUserToLeasing(@PathVariable Long id, @PathVariable Long leaseid) {
         return leasingService.assignUserToLeasing(id , leaseid );
     }
 

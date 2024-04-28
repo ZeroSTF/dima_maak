@@ -6,12 +6,13 @@ import tn.esprit.dima_maak.entities.Leasing;
 import java.util.Optional;
 
 public interface ILeasingService {
-    Leasing createLeasing(Leasing l );
+    public Leasing createLeasing(Leasing l,Long iduser,Long iddemande);
     Optional<Leasing> getLeasingById(Long leaseid);
-    Leasing updateLeasing(Leasing updatedLeasing);
+    public Iterable<Leasing> leasingList ();
+    public Leasing updateLeasing(Leasing l,Long id) ;
     void deleteLeasingById(Long leaseid);
 
-    Leasing assignUserToLeasing(Long id, Long leaseid) ;
+   String assignUserToLeasing(Long id, Long leaseid) ;
     float calculateAnnualInterestRate(Leasing leasing);
     public float calculateLatePaymentPercentage(Leasing leasing);
 
