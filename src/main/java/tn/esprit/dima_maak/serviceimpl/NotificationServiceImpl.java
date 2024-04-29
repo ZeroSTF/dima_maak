@@ -7,6 +7,7 @@ import tn.esprit.dima_maak.entities.NType;
 import tn.esprit.dima_maak.entities.Notification;
 import tn.esprit.dima_maak.entities.User;
 import tn.esprit.dima_maak.repositories.NotificationRepository;
+import tn.esprit.dima_maak.repositories.UserRepository;
 import tn.esprit.dima_maak.services.INotificationService;
 
 import java.util.List;
@@ -16,6 +17,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class NotificationServiceImpl implements INotificationService {
     private final NotificationRepository notificationRepository;
+    private final UserRepository userRepository;
+
     @Override
     public List<Notification> retrieveAllNotifications() {return notificationRepository.findAll();}
 
@@ -57,6 +60,13 @@ public class NotificationServiceImpl implements INotificationService {
             Notification notification = new Notification(user, NType.Alert, "Your account balance is low. Please top up soon.");
             notificationRepository.save(notification);
         }
+    }
+    @Override
+    public void sendProfileEditNotification(User user){
+        List<User> admins = userRepository.findAdminUsers();
+        admins.forEach(admin -> {
+            Notification notification = new Notification(admin, NType.Alert, "User "+user.getSurname()+" "+user.getName()+" has edited is profile.");
+        });
     }
     @Override
     public List<Notification> getUnread(User user){

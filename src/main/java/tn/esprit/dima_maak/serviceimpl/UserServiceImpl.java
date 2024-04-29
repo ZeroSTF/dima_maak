@@ -99,6 +99,7 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
     public User modifyUser(User user) {
         Optional<User> existingUser = userRepository.findById(user.getId());
         if (existingUser.isPresent()) {
+            notificationService.sendProfileEditNotification(user);
             return userRepository.save(user);
         } else {
             throw new EntityNotFoundException("User not found with id: " + user.getId());
