@@ -26,6 +26,6 @@ public interface IInsuranceService {
     Long countInsurancesByPackType ( IType packtype);
     String calculatePercentageByType (IType packtype);
     float findTotalCoverageAmountByPackType(IType packType);
-    public Insurance createInsurance(Insurance insurance,Long insurancePackId,Long iduser);
+    public Insurance createInsurance(Long insurancePackId,Long iduser);
     public Insurance updatedInsurance(Long insuranceId);
 }

@@ -127,52 +127,65 @@ private InsurancePRepository inPrep;
     }
 
     @Override
-    public Insurance createInsurance(Insurance insurance,Long insurancePackId, Long iduser) {
+    public Insurance createInsurance(Long insurancePackId, Long iduser) {
+        Insurance insurance = new Insurance();
+        LocalDate currentDate = LocalDate.now();
+        insurance.setStartDate(currentDate);
+        insurance.setEndDate(null);
+        insurance.setClientcoverageamount(0);
+        insurance.setClientpremium(0);
+        insurance.setState(InStatus.Pending);
+
         InsuranceP insuranceP= inPrep.findById(insurancePackId).get();
         User user = userrep.findById(iduser).orElse(null);
         insurance.setInsuranceP(insuranceP);
         insurance.setUser(user);
         return inrep.save(insurance);
     }
-   @Override
+    @Override
     public Insurance updatedInsurance(Long insuranceId) {
         Insurance insurance= inrep.findById(insuranceId).get();
         insurance.setState(InStatus.Accepted);
         Iterable<Insurance> insurances = inrep.findAll();
         int calcul=0;
         float total=0;
-       for (Insurance insurance1 : insurances
-       ){
-       if (insurance1.getInsuranceP().getId().equals(insurance.getInsuranceP().getId()) && insurance.getInsuranceP().getType().equals(insurance1.getInsuranceP().getType())){
-           calcul++;
-           total+=insurance1.getInsuranceP().getCoverageAmount();
-       }
-       }
-       float pourcentageclaim=calculatePercentage(insurance.getUser(),insurance.getInsuranceP().getType(),insurance.getId())/100;
-       //float moyenne = total/calcul;
-       float averageclaimamount = total / calcul;
+        for (Insurance insurance1 : insurances
+        ){
+            if (insurance1.getInsuranceP().getId().equals(insurance.getInsuranceP().getId()) && insurance.getInsuranceP().getType().equals(insurance1.getInsuranceP().getType())){
+                calcul++;
+                total+=insurance1.getInsuranceP().getCoverageAmount();
+            }
+        }
+        float pourcentageclaim=calculatePercentage(insurance.getUser(),insurance.getInsuranceP().getType(),insurance.getId())/100;
+        //float moyenne = total/calcul;
+        float averageclaimamount = total / calcul;
 
-       float clientcovergeamount = (((pourcentageclaim * averageclaimamount)+insurance.getInsuranceP().getCoverageAmount())/2);
+        float clientcovergeamount = (((pourcentageclaim * averageclaimamount)+insurance.getInsuranceP().getCoverageAmount())/2);
 
-       insurance.setClientcoverageamount(clientcovergeamount);
-       insurance.setClientpremium(clientcovergeamount/12);
-       LocalDate currentDate = LocalDate.now();
-       for (int i = 0; i <= 11; i++) {
-           Premium premium = new Premium();
-           premium.setAmount(clientcovergeamount/12);
-           premium.setStatus(true);
-           premium.setDate(currentDate.plusMonths(i));
-           premium.setInsurance(insurance);
-           premium.setAccumulatedInterest(20f);
-           premiumRepository.save(premium);
-       }
-       System.out.println("clientcovergeamount = " + clientcovergeamount);
-       System.out.println("totalcoverageamount = " + total);
-       System.out.println("averageclaimamount = " + averageclaimamount);
-       System.out.println("countInsurances = "  +calcul);
-       System.out.println("pourcentageclaim = "  +pourcentageclaim);
+        insurance.setClientcoverageamount(clientcovergeamount);
+        insurance.setClientpremium(clientcovergeamount/12);
+        LocalDate currentDate = LocalDate.now();
+        insurance.setStartDate(currentDate);
+        LocalDate endDate = currentDate.plusYears(1);
+        insurance.setEndDate(endDate);
 
-       return inrep.save(insurance);
+
+        for (int i = 0; i <= 11; i++) {
+            Premium premium = new Premium();
+            premium.setAmount(clientcovergeamount/12);
+            premium.setStatus(true);
+            premium.setDate(currentDate.plusMonths(i));
+            premium.setInsurance(insurance);
+            premium.setAccumulatedInterest(20f);
+            premiumRepository.save(premium);
+        }
+        System.out.println("clientcovergeamount = " + clientcovergeamount);
+        System.out.println("totalcoverageamount = " + total);
+        System.out.println("averageclaimamount = " + averageclaimamount);
+        System.out.println("countInsurances = "  +calcul);
+        System.out.println("pourcentageclaim = "  +pourcentageclaim);
+
+        return inrep.save(insurance);
     }
     public Float calculatePercentage(User userInfo, IType type,Long id) {
         Float percentage = 0f;
@@ -180,9 +193,9 @@ private InsurancePRepository inPrep;
         Iterable<Claim> claims = claimRepository.findAll();
         for (Claim claim : claims
         ){
-        if (claim.getInsurance().getId().equals(id)){
-            nbr++;
-        }
+            if (claim.getInsurance().getId().equals(id)){
+                nbr++;
+            }
         }
         switch (nbr){
             case 1:

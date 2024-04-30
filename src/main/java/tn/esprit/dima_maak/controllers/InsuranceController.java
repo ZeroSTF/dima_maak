@@ -27,8 +27,8 @@ public class InsuranceController {
 
     }
     @PostMapping("/savepackanduser/{idpack}/{iduser}")
-    public Insurance savepackanduser(@RequestBody Insurance insurance , @PathVariable Long idpack,@PathVariable Long iduser ){
-        return insuranceservice.createInsurance(insurance,idpack,iduser);
+    public Insurance savepackanduser(@PathVariable Long idpack,@PathVariable Long iduser ){
+        return insuranceservice.createInsurance(idpack,iduser);
 
     }
     @PutMapping ("/updatedinc/{Idinsurance}")
