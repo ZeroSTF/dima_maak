@@ -8,7 +8,8 @@ import java.util.List;
 public interface IVentureServices {
 
     Venture addVenture(Venture venture);
-    Venture updateVenture(Venture venture);
+    /*Venture updateVenture(Venture venture);*/
+    public Venture updateVenture(Long idV, Venture venture);
     boolean deleteVenture (Long idV);
     List<Venture> getAllVenture();
     Venture getVentureById(Long idV);

@@ -27,23 +27,14 @@ public class Investment implements Serializable {
     private User user;
 
 
-    @JsonIgnore
+    //@JsonIgnore
     @ManyToOne
-    /*@JoinColumn(name = "venture_id")*/
     Venture venture;
+
     @JsonIgnore
     @OneToMany(mappedBy = "investment", cascade = CascadeType.ALL)
     private List<Return> returns;
 
-   /* public static class ReturnStats {
-        private int numberOfReturns;
-        private float totalReturnInterest;
-
-        public ReturnStats(int numberOfReturns, double totalReturnInterest) {
-            this.numberOfReturns = numberOfReturns;
-            this.totalReturnInterest = (float) totalReturnInterest;
-        }
-    }*/
 
 
 

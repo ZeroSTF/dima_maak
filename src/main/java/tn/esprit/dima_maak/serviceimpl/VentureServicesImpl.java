@@ -30,10 +30,14 @@ public class VentureServicesImpl implements IVentureServices {
     @Override
     public Venture addVenture(Venture venture){ return ventureRepository.save(venture);}
 
-    @Override
+   /* @Override
     public Venture updateVenture(Venture venture){
         return ventureRepository.save(venture);
-    }
+    }*/
+    @Override
+   public Venture updateVenture(Long idV, Venture venture){
+        venture.setIdV(idV);
+       return ventureRepository.save(venture);}
     @Override
     public boolean deleteVenture(Long idV) {
         Optional<Venture> ventureOptional = ventureRepository.findById(idV);
@@ -98,9 +102,9 @@ public class VentureServicesImpl implements IVentureServices {
         if (row.getCell(1) != null) {
             venture.setVentureName(row.getCell(1).getStringCellValue());
         }
-        if (row.getCell(2) != null) {
-            venture.setVentureType(VType.valueOf(row.getCell(2).getStringCellValue()));
-        }
+        //if (row.getCell(2) != null) {
+         //   venture.setVentureType(VType.valueOf(row.getCell(2).getStringCellValue()));
+        //}
         if (row.getCell(3) != null) {
             venture.setDescription(row.getCell(3).getStringCellValue());
         }
@@ -144,9 +148,9 @@ public class VentureServicesImpl implements IVentureServices {
         if (!venturesToUpdate.isEmpty()) {
             venturesToUpdate.forEach(venture -> venture.setStatus(IStatus.CLOSED));
             ventureRepository.saveAll(venturesToUpdate);
-            return true; // La mise à jour a été effectuée avec succès
+            return true;
         } else {
-            return false; // Aucune Venture n'a été trouvée avec une date d'expiration dépassée
+            return false;
         }
     }
 

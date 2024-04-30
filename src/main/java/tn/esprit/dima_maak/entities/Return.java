@@ -23,6 +23,7 @@ public class Return implements Serializable {
     private Float returnAmount;
     private Float returnInterest;
     private Long sharesGain;
+
     @ManyToOne
     private Investment investment;
 

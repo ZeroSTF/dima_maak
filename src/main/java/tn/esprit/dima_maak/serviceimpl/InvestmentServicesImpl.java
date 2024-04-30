@@ -60,6 +60,8 @@ public class InvestmentServicesImpl implements IInvestmentServices {
 
 
 
+
+
     @Override
     public List<Investment> getAllInvestment() {
         return (List<Investment>) investmentRepository.findAll();

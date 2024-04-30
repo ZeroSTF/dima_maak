@@ -37,10 +37,6 @@ public class Venture implements Serializable {
     private Long loanDuration;
     private  Float dividendPerShare;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "location_id", referencedColumnName = "id")
-    private Location location;
-
     @Column(columnDefinition = "TEXT")
     private String details;
     @ManyToOne
