@@ -1,6 +1,6 @@
 package tn.esprit.dima_maak.entities;
 
-public enum INStatus {
+public enum INNStatus {
     ACTIVE,
     DISABLED
 }

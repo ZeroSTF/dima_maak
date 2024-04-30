@@ -5,9 +5,8 @@ import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import java.io.Serializable;
@@ -27,7 +26,7 @@ public class Investment implements Serializable{
     private Float amount;
     private Float totalInvestment;
     @Enumerated(EnumType.STRING)
-    private INStatus status;
+    private INNStatus status;
     @ManyToOne
     private User user;
     //@JsonIgnore
