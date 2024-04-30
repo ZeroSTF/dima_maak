@@ -13,6 +13,7 @@ import java.util.List;
 
 @RequestMapping("/return")
 @RestController
+@CrossOrigin("*")
 @RequiredArgsConstructor
 public class ReturnRestController {
 

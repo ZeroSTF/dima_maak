@@ -18,6 +18,7 @@ public interface IInvestmentServices {
     boolean deleteInvestment(Long id);
 
     List<Investment> getAllInvestment();
+    //List<Investment> getAllInvestment();
 
     Investment getInvestmentById(Long id);
     Investment assignInvestmentToVenture(Long id, Long idV);

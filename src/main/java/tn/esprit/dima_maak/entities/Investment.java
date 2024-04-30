@@ -30,7 +30,7 @@ public class Investment implements Serializable{
     private INStatus status;
     @ManyToOne
     private User user;
-    @JsonIgnore
+    //@JsonIgnore
     @ManyToOne
     Venture venture;
     @JsonIgnore

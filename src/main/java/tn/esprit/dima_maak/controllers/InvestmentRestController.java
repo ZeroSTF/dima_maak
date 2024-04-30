@@ -22,6 +22,7 @@ import java.util.Map;
 
 @RequestMapping("/investment")
 @RestController
+@CrossOrigin("*")
 @RequiredArgsConstructor
 public class InvestmentRestController {
 
@@ -61,7 +62,7 @@ public class InvestmentRestController {
     }
 
     @GetMapping("/getAllInvestment")
-    public List<Investment> getVenture() {
+    public List<Investment> getAllInvestment() {
         return ResponseEntity.ok().body(iInvestmentServices.getAllInvestment()).getBody();
 
     }
@@ -114,12 +115,7 @@ public class InvestmentRestController {
     }
 
 
-    /* @PostMapping("/AddAndDoInvestment/{idV}")
-    public Investment AddAndDoInvestment(@RequestBody Investment investment, @PathVariable Long idV) {
-        return iInvestmentServices.AddAndDoInvestment(investment, idV);
-    }*/
-
-    @PutMapping("/AddAndDoInvestment/{idV}")
+    @PutMapping("/AddAndDoInvestment/{idV}")//tekhdem
     public String AddAndDoInvestment(@RequestBody Investment investment, @PathVariable Long idV) {
         String resultMessage = iInvestmentServices.AddAndDoInvestment(investment, idV);
         return resultMessage;
@@ -155,7 +151,7 @@ public class InvestmentRestController {
         }
     }
 
-    @PostMapping("/{idV}/addInvestmentAndAssignToVenture-generatepdf&totalInvest")
+    @PostMapping("/{idV}/addInvestmentAndAssignToVenture-generatepdf&totalInvest")//tekhdem
     public ResponseEntity<byte[]> addInvestmentAndAssignToVenture(@RequestBody Investment investment, @PathVariable Long idV) {
         try {
             byte[] pdfBytes = iInvestmentServices.addInvestmentAndAssignToVenture(investment, idV);
@@ -177,11 +173,5 @@ public class InvestmentRestController {
     public List<UserScore> getUserScores() {
         return iInvestmentServices.calculateUserScores();
     }
-
-    //////////////////////////////////////////
-   /* @GetMapping("/return-statistics")
-    public Map<User, Investment.ReturnStats> getReturnStatisticsByUserId() {
-        return iInvestmentServices.getReturnStatisticsByUserId();
-    }*/
 
 }
