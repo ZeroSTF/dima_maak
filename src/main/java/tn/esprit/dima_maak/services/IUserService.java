@@ -20,4 +20,8 @@ public interface IUserService {
     public Boolean verifyToken(String token);
     public String assessRisk(Long userId);
     public String generateAffiliateLink(User user);
+
+    ///KHEDMET RAMI
+    void updateBalance(Long id, float returnAmount, float returnInterest, long sharesGain, float totalInvestment);
+    public boolean hasInvestments(Long id);
 }

@@ -51,6 +51,9 @@ public class User implements UserDetails{
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Loan> loans;
     @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Investment> investments;
+    @JsonIgnore
     @OneToOne(mappedBy = "user")
     private Leasing leasing;
     @JsonIgnore

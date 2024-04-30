@@ -15,6 +15,11 @@ import org.springframework.web.server.ResponseStatusException;
 import tn.esprit.dima_maak.entities.User;
 import tn.esprit.dima_maak.services.IUserService;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import tn.esprit.dima_maak.entities.*;
+import tn.esprit.dima_maak.services.*;
+
 import java.io.File;
 
 import java.io.IOException;
@@ -77,7 +82,7 @@ public class UserRestController {
 
     @Operation(description = "assess user risk")
     @GetMapping("/assess/{user-id}")
-    public ResponseEntity<String> assessUserRisk(@PathVariable("user-id") Long userId){
+    public ResponseEntity<String> assessUserRisk(@PathVariable("user-id") Long userId) {
         String riskCategory;
         try {
             riskCategory = userService.assessRisk(userId);
@@ -124,28 +129,30 @@ public class UserRestController {
             currentUser.setPhoto(fileName);
             userService.modifyUser(currentUser);
             return ResponseEntity.ok().body("Profile picture uploaded successfully: "
-                    + currentUser.getSurname()+" "
+                    + currentUser.getSurname() + " "
                     + currentUser.getName()
-                    +", your profile picture file name is: "
-                    +currentUser.getPhoto());
+                    + ", your profile picture file name is: "
+                    + currentUser.getPhoto());
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload profile picture");
         }
     }
+
     @Operation(description = "generate affiliate link")
     @GetMapping("/generateAffiliateLink")
-    public ResponseEntity<String> generateAffiliateLink(){
+    public ResponseEntity<String> generateAffiliateLink() {
         ////////////retrieving current user/////////////////////////////////
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentEmail = authentication.getName();
         User currentUser = userService.loadUserByEmail(currentEmail);
         ////////////////////////////////////////////////////////////////////
-        if (currentUser != null ) {
+        if (currentUser != null) {
             return ResponseEntity.ok(userService.generateAffiliateLink(currentUser));
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized access");
         }
     }
+
     @Operation(description = "Get the current user")
     @GetMapping("/current")
     public ResponseEntity<?> getCurrent() {
@@ -154,12 +161,12 @@ public class UserRestController {
             ////////////retrieving current user/////////////////////////////////
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String currentEmail = authentication.getName();
-             currentUser = userService.loadUserByEmail(currentEmail);
+            currentUser = userService.loadUserByEmail(currentEmail);
             ////////////////////////////////////////////////////////////////////
-        }catch(Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage()) ;
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-        return ResponseEntity.ok().body(currentUser) ;
+        return ResponseEntity.ok().body(currentUser);
     }
 
     @Operation(description = "Get photo")
@@ -174,4 +181,16 @@ public class UserRestController {
         return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG)
                 .body(imageData);
     }
+
+    //////KHEDMET RAMI
+    @PutMapping("/users/{id}/updateBalance")
+    public ResponseEntity<String> updateBalance(@PathVariable Long id, @RequestParam float returnAmount, @RequestParam float returnInterest, @RequestParam long sharesGain, @RequestParam float totalInvestment) {
+        boolean hasInvestments = userService.hasInvestments(id); // Vérifier si l'utilisateur a des investissements
+        if (!hasInvestments) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User does not have any associated investments.");
+        }
+        userService.updateBalance(id, returnAmount, returnInterest, sharesGain, totalInvestment);
+        return ResponseEntity.ok("Balance updated successfully.");
+    }
+
 }
