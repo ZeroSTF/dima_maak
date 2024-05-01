@@ -168,8 +168,8 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
     public User loadUserByEmail(String email) {return userRepository.findByEmail(email).get();}
 
 /////////////////////////////// PROFILE PICTURE UPLOAD LOGIC///////////////////////////////////////////////////////////
-    @Override
     // Method to save profile picture
+    @Override
     public String saveProfilePicture(MultipartFile file) throws IOException {
         // Create a unique file name to prevent conflicts
         String fileName = generateUniqueFileName(file.getOriginalFilename());

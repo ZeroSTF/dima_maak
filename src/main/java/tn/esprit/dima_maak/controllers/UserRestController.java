@@ -126,7 +126,7 @@ public class UserRestController {
             User currentUser = userService.loadUserByEmail(currentEmail);
             ////////////////////////////////////////////////////////////////////
             String fileName = userService.saveProfilePicture(file);
-            if(currentUser.getPhoto()!="default.jpg"){
+            if(!currentUser.getPhoto().equals("default.jpg")){
                 userService.deleteProfilePicture(currentUser.getPhoto());
             }
             currentUser.setPhoto(fileName);
