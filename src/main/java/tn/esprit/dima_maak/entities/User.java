@@ -113,6 +113,7 @@ public class User implements UserDetails{
         this.salary = salary;
         this.job = job;
         this.rib = rib;
+        this.setPhoto("default.jpg");
 
         // Set default values for other fields
         this.role = new HashSet<>(); // Initialize empty set for roles
