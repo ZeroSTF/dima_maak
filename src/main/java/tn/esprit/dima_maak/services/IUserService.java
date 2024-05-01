@@ -10,13 +10,14 @@ public interface IUserService {
     public List<User> retrieveAllUsers();
     public User retrieveUser(Long id);
     public User addUser(User c);
-    public void removeUser(Long id);
+    public void removeUser(Long id) throws IOException;
     public User modifyUser(User User);
     public User registerUser(User user);
     public LoginResponseDTO login(String email, String password);
     public void logout();
     public User loadUserByEmail(String email);
     public String saveProfilePicture(MultipartFile file)throws IOException;
+    void deleteProfilePicture(String fileName) throws IOException;
     public Boolean verifyToken(String token);
     public String assessRisk(Long userId);
     public String generateAffiliateLink(User user);

@@ -88,10 +88,13 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
     }
 
     @Override
-    public void removeUser(Long id) {
+    public void removeUser(Long id) throws IOException {
         Confirmation c = confirmationRepository.findConfirmationByUser(userRepository.findById(id).get());
         if(c!=null){
             confirmationRepository.delete(c);
+            if(userRepository.findById(id).get().getPhoto()!="default.jpg"){
+                this.deleteProfilePicture(userRepository.findById(id).get().getPhoto());
+            }
         }
         userRepository.deleteById(id);
     }
@@ -165,6 +168,7 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
     public User loadUserByEmail(String email) {return userRepository.findByEmail(email).get();}
 
 /////////////////////////////// PROFILE PICTURE UPLOAD LOGIC///////////////////////////////////////////////////////////
+    @Override
     // Method to save profile picture
     public String saveProfilePicture(MultipartFile file) throws IOException {
         // Create a unique file name to prevent conflicts
@@ -178,6 +182,24 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
         Files.copy(file.getInputStream(), destPath);
 
         return fileName;
+    }
+    @Override
+    public void deleteProfilePicture(String fileName) throws IOException {
+        // Construct the file path
+        String filePath = UPLOAD_DIR + fileName;
+
+        // Create a Path object for the file
+        Path path = Paths.get(filePath);
+
+        // Check if the file exists
+        if (Files.exists(path)) {
+            // Delete the file
+            Files.delete(path);
+            System.out.println("Profile picture deleted successfully: " + fileName);
+        } else {
+            // File doesn't exist
+            System.out.println("Profile picture not found: " + fileName);
+        }
     }
 
     // Helper method to generate a unique file name
