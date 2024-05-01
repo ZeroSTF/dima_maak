@@ -69,5 +69,21 @@ public class NotificationRestController {
         }
         return ResponseEntity.ok().body(notificationService.getUnread(currentUser));
     }
+
+    @Operation(description = "Get all of the current user's notifications")
+    @GetMapping("/getAllByUser")
+    public ResponseEntity<?> getAllByUser() {
+        User currentUser;
+        try {
+            ////////////retrieving current user/////////////////////////////////
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String currentEmail = authentication.getName();
+            currentUser = userService.loadUserByEmail(currentEmail);
+            ////////////////////////////////////////////////////////////////////
+        }catch(Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage()) ;
+        }
+        return ResponseEntity.ok().body(notificationService.getByUser(currentUser));
+    }
     
 }

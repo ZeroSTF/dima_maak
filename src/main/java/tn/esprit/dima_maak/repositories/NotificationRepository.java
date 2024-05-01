@@ -10,5 +10,6 @@ import java.util.List;
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
     List<Notification> findByUserAndStatus(User user, boolean status);
+    List<Notification> findNotificationsByUser(User user);
 
 }

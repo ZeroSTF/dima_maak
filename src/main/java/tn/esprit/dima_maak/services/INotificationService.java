@@ -14,4 +14,5 @@ public interface INotificationService {
     void sendLowBalanceNotification(User user, float threshold);
     void sendProfileEditNotification(User user);
     public List<Notification> getUnread(User user);
+    List<Notification> getByUser(User user);
 }
