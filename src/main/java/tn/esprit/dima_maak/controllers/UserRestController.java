@@ -59,7 +59,7 @@ public class UserRestController {
 
     @Operation(description = "delete a user")
     @DeleteMapping("/delete/{user-id}")
-    public void removeUser(@PathVariable("user-id") Long userId) {
+    public void removeUser(@PathVariable("user-id") Long userId) throws IOException {
         userService.removeUser(userId);
     }
 
