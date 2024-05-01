@@ -95,23 +95,6 @@ public class UserRestController {
 
 
     ///////////////////////////////////////////////////////////////PROFILE RELATED WORK (IN PROGRESS?)//////////////////////////////////////////////////////
-    @Operation(description = "update your own profile")
-    @PutMapping("/updateProfile")
-    public ResponseEntity<?> modifyProfile(@RequestBody User c) {
-        ////////////retrieving current user/////////////////////////////////
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentEmail = authentication.getName();
-        User currentUser = userService.loadUserByEmail(currentEmail);
-        ////////////////////////////////////////////////////////////////////
-
-        if (currentUser != null && currentUser.getId().equals(c.getId())) {
-            userService.modifyUser(c);
-            return ResponseEntity.ok("Profile updated successfully");
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized access");
-        }
-    }
-
     @PostMapping("/upload")
     @Operation(description = "upload your own profile picture")
     public ResponseEntity<String> uploadProfilePicture(@RequestParam("file") MultipartFile file) {
