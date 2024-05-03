@@ -12,4 +12,7 @@ public interface INotificationService {
     public void removeNotification(Long id);
     public Notification modifyNotification(Notification notification);
     void sendLowBalanceNotification(User user, float threshold);
+    void sendProfileEditNotification(User user);
+    public List<Notification> getUnread(User user);
+    List<Notification> getByUser(User user);
 }

@@ -17,16 +17,18 @@ public class Loan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalDate date;
+    private java.sql.Date date;
     private Float amount;
     private Float unpaidAmount;
     private Integer termInMonths;
     private Float interest;
-    private LocalDate startDate;
+    private java.sql.Date startDate;
     @Enumerated(EnumType.STRING)
     private LType purpose;
     @Enumerated(EnumType.STRING)
     private LStatus status;
+    @Enumerated
+    private LMethod PaimentMethod;
     @ManyToOne
     private User user;
     @OneToMany(mappedBy = "loan", cascade = CascadeType.ALL)

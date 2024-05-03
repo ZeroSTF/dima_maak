@@ -2,6 +2,8 @@ package tn.esprit.dima_maak.serviceimpl;
 
 
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -16,41 +18,36 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import tn.esprit.dima_maak.DTO.LoginResponseDTO;
 import tn.esprit.dima_maak.entities.*;
 import tn.esprit.dima_maak.services.*;
 import tn.esprit.dima_maak.repositories.*;
 import jakarta.persistence.EntityNotFoundException;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.Principal;
-import java.time.LocalDate;
 import java.util.*;
 
 @Service
 public class UserServiceImpl  implements IUserService, UserDetailsService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final LocationRepository locationRepository;
+    private final ConfirmationRepository confirmationRepository;
     private final PasswordEncoder encoder;
 
     @Lazy
     @Autowired
     AuthenticationManager authenticationManager;
     private final ITokenService tokenService;
-    private static final String UPLOAD_DIR = "uploads/profiles/";
-
-    private final ConfirmationRepository confirmationRepository;
+    public static final String UPLOAD_DIR = "uploads/profiles/";
     private final IEmailService emailService;
     private final INotificationService notificationService;
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder encoder, ITokenService tokenService, ConfirmationRepository confirmationRepository, IEmailService emailService, INotificationService notificationService) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder encoder, ITokenService tokenService, ConfirmationRepository confirmationRepository, IEmailService emailService, INotificationService notificationService, LocationRepository locationRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.encoder = encoder;
@@ -58,6 +55,7 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
         this.confirmationRepository = confirmationRepository;
         this.emailService = emailService;
         this.notificationService = notificationService;
+        this.locationRepository=locationRepository;
     }
 
     @Override
@@ -90,7 +88,14 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
     }
 
     @Override
-    public void removeUser(Long id) {
+    public void removeUser(Long id) throws IOException {
+        Confirmation c = confirmationRepository.findConfirmationByUser(userRepository.findById(id).get());
+        if(c!=null){
+            confirmationRepository.delete(c);
+            if(userRepository.findById(id).get().getPhoto()!="default.jpg"){
+                this.deleteProfilePicture(userRepository.findById(id).get().getPhoto());
+            }
+        }
         userRepository.deleteById(id);
     }
 
@@ -98,6 +103,7 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
     public User modifyUser(User user) {
         Optional<User> existingUser = userRepository.findById(user.getId());
         if (existingUser.isPresent()) {
+            notificationService.sendProfileEditNotification(user);
             return userRepository.save(user);
         } else {
             throw new EntityNotFoundException("User not found with id: " + user.getId());
@@ -126,6 +132,12 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
         user.setBalance(0f);
         user.setLp(0);
         Confirmation confirmation = new Confirmation(user);
+        if(user.getAddress()!=null) {
+            locationRepository.save(user.getAddress());
+        }
+        else{
+            System.out.println("NO LOCATION PASSED");
+        }
         userRepository.save(user);
         confirmationRepository.save(confirmation);
         /////////////////MAILING//////////////////////////
@@ -148,27 +160,46 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
             return new LoginResponseDTO("No email to return", "Invalid email/password supplied");
         }
     }
-
+    @Override
+    public void logout() {
+        SecurityContextHolder.clearContext();
+    }
     @Override
     public User loadUserByEmail(String email) {return userRepository.findByEmail(email).get();}
 
 /////////////////////////////// PROFILE PICTURE UPLOAD LOGIC///////////////////////////////////////////////////////////
     // Method to save profile picture
+    @Override
     public String saveProfilePicture(MultipartFile file) throws IOException {
         // Create a unique file name to prevent conflicts
         String fileName = generateUniqueFileName(file.getOriginalFilename());
-
         // Create the directory if it doesn't exist
         createUploadDirectoryIfNotExist();
-
         // Get the file path to save the image
         String filePath = UPLOAD_DIR + fileName;
-
         // Save the file to the specified location
         Path destPath = Paths.get(filePath);
         Files.copy(file.getInputStream(), destPath);
 
         return fileName;
+    }
+    @Override
+    public void deleteProfilePicture(String fileName) throws IOException {
+        // Construct the file path
+        String filePath = UPLOAD_DIR + fileName;
+
+        // Create a Path object for the file
+        Path path = Paths.get(filePath);
+
+        // Check if the file exists
+        if (Files.exists(path)) {
+            // Delete the file
+            Files.delete(path);
+            System.out.println("Profile picture deleted successfully: " + fileName);
+        } else {
+            // File doesn't exist
+            System.out.println("Profile picture not found: " + fileName);
+        }
     }
 
     // Helper method to generate a unique file name
@@ -257,6 +288,28 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
     public String generateAffiliateLink(User user){
             return "http://localhost:8080/register/"+user.getId();
 
+    }
+
+    //////KHEDMET RAMI
+    @Transactional
+    public void updateBalance(Long id, float returnAmount, float returnInterest, long sharesGain, float totalInvestment) {
+        User user = userRepository.findById(id).orElse(null);
+        if (user != null) {
+            // Vérifier si l'utilisateur a des investissements associés
+            if (!user.getInvestments().isEmpty()) {
+                float newBalance = user.getBalance() + returnAmount + returnInterest + sharesGain - totalInvestment;
+                user.setBalance(newBalance);
+                userRepository.save(user);
+            }
+        } else {
+            // Gérer le cas où l'utilisateur n'est pas trouvé
+            // Vous pouvez lancer une exception ou gérer d'une autre manière selon vos besoins
+        }
+    }
+
+    public boolean hasInvestments(Long id) {
+        User user = userRepository.findById(id).orElse(null);
+        return user != null && !user.getInvestments().isEmpty();
     }
 
 }
