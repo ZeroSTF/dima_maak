@@ -95,32 +95,28 @@ public class UserRestController {
 
 
     ///////////////////////////////////////////////////////////////PROFILE RELATED WORK (IN PROGRESS?)//////////////////////////////////////////////////////
-    @PostMapping("/upload")
+    @PostMapping("/upload/{user-id}")
     @Operation(description = "upload your own profile picture")
-    public ResponseEntity<String> uploadProfilePicture(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> uploadProfilePicture(@RequestParam("file") MultipartFile file, @PathVariable("user-id") Long userId) {
         // Check if file is empty
         if (file.isEmpty()) {
             return ResponseEntity.badRequest().body("Please upload a file");
         }
         try {
-            ////////////retrieving current user/////////////////////////////////
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String currentEmail = authentication.getName();
-            User currentUser = userService.loadUserByEmail(currentEmail);
-            ////////////////////////////////////////////////////////////////////
+            User user=userService.retrieveUser(userId);
             String fileName = userService.saveProfilePicture(file);
-            if(!currentUser.getPhoto().equals("default.jpg")){
-                userService.deleteProfilePicture(currentUser.getPhoto());
+            if(!user.getPhoto().equals("default.jpg")){
+                userService.deleteProfilePicture(user.getPhoto());
             }
-            currentUser.setPhoto(fileName);
-            userService.modifyUser(currentUser);
+            user.setPhoto(fileName);
+            userService.modifyUser(user);
             return ResponseEntity.ok().body("Profile picture uploaded successfully: "
-                    + currentUser.getSurname() + " "
-                    + currentUser.getName()
+                    + user.getSurname() + " "
+                    + user.getName()
                     + ", your profile picture file name is: "
-                    + currentUser.getPhoto());
+                    + user.getPhoto());
         } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload profile picture");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
