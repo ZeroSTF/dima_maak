@@ -31,10 +31,10 @@ public class DimaMaakApplication {
     @Bean
     CommandLineRunner run(RoleRepository roleRepository){
         return args -> {
-            if(roleRepository.findByAuthority("ADMIN").isPresent()&&roleRepository.findByAuthority("USER").isPresent()) return;
-            Role adminRole = roleRepository.save(new Role(null, "ADMIN", TypeRole.ADMIN));
+            if(roleRepository.findByType(TypeRole.ADMIN).isPresent() && roleRepository.findByType(TypeRole.USER).isPresent() && roleRepository.findByType(TypeRole.INVESTOR).isPresent()) return;
+            roleRepository.save(new Role(null, "ADMIN", TypeRole.ADMIN));
             roleRepository.save(new Role(null, "USER", TypeRole.USER));
-            roleRepository.save(new Role(null, "USER", TypeRole.Investor));
+            roleRepository.save(new Role(null, "USER", TypeRole.INVESTOR));
         };
     }
 
