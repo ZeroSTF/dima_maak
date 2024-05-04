@@ -76,8 +76,18 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
         }
         //////////////////////////////////////////////////////////////////////
         c.setPassword(encoder.encode(c.getPassword()));
-        c.setStatus(UStatus.Pending);
         Confirmation confirmation = new Confirmation(c);
+        Role userRole = roleRepository.findById(c.getRole().stream().findFirst().get().getId()).get();
+        Set<Role> authorities = new HashSet<>();
+        authorities.add(userRole);
+        c.setRole(authorities);
+        c.setCreditScore(0f);
+        if(c.getAddress()!=null) {
+            locationRepository.save(c.getAddress());
+        }
+        else{
+            System.out.println("NO LOCATION PASSED");
+        }
         userRepository.save(c);
         confirmationRepository.save(confirmation);
         /////////////////MAILING//////////////////////////
