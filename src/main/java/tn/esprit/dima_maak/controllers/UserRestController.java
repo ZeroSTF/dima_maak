@@ -164,6 +164,12 @@ public class UserRestController {
                 .body(imageData);
     }
 
+    @Operation(description="Count users based on salary")
+    @GetMapping("/countUsers")
+    public int[] countUsers() {
+        return userService.countUsers();
+    }
+
     //////KHEDMET RAMI
     @PutMapping("/users/{id}/updateBalance")
     public ResponseEntity<String> updateBalance(@PathVariable Long id, @RequestParam float returnAmount, @RequestParam float returnInterest, @RequestParam long sharesGain, @RequestParam float totalInvestment) {

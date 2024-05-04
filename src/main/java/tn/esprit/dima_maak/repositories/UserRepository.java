@@ -17,4 +17,15 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
     @Query("SELECT u FROM User u JOIN u.role r WHERE r.id = 1")
     List<User> findAdminUsers();
-}
+
+    @Query("SELECT count(u) FROM User u WHERE u.salary < 1000")
+    int countUsersWithSalaryLessThan1000();
+
+    @Query("SELECT count(u) FROM User u WHERE u.salary >= 1000 AND u.salary < 3000")
+    int countUsersWithSalaryBetween1000And3000();
+
+    @Query("SELECT count(u) FROM User u WHERE u.salary >= 3000 AND u.salary < 6000")
+    int countUsersWithSalaryBetween3000And6000();
+
+    @Query("SELECT count(u) FROM User u WHERE u.salary >= 6000")
+    int countUsersWithSalaryMoreThan6000();}

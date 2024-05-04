@@ -305,6 +305,16 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
             return "http://localhost:4200/signup/"+user.getId();
     }
 
+    public int[] countUsers (){
+        int[] counts = new int[5];
+        counts[0] = userRepository.countUsers();
+        counts[1] = userRepository.countUsersWithSalaryLessThan1000();
+        counts[2] = userRepository.countUsersWithSalaryBetween1000And3000();
+        counts[3] = userRepository.countUsersWithSalaryBetween3000And6000();
+        counts[4] = userRepository.countUsersWithSalaryMoreThan6000();
+        return counts;
+    }
+
     //////KHEDMET RAMI
     @Transactional
     public void updateBalance(Long id, float returnAmount, float returnInterest, long sharesGain, float totalInvestment) {
