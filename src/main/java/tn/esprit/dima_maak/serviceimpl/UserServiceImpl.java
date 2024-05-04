@@ -299,8 +299,7 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////
     public String generateAffiliateLink(User user){
-            return "http://localhost:8080/register/"+user.getId();
-
+            return "http://localhost:4200/signup/"+user.getId();
     }
 
     //////KHEDMET RAMI
