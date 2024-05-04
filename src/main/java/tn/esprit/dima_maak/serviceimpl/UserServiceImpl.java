@@ -99,14 +99,17 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
 
     @Override
     public void removeUser(Long id) throws IOException {
-        Confirmation c = confirmationRepository.findConfirmationByUser(userRepository.findById(id).get());
-        if(c!=null){
-            confirmationRepository.delete(c);
-            if(userRepository.findById(id).get().getPhoto()!="default.jpg"){
-                this.deleteProfilePicture(userRepository.findById(id).get().getPhoto());
+        User user = userRepository.findById(id).orElse(null);
+        if(user != null){
+            Confirmation c = confirmationRepository.findConfirmationByUser(user);
+            if(c != null){
+                if(!"default.jpg".equals(user.getPhoto())){
+                    this.deleteProfilePicture(user.getPhoto());
+                }
+                confirmationRepository.delete(c);
             }
+            userRepository.deleteById(id);
         }
-        userRepository.deleteById(id);
     }
 
     @Override
