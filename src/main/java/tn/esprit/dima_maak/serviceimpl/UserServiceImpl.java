@@ -133,7 +133,7 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
         }
         //////////////////////////////////////////////////////////////////////
         String encodedPassword = encoder.encode(user.getPassword());
-        Role userRole = roleRepository.findByAuthority("USER").get();
+        Role userRole = roleRepository.findById(2L).get();
         Set<Role> authorities = new HashSet<>();
         authorities.add(userRole);
         user.setPassword(encodedPassword);

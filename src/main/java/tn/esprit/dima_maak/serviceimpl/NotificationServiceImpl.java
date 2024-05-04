@@ -10,6 +10,7 @@ import tn.esprit.dima_maak.repositories.NotificationRepository;
 import tn.esprit.dima_maak.repositories.UserRepository;
 import tn.esprit.dima_maak.services.INotificationService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,6 +38,7 @@ public class NotificationServiceImpl implements INotificationService {
     @Override
     public Notification addNotification(Notification notification) {
         notification.setStatus(false);
+        notification.setDate(LocalDateTime.now());
         return notificationRepository.save(notification);
     }
 
