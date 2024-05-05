@@ -3,10 +3,14 @@ package tn.esprit.dima_maak.controllers;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.dima_maak.entities.IType;
 import tn.esprit.dima_maak.entities.Insurance;
+import tn.esprit.dima_maak.entities.User;
 import tn.esprit.dima_maak.repositories.InsuranceRepository;
+import tn.esprit.dima_maak.repositories.UserRepository;
 import tn.esprit.dima_maak.services.IInsuranceService;
 
 import java.security.PublicKey;
@@ -17,10 +21,13 @@ import java.util.Map;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/Insurance")
+@CrossOrigin(origins = "*")
 
 public class InsuranceController {
     @Autowired
     private IInsuranceService insuranceservice;
+    @Autowired
+    UserRepository userRepository;
     @PostMapping("/save")
     public Insurance addInsurance(@RequestBody Insurance insurance ){
         return insuranceservice.addInsurance(insurance);
@@ -30,6 +37,20 @@ public class InsuranceController {
     public Insurance savepackanduser(@PathVariable Long idpack,@PathVariable Long iduser ){
         return insuranceservice.createInsurance(idpack,iduser);
 
+    }
+    @PostMapping("/login")
+    public ResponseEntity<User> login(@RequestParam("email") String email, @RequestParam("password") String password) {
+        List<User> users = userRepository.findUsersByEmail(email);
+        if (!users.isEmpty()) {
+            for (User user : users) {
+                if (password.equals(user.getPassword())) {
+                    return ResponseEntity.ok(user);
+                }
+            }
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
     @PutMapping ("/updatedinc/{Idinsurance}")
     public Insurance updatedinc(@PathVariable Long Idinsurance ){
@@ -49,6 +70,10 @@ public class InsuranceController {
     @GetMapping("/all")
     public List<Insurance> getallinsurance(){
         return insuranceservice.getALL();
+    }
+    @GetMapping("/allbyuser")
+    public List<Insurance> getbyuser(@RequestParam("iduser") Long iduser){
+        return insuranceservice.getallbyuser(iduser);
     }
     @PutMapping("/updateinsurance")
     public Insurance updateinsurance(@RequestBody Insurance insurance)

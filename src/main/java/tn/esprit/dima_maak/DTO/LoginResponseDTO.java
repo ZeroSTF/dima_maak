@@ -4,7 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import tn.esprit.dima_maak.entities.Role;
 import tn.esprit.dima_maak.entities.User;
+
+import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,4 +16,7 @@ import tn.esprit.dima_maak.entities.User;
 public class LoginResponseDTO {
     private String fullName;
     private String jwt;
+
+
+
 }

@@ -29,11 +29,12 @@ public class  Insurance implements Serializable {
     @ManyToOne
     private User user;
     @JsonIgnore
-    @OneToMany(mappedBy = "insurance", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "insurance",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Claim> claims;
     @JsonIgnore
-    @OneToMany(mappedBy = "insurance", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "insurance",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Premium> premiums;
+
     @ManyToOne
     private InsuranceP insuranceP;
 }

@@ -53,9 +53,9 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                //.securityMatcher("/test/**")
+                .securityMatcher("/test/**")
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**", "/auth/**").permitAll();
+                    auth.requestMatchers("/v3/api-docs/**", "/payment/charge","/swagger-ui/**", "/Premium/**","/Insurance/**","/InsuranceP/**","/swagger-resources/**", "/auth/**").permitAll();
                     //auth.requestMatchers("/admin/**").hasRole("ADMIN");
                     //auth.requestMatchers("/user/**").hasAnyRole("ADMIN", "USER");
                     auth.anyRequest().authenticated();

@@ -41,7 +41,14 @@ public class InsurancePServiceImpl implements IInsurancePService {
 
     @Override
     public InsuranceP updateInsuranceP(InsuranceP iP) {
-        return iprepo.save(iP);
+        InsuranceP insuranceP = iprepo.findById(iP.getId()).get();
+        insuranceP.setName(iP.getName());
+        insuranceP.setPolicy(iP.getPolicy());
+        insuranceP.setType(iP.getType());
+        insuranceP.setDuration(iP.getDuration());
+        insuranceP.setCoverageAmount(iP.getCoverageAmount());
+        insuranceP.setPremium(iP.getPremium());
+        return iprepo.save(insuranceP);
     }
 
     @Override

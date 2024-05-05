@@ -17,4 +17,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
     @Query("SELECT u FROM User u JOIN u.role r WHERE r.id = 1")
     List<User> findAdminUsers();
+
+    List<User> findUsersByEmail(String email);
 }

@@ -53,11 +53,18 @@ public class ClaimServiceImpl implements IClaimService {
 
     @Override
     public Claim updateclaim(Claim c) {
-        return claimrep.save(c);
+        Claim claim = claimrep.findById(c.getId()).orElse(null);
+        claim.setDate(c.getDate());
+        claim.setDetails(c.getDetails());
+        claim.setStatus(c.getStatus());
+        claim.setAmount(c.getAmount());
+
+        return claimrep.save(claim);
     }
 
     @Override
     public Claim addclaimandassigntoinsurance(Claim c, Long idinsurance) {
+        c.setStatus(CStatus.Pending);
         claimrep.save(c);
         Insurance insurance = inrep.findById(idinsurance).orElse(null);
         c.setInsurance(insurance);

@@ -51,7 +51,13 @@ private InsurancePRepository inPrep;
 
     @Override
     public Insurance updateInsurance(Insurance i) {
-        return inrep.save(i);
+        Insurance insurance= inrep.findById(i.getId()).orElse(null);
+        insurance.setState(i.getState());
+        insurance.setStartDate(i.getStartDate());
+        insurance.setEndDate(i.getEndDate());
+        insurance.setClientcoverageamount(i.getClientcoverageamount());
+
+        return inrep.save(insurance);
     }
 
     @Override
@@ -125,6 +131,11 @@ private InsurancePRepository inPrep;
     public float findTotalCoverageAmountByPackType(IType packType) {
         return inrep.findTotalCoverageAmountByPackType(packType);
     }
+    @Override
+    public List<Insurance> getallbyuser(Long iduser) {
+        User user = userrep.findById(iduser).orElse(null);
+        return inrep.findByUser(user);
+    }
 
     @Override
     public Insurance createInsurance(Long insurancePackId, Long iduser) {
@@ -173,7 +184,7 @@ private InsurancePRepository inPrep;
         for (int i = 0; i <= 11; i++) {
             Premium premium = new Premium();
             premium.setAmount(clientcovergeamount/12);
-            premium.setStatus(true);
+            premium.setStatus(false);
             premium.setDate(currentDate.plusMonths(i));
             premium.setInsurance(insurance);
             premium.setAccumulatedInterest(20f);

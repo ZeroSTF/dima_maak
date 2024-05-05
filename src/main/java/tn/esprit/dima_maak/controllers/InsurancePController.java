@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/InsuranceP")
-
+@CrossOrigin(origins = "*")
 public class InsurancePController {
     @Autowired
     private IInsurancePService ipservices;
