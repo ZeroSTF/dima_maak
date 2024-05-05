@@ -177,6 +177,13 @@ public class UserRestController {
     public int[] countUsersByAge() {
         return userService.countUsersByAge();
     }
+    //user statistics by location
+    @Operation(description="Get all user coordinates")
+    @GetMapping("/findAllUserCoordinates")
+    public List<Object[]> findAllUserCoordinates() {
+        return userService.findAllUserCoordinates();
+    }
+
 
     //////KHEDMET RAMI
     @PutMapping("/users/{id}/updateBalance")

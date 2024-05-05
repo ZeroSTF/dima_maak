@@ -43,4 +43,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT count(u) FROM User u WHERE YEAR(CURRENT_DATE) - YEAR(u.birthDate) >= 40")
     int countUsersAbove40();
+
+    //location statistics
+    @Query("SELECT u.address.latitude, u.address.longitude FROM User u")
+    List<Object[]> findAllUserCoordinates();
 }

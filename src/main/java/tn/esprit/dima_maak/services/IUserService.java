@@ -28,6 +28,9 @@ public interface IUserService {
     //User statistics by age
     int[] countUsersByAge();
 
+    //User statistics by location
+    List<Object[]> findAllUserCoordinates();
+
     ///KHEDMET RAMI
     void updateBalance(Long id, float returnAmount, float returnInterest, long sharesGain, float totalInvestment);
     public boolean hasInvestments(Long id);

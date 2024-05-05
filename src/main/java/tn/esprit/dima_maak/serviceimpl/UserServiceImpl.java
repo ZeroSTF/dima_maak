@@ -324,6 +324,11 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
         return counts;
     }
 
+    //User statistics by location
+    public List<Object[]> findAllUserCoordinates(){
+        return userRepository.findAllUserCoordinates();
+    }
+
     //////KHEDMET RAMI
     @Transactional
     public void updateBalance(Long id, float returnAmount, float returnInterest, long sharesGain, float totalInvestment) {
