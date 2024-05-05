@@ -37,6 +37,9 @@ public class LoyaltyServiceImpl implements ILoyaltyService {
 
     @Override
     public void removeLoyalty(Long id) {
+        Loyalty l=loyaltyRepository.findById(id).get();
+        l.getUser().setLp(l.getUser().getLp()-Math.toIntExact(l.getValue()));
+        userService.modifyUser(l.getUser());
         loyaltyRepository.deleteById(id);
     }
 
