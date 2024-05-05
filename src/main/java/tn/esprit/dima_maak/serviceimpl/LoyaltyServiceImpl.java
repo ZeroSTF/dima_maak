@@ -7,6 +7,7 @@ import tn.esprit.dima_maak.repositories.LoyaltyRepository;
 import tn.esprit.dima_maak.services.ILoyaltyService;
 import tn.esprit.dima_maak.services.IUserService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,6 +31,7 @@ public class LoyaltyServiceImpl implements ILoyaltyService {
 
     @Override
     public Loyalty addLoyalty(Loyalty loyalty) {
+        loyalty.setDate(LocalDateTime.now());
         loyalty.getUser().setLp(loyalty.getUser().getLp()+Math.toIntExact(loyalty.getValue()));
         userService.modifyUser(loyalty.getUser());
         return loyaltyRepository.save(loyalty);
