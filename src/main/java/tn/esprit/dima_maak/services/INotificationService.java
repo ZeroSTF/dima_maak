@@ -15,4 +15,6 @@ public interface INotificationService {
     void sendProfileEditNotification(User user);
     public List<Notification> getUnread(User user);
     List<Notification> getByUser(User user);
+    void sendHealthDiscountNotification();
+    void sendAgricultureDiscountNotification();
 }

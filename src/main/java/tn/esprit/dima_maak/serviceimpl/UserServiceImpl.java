@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -38,6 +39,7 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
     private final RoleRepository roleRepository;
     private final LocationRepository locationRepository;
     private final ConfirmationRepository confirmationRepository;
+    private final InsurancePRepository insurancePRepository;
     private final PasswordEncoder encoder;
 
     @Lazy
@@ -47,7 +49,7 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
     public static final String UPLOAD_DIR = "uploads/profiles/";
     private final IEmailService emailService;
     private final INotificationService notificationService;
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder encoder, ITokenService tokenService, ConfirmationRepository confirmationRepository, IEmailService emailService, INotificationService notificationService, LocationRepository locationRepository) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder encoder, ITokenService tokenService, ConfirmationRepository confirmationRepository, IEmailService emailService, INotificationService notificationService, LocationRepository locationRepository, InsurancePRepository insurancePRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.encoder = encoder;
@@ -56,6 +58,7 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
         this.emailService = emailService;
         this.notificationService = notificationService;
         this.locationRepository=locationRepository;
+        this.insurancePRepository=insurancePRepository;
     }
 
     @Override
@@ -315,6 +318,7 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
         return counts;
     }
 
+    //User statistics by age
     public int[] countUsersByAge(){
         int[] counts = new int[4];
         counts[0] = userRepository.countUsersBelow18();
@@ -327,6 +331,29 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
     //User statistics by location
     public List<Object[]> findAllUserCoordinates(){
         return userRepository.findAllUserCoordinates();
+    }
+
+    //Discount notification the first of every month
+    @Scheduled(cron = "1 1 1 1 * ?")
+    public void notifyUsers(){
+        //old man notification
+        //if 20% of users are above 40
+        if(userRepository.countUsersAbove40() > userRepository.countUsers()*0.2){
+            notificationService.sendHealthDiscountNotification();
+            List<InsuranceP> insurancePs=insurancePRepository.findByType(IType.Health_Insurance);
+            insurancePs.forEach(insuranceP -> {
+                insuranceP.setPremium(insuranceP.getPremium()*0.9f);
+                insurancePRepository.save(insuranceP);
+            });
+        }
+        if(userRepository.countUsersByJob("Farmer")+userRepository.countUsersByJob("Farm Owner")>userRepository.countUsers()*0.2){
+            notificationService.sendAgricultureDiscountNotification();
+            List<InsuranceP> insurancePs=insurancePRepository.findByType(IType.Agriculteur_Insurance);
+            insurancePs.forEach(insuranceP -> {
+                insuranceP.setPremium(insuranceP.getPremium()*0.9f);
+                insurancePRepository.save(insuranceP);
+            });
+        }
     }
 
     //////KHEDMET RAMI

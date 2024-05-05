@@ -15,11 +15,6 @@ import org.springframework.web.server.ResponseStatusException;
 import tn.esprit.dima_maak.entities.User;
 import tn.esprit.dima_maak.services.IUserService;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import tn.esprit.dima_maak.entities.*;
-import tn.esprit.dima_maak.services.*;
-
 import java.io.File;
 
 import java.io.IOException;

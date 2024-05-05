@@ -17,7 +17,9 @@ public interface InsurancePRepository extends CrudRepository<InsuranceP,Long> {
     @Query("SELECT COUNT(ip) FROM InsuranceP ip WHERE ip.type = :type")
     long countInsurancesByPackType(@Param("type") IType type);
 
-
+    //InsuranceP findByType(IType type);
+    @Query("SELECT ip FROM InsuranceP ip WHERE ip.type = :type")
+    List<InsuranceP> findByType(@Param("type") IType type);
 
 }
 

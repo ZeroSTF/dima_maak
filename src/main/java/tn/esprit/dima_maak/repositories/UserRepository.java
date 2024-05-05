@@ -18,6 +18,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u JOIN u.role r WHERE r.id = 1")
     List<User> findAdminUsers();
 
+    @Query("SELECT u FROM User u JOIN u.role r WHERE (r.id = 2) OR (r.id = 3)")
+    List<User> findUserUsers();
+
     //salary statistics
     @Query("SELECT count(u) FROM User u WHERE u.salary < 1000")
     int countUsersWithSalaryLessThan1000();
@@ -47,4 +50,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     //location statistics
     @Query("SELECT u.address.latitude, u.address.longitude FROM User u")
     List<Object[]> findAllUserCoordinates();
+
+    //count users whose job is the same as the given job
+    @Query("SELECT count(u) FROM User u WHERE u.job = ?1")
+    int countUsersByJob(String job);
 }
