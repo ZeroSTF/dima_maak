@@ -32,9 +32,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     int countUsersWithSalaryMoreThan6000();
 
     //age statistics
-    //the methods below didnt work because  Reason: Validation failed for query for method public abstract int
-
-
     @Query("SELECT count(u) FROM User u WHERE YEAR(CURRENT_DATE) - YEAR(u.birthDate) < 18")
     int countUsersBelow18();
 
