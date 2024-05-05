@@ -315,6 +315,15 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
         return counts;
     }
 
+    public int[] countUsersByAge(){
+        int[] counts = new int[4];
+        counts[0] = userRepository.countUsersBelow18();
+        counts[1] = userRepository.countUsersBetween18And25();
+        counts[2] = userRepository.countUsersBetween25And40();
+        counts[3] = userRepository.countUsersAbove40();
+        return counts;
+    }
+
     //////KHEDMET RAMI
     @Transactional
     public void updateBalance(Long id, float returnAmount, float returnInterest, long sharesGain, float totalInvestment) {

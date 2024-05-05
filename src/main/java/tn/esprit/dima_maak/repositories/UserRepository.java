@@ -18,6 +18,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u JOIN u.role r WHERE r.id = 1")
     List<User> findAdminUsers();
 
+    //salary statistics
     @Query("SELECT count(u) FROM User u WHERE u.salary < 1000")
     int countUsersWithSalaryLessThan1000();
 
@@ -28,4 +29,21 @@ public interface UserRepository extends JpaRepository<User, Long> {
     int countUsersWithSalaryBetween3000And6000();
 
     @Query("SELECT count(u) FROM User u WHERE u.salary >= 6000")
-    int countUsersWithSalaryMoreThan6000();}
+    int countUsersWithSalaryMoreThan6000();
+
+    //age statistics
+    //the methods below didnt work because  Reason: Validation failed for query for method public abstract int
+
+
+    @Query("SELECT count(u) FROM User u WHERE YEAR(CURRENT_DATE) - YEAR(u.birthDate) < 18")
+    int countUsersBelow18();
+
+    @Query("SELECT count(u) FROM User u WHERE YEAR(CURRENT_DATE) - YEAR(u.birthDate) >= 18 AND YEAR(CURRENT_DATE) - YEAR(u.birthDate) < 25")
+    int countUsersBetween18And25();
+
+    @Query("SELECT count(u) FROM User u WHERE YEAR(CURRENT_DATE) - YEAR(u.birthDate) >= 25 AND YEAR(CURRENT_DATE) - YEAR(u.birthDate) < 40")
+    int countUsersBetween25And40();
+
+    @Query("SELECT count(u) FROM User u WHERE YEAR(CURRENT_DATE) - YEAR(u.birthDate) >= 40")
+    int countUsersAbove40();
+}

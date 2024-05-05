@@ -164,10 +164,18 @@ public class UserRestController {
                 .body(imageData);
     }
 
+    //user statistics by salary
     @Operation(description="Count users based on salary")
     @GetMapping("/countUsers")
     public int[] countUsers() {
         return userService.countUsers();
+    }
+
+    //user statistics by age
+    @Operation(description="Count users based on age")
+    @GetMapping("/countUsersByAge")
+    public int[] countUsersByAge() {
+        return userService.countUsersByAge();
     }
 
     //////KHEDMET RAMI
