@@ -18,7 +18,7 @@ public interface IInvestmentServices {
     boolean deleteInvestment(Long id);
 
     List<Investment> getAllInvestment();
-    //List<Investment> getAllInvestment();
+     //List<Investment> getAllInvestment();
 
     Investment getInvestmentById(Long id);
     Investment assignInvestmentToVenture(Long id, Long idV);
@@ -28,10 +28,13 @@ public interface IInvestmentServices {
     byte[] addInvestmentAndAssignToVenture(Investment investment, Long idV) throws DocumentException;
     List<UserScore> calculateUserScores();
     public String doInvestment(@PathVariable Long investmentId, @PathVariable Long ventureId);
-    /* public Investment AddAndDoInvestment(Investment investment, Long idV);*/
-    public String AddAndDoInvestment(Investment investment, Long idV);
+   /* public Investment AddAndDoInvestment(Investment investment, Long idV);*/
+   public String AddAndDoInvestment(Investment investment, Long idV);
+   String addInvestmentAndAssignToVentureAndUser(Investment investment, Long idV, Long userId);
 
 
-    /*public Map<User, Investment.ReturnStats> getReturnStatisticsByUserId();*/
+
+        /*public Map<User, Investment.ReturnStats> getReturnStatisticsByUserId();*/
+    //Investment assignInvestmentToInvestor(Long id, Long idU);
 
 }

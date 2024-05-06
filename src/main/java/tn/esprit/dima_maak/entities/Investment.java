@@ -26,14 +26,22 @@ public class Investment implements Serializable{
     private Float amount;
     private Float totalInvestment;
     @Enumerated(EnumType.STRING)
-    private INNStatus status;
+    private INStatus status;
+    //@JsonIgnore
     @ManyToOne
-    private User user;
+    @JoinColumn(name = "user_id")
+    User user;
+
+
     //@JsonIgnore
     @ManyToOne
     Venture venture;
+
     @JsonIgnore
     @OneToMany(mappedBy = "investment", cascade = CascadeType.ALL)
     private List<Return> returns;
+
+
+
 
 }

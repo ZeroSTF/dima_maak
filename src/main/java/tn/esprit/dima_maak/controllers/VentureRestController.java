@@ -28,14 +28,15 @@ public class VentureRestController {
     }
 
     /*@PutMapping("/update")
-   public Venture updateVenture (@RequestBody Venture venture){
-       return ventureServices.updateVenture(venture);
-   }*/
+    public Venture updateVenture (@RequestBody Venture venture){
+
+        return ventureServices.updateVenture(venture);
+    }*/
     @PutMapping("/update/{idV}")
     public ResponseEntity<Venture> updateVenture(@PathVariable Long idV, @RequestBody Venture venture) {
 
-        Venture updateVenture = ventureServices.updateVenture(idV, venture);
-        return  ResponseEntity.ok(updateVenture);
+            Venture updateVenture = ventureServices.updateVenture(idV, venture);
+            return  ResponseEntity.ok(updateVenture);
 
     }
 

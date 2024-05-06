@@ -63,7 +63,7 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
 
     @Override
     public List<User> retrieveAllUsers() {
-        return userRepository.findAll();
+        return (List<User>) userRepository.findAll();
     }
 
     @Override

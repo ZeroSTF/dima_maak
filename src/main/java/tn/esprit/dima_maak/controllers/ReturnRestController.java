@@ -44,7 +44,7 @@ public class ReturnRestController {
     }
 
     @GetMapping("/getAllReturn")
-    public List<Return> getVenture() {
+    List<Return> getAllReturn() {
         return ResponseEntity.ok().body(iReturnServices.getAllReturn()).getBody();
     }
 

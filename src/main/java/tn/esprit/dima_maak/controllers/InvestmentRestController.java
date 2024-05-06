@@ -61,11 +61,13 @@ public class InvestmentRestController {
         return iInvestmentServices.getInvestmentById(id);
     }
 
+
     @GetMapping("/getAllInvestment")
     public List<Investment> getAllInvestment() {
         return ResponseEntity.ok().body(iInvestmentServices.getAllInvestment()).getBody();
 
     }
+
 
     @PutMapping("/assignInvestmentToVenture/{id}/{idV}")
     public Investment assignInvestmentToVenture(@PathVariable("id") Long id, @PathVariable("idV") Long idV) {
@@ -73,9 +75,17 @@ public class InvestmentRestController {
         return iInvestmentServices.assignInvestmentToVenture(id, idV);
 
     }
+    /*@PutMapping("/assignInvestmentToInvestor/{id}/{idU}")
+    public Investment assignInvestmentToInvestor(@PathVariable("id") Long id, @PathVariable("idU") Long idU) {
+
+        return iInvestmentServices.assignInvestmentToVenture(id, idU);
+
+    }*/
 
 
-    @PutMapping("/doInvestment/{investmentId}/{ventureId}")
+
+
+        @PutMapping("/doInvestment/{investmentId}/{ventureId}")
     public String doInvestment(@PathVariable Long investmentId, @PathVariable Long ventureId) {
         Investment investment = investmentRepository.findById(investmentId).orElse(null);
         Venture venture = ventureRepository.findById(ventureId).orElse(null);
@@ -115,11 +125,29 @@ public class InvestmentRestController {
     }
 
 
+
+
     @PutMapping("/AddAndDoInvestment/{idV}")//tekhdem
     public String AddAndDoInvestment(@RequestBody Investment investment, @PathVariable Long idV) {
         String resultMessage = iInvestmentServices.AddAndDoInvestment(investment, idV);
         return resultMessage;
     }
+
+    @PostMapping("/addInvestmentAndAssignToVentureAndUser")
+    public ResponseEntity<String> addInvestmentAndAssignToVentureAndUser(
+            @RequestBody Investment investment,
+            @RequestParam("ventureId") Long ventureId,
+            @RequestParam("userId") Long userId) {
+
+        String result = iInvestmentServices.addInvestmentAndAssignToVentureAndUser(investment, ventureId, userId);
+
+        if (result.contains("successfully")) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(result);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
+        }
+    }
+
 
 
 
@@ -174,4 +202,15 @@ public class InvestmentRestController {
         return iInvestmentServices.calculateUserScores();
     }
 
+    //////////////////////////////////////////
+
+
 }
+
+
+
+
+
+
+
+

@@ -35,6 +35,12 @@ public class UserRestController {
 
     ///////////////////////////////////////////////////////////ADMIN DASHBOARD RELATED WORK/////////////////////////////////////////
     @Operation(description = "get all users")
+    @GetMapping("/retrieve-all-users")
+    public List<User> retrieveAllUsers() {
+        List<User> listUsers = userService.retrieveAllUsers();
+        return listUsers;
+      
+    @Operation(description = "get all users")
     @GetMapping("/getAll")
     public List<User> getUsers() {
         return userService.retrieveAllUsers();

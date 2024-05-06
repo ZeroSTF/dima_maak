@@ -36,11 +36,15 @@ public class Venture implements Serializable {
     private Float interest;
     private Long loanDuration;
     private  Float dividendPerShare;
+
     @Column(columnDefinition = "TEXT")
     private String details;
-    @ManyToOne
-    private User user;
     @JsonIgnore
-    @OneToMany(mappedBy = "venture", cascade = CascadeType.ALL)
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    User user;
+
+   @JsonIgnore
+   @OneToMany(mappedBy = "venture", cascade = CascadeType.ALL)
     private List<Investment> investments;
 }
