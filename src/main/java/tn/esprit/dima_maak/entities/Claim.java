@@ -1,22 +1,31 @@
 package tn.esprit.dima_maak.entities;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 import jakarta.persistence.*;
 
+import java.io.Serializable;
+import java.time.LocalDate;
+
+
 @Entity
-@Data
-public class Claim {
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class Claim implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private java.sql.Date date;
+    private LocalDate date;
     private String image;
     @Column(columnDefinition = "TEXT")
     private String details;
     private Float amount;
     @Enumerated(EnumType.STRING)
     private CStatus status;
+    @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "insurance_id")
     private Insurance insurance;
 }

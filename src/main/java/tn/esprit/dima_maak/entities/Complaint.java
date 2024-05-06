@@ -1,20 +1,26 @@
 package tn.esprit.dima_maak.entities;
 
-import lombok.Data;
+import lombok.*;
 import jakarta.persistence.*;
 
+import java.io.Serializable;
+import java.time.LocalDateTime;
+
 @Entity
-@Data
-public class Complaint {
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class Complaint implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private java.sql.Timestamp date;
+    private LocalDateTime date;
     private String subject;
     @Column(columnDefinition = "TEXT")
     private String description;
     private boolean status;
     @ManyToOne
-    @JoinColumn(name = "user_id")
     private User user;
 }

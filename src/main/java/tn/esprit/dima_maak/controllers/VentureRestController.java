@@ -96,5 +96,3 @@ public class VentureRestController {
         return ventureServices.deleteVenturesExpired();
     }
 }
-
-

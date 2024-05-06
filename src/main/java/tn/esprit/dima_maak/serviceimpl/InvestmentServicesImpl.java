@@ -67,12 +67,12 @@ public class InvestmentServicesImpl implements IInvestmentServices {
         return (List<Investment>) investmentRepository.findAll();
     }
 
-   public Investment assignInvestmentToVenture(Long id, Long idV){
+    public Investment assignInvestmentToVenture(Long id, Long idV){
         Investment investment = investmentRepository.findById(id).orElse(null);
         Venture venture = iVentureRepository.findById(idV).orElse(null);
         investment.setVenture(venture);
         return investmentRepository.save(investment);
-     }
+    }
 
 
     @Override
@@ -326,12 +326,10 @@ public class InvestmentServicesImpl implements IInvestmentServices {
 
    /* public Map<User, Investment.ReturnStats> getReturnStatisticsByUserId() {
         List<Investment> investments = investmentRepository.getAllInvestmentsWithReturns();
-
         // Groupement des retours par utilisateur
         Map<User, List<Return>> returnsByUser = investments.stream()
                 .flatMap(investment -> investment.getReturns().stream())
                 .collect(Collectors.groupingBy(return -> retrieveUser(investment, return.getUserId())));
-
         // Calcul de la somme des returnInterest pour chaque utilisateur
         return returnsByUser.entrySet().stream()
                 .collect(Collectors.toMap(
@@ -345,15 +343,3 @@ public class InvestmentServicesImpl implements IInvestmentServices {
                 ));
     }*/
 }
-
-
-
-
-
-
-
-
-
-
-
-

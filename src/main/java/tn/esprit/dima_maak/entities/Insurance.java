@@ -1,25 +1,40 @@
 package tn.esprit.dima_maak.entities;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 import jakarta.persistence.*;
+
+import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Data
-public class Insurance {
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class  Insurance implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private java.sql.Date startDate;
-    private java.sql.Date endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private float clientcoverageamount;
+    private float clientpremium;
+    @Enumerated(EnumType.STRING)
+    private  InStatus state;
+
+    @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "user_id")
     private User user;
-    @OneToMany(mappedBy = "insurance", cascade = CascadeType.ALL)
+    @JsonIgnore
+    @OneToMany(mappedBy = "insurance",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Claim> claims;
-    @OneToMany(mappedBy = "insurance", cascade = CascadeType.ALL)
+    @JsonIgnore
+    @OneToMany(mappedBy = "insurance",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Premium> premiums;
+
     @ManyToOne
-    @JoinColumn(name = "insuranceP_id")
     private InsuranceP insuranceP;
 }

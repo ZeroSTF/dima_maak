@@ -1,19 +1,27 @@
 package tn.esprit.dima_maak.entities;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 import jakarta.persistence.*;
 
+import java.io.Serializable;
+import java.time.LocalDate;
+
 @Entity
-@Data
-public class Premium {
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class Premium implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private java.sql.Date date;
+    private LocalDate date;
     private Float amount;
     private boolean status;
     private Float accumulatedInterest;
+    @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "insurance_id")
     private Insurance insurance;
 }

@@ -1,10 +1,11 @@
 package tn.esprit.dima_maak.entities;
 
-import jakarta.persistence.*;
 import lombok.*;
-
+import jakarta.persistence.*;
 import java.io.Serializable;
+
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Getter
@@ -13,7 +14,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "Treturn")
-public class Return implements Serializable {
+public class Return implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idR;
@@ -26,6 +27,4 @@ public class Return implements Serializable {
 
     @ManyToOne
     private Investment investment;
-
-
 }

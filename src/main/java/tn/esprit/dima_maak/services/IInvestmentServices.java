@@ -25,8 +25,8 @@ public interface IInvestmentServices {
     Float calculateTotalInvestment(Long purchasedShares, Float sharesPrice, Float amount);
     List<Investment> getUserInvestments(Long id);
     byte[] generateInvestmentPDF(Investment investment) throws DocumentException;
-     byte[] addInvestmentAndAssignToVenture(Investment investment, Long idV) throws DocumentException;
-     List<UserScore> calculateUserScores();
+    byte[] addInvestmentAndAssignToVenture(Investment investment, Long idV) throws DocumentException;
+    List<UserScore> calculateUserScores();
     public String doInvestment(@PathVariable Long investmentId, @PathVariable Long ventureId);
    /* public Investment AddAndDoInvestment(Investment investment, Long idV);*/
    public String AddAndDoInvestment(Investment investment, Long idV);

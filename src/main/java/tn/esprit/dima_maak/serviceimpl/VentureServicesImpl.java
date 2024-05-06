@@ -41,12 +41,12 @@ public class VentureServicesImpl implements IVentureServices {
     @Override
     public boolean deleteVenture(Long idV) {
         Optional<Venture> ventureOptional = ventureRepository.findById(idV);
-            if (ventureOptional.isPresent()) {
-                ventureRepository.deleteById(idV);
-                return true; // La suppression a été effectuée avec succès
-            } else {
-                return false; // L'identifiant spécifié n'existe pas
-            }
+        if (ventureOptional.isPresent()) {
+            ventureRepository.deleteById(idV);
+            return true; // La suppression a été effectuée avec succès
+        } else {
+            return false; // L'identifiant spécifié n'existe pas
+        }
     }
     @Override
     public Venture getVentureById(Long idV) {return  ventureRepository.findById(idV).orElse(null);}
@@ -54,7 +54,7 @@ public class VentureServicesImpl implements IVentureServices {
     @Override
     public List<Venture> getAllVenture() {return ventureRepository.findAll();
     }
-   @Override
+    @Override
     public void updateVentureStatus(Long idV) {
         Venture venture = ventureRepository.findById(idV).orElse(null);
         if (venture != null) {
@@ -172,10 +172,3 @@ public class VentureServicesImpl implements IVentureServices {
 
 
 }
-
-
-
-
-
-
-
