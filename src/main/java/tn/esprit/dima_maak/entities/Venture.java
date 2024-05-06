@@ -39,9 +39,10 @@ public class Venture implements Serializable {
 
     @Column(columnDefinition = "TEXT")
     private String details;
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user;
+    User user;
 
    @JsonIgnore
    @OneToMany(mappedBy = "venture", cascade = CascadeType.ALL)

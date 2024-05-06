@@ -14,13 +14,14 @@ import java.util.List;
 @Tag(name = "User management")
 @RestController
 @AllArgsConstructor
+@CrossOrigin("*")
 @RequestMapping("/user")
 public class UserRestController {
     IUserService userService;
 
     @Operation(description = "get all users")
     @GetMapping("/retrieve-all-users")
-    public List<User> getUsers() {
+    public List<User> retrieveAllUsers() {
         List<User> listUsers = userService.retrieveAllUsers();
         return listUsers;
     }

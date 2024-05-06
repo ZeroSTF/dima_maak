@@ -193,7 +193,7 @@ public class InvestmentServicesImpl implements IInvestmentServices {
         List<UserScore> userScores = new ArrayList<>();
 
         // Récupérer tous les utilisateurs de la base de données
-        List<User> users = userRepository.findAll();
+        List<User> users = (List<User>) userRepository.findAll();
 
         // Calculer le score pour chaque utilisateur
         for (User user : users) {
@@ -258,6 +258,63 @@ public class InvestmentServicesImpl implements IInvestmentServices {
             return "Venture not exist";
         }
     }
+
+    @Override
+    public String addInvestmentAndAssignToVentureAndUser(Investment investment, Long idV, Long userId) {
+        Venture venture = iVentureRepository.findById(idV).orElse(null);
+        User user = userRepository.findById(userId).orElse(null);
+
+        if (venture != null && user != null) {
+            if (venture.getStatus() == IStatus.CLOSED) {
+                return "You cannot invest as the venture is closed";
+            }
+
+            long purchasedShares = investment.getPurchasedShares();
+            long availableShares = venture.getAvailableShares() != null ? venture.getAvailableShares() - purchasedShares : 0;
+            float investmentAmount = investment.getAmount();
+            float loanAmount = venture.getLoanAmount() != null ? venture.getLoanAmount() - investmentAmount : 0;
+
+            if (availableShares < 0 || loanAmount < 0) {
+                return "High investment amount";
+            }
+
+            venture.setAvailableShares(availableShares);
+            venture.setLoanAmount(loanAmount);
+
+            // Mettre à jour le statut de la venture à CLOSED si les conditions sont remplies
+            if (venture.getAvailableShares() == 0 && venture.getLoanAmount() == 0) {
+                venture.setStatus(IStatus.CLOSED);
+            }
+            // Calcul du montant total de l'investissement
+            Float totalInvestment = calculateTotalInvestment(investment.getPurchasedShares(), venture.getSharesPrice(), investment.getAmount());
+
+            // Attribution de la valeur calculée à l'attribut totalInvestment de l'objet investment
+            investment.setTotalInvestment(totalInvestment);
+
+            // Assign investment to user
+            investment.setUser(user);
+
+            // Assign investment to venture
+            investment.setVenture(venture);
+
+            // Save investment
+            investmentRepository.save(investment);
+
+            return "The investment has been successfully added and allocated to the venture and user.";
+        } else {
+            // Gérer le cas où la Venture ou l'utilisateur n'existe pas
+            return "Venture or user does not exist";
+        }
+    }
+
+
+    /*@Override
+    public Investment assignInvestmentToInvestor(Long id, Long idU) {
+        Investment investment = investmentRepository.findById(id).orElse(null);
+        User user = userRepository.findById(idU).orElse(null);
+        investment.setUser(user);
+        return investmentRepository.save(investment);
+    }*/
 
 
     /////////////////////////////////////////////////////////////////////////////////

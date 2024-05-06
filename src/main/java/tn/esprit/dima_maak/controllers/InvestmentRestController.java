@@ -75,9 +75,17 @@ public class InvestmentRestController {
         return iInvestmentServices.assignInvestmentToVenture(id, idV);
 
     }
+    /*@PutMapping("/assignInvestmentToInvestor/{id}/{idU}")
+    public Investment assignInvestmentToInvestor(@PathVariable("id") Long id, @PathVariable("idU") Long idU) {
+
+        return iInvestmentServices.assignInvestmentToVenture(id, idU);
+
+    }*/
 
 
-    @PutMapping("/doInvestment/{investmentId}/{ventureId}")
+
+
+        @PutMapping("/doInvestment/{investmentId}/{ventureId}")
     public String doInvestment(@PathVariable Long investmentId, @PathVariable Long ventureId) {
         Investment investment = investmentRepository.findById(investmentId).orElse(null);
         Venture venture = ventureRepository.findById(ventureId).orElse(null);
@@ -124,6 +132,22 @@ public class InvestmentRestController {
         String resultMessage = iInvestmentServices.AddAndDoInvestment(investment, idV);
         return resultMessage;
     }
+
+    @PostMapping("/addInvestmentAndAssignToVentureAndUser")
+    public ResponseEntity<String> addInvestmentAndAssignToVentureAndUser(
+            @RequestBody Investment investment,
+            @RequestParam("ventureId") Long ventureId,
+            @RequestParam("userId") Long userId) {
+
+        String result = iInvestmentServices.addInvestmentAndAssignToVentureAndUser(investment, ventureId, userId);
+
+        if (result.contains("successfully")) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(result);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
+        }
+    }
+
 
 
 

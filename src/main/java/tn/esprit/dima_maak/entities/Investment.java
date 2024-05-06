@@ -22,9 +22,10 @@ public class Investment implements Serializable {
     private Float totalInvestment;
     @Enumerated(EnumType.STRING)
     private INStatus status;
+    //@JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user;
+    User user;
 
 
     //@JsonIgnore

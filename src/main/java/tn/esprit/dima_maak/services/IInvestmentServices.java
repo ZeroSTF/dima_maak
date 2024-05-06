@@ -30,8 +30,11 @@ public interface IInvestmentServices {
     public String doInvestment(@PathVariable Long investmentId, @PathVariable Long ventureId);
    /* public Investment AddAndDoInvestment(Investment investment, Long idV);*/
    public String AddAndDoInvestment(Investment investment, Long idV);
+   String addInvestmentAndAssignToVentureAndUser(Investment investment, Long idV, Long userId);
 
 
-    /*public Map<User, Investment.ReturnStats> getReturnStatisticsByUserId();*/
+
+        /*public Map<User, Investment.ReturnStats> getReturnStatisticsByUserId();*/
+    //Investment assignInvestmentToInvestor(Long id, Long idU);
 
 }

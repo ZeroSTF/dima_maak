@@ -16,7 +16,7 @@ public class UserServiceImpl  implements IUserService {
     UserRepository userRepository;
     @Override
     public List<User> retrieveAllUsers() {
-        return userRepository.findAll();
+        return (List<User>) userRepository.findAll();
     }
 
     @Override
