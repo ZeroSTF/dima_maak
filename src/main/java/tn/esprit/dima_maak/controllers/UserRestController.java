@@ -39,7 +39,7 @@ public class UserRestController {
     public List<User> retrieveAllUsers() {
         List<User> listUsers = userService.retrieveAllUsers();
         return listUsers;
-      
+    }
     @Operation(description = "get all users")
     @GetMapping("/getAll")
     public List<User> getUsers() {

@@ -63,9 +63,9 @@ public class User implements UserDetails{
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Investment> investments;
-    @JsonIgnore
+   /* @JsonIgnore
     @OneToOne(mappedBy = "user")
-    private Leasing leasing;
+    private Leasing leasing;*/
     @JsonIgnore
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private Set<Insurance> insurances;
