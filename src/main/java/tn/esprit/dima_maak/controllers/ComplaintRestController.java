@@ -2,6 +2,7 @@ package tn.esprit.dima_maak.controllers;
 
 import lombok.AllArgsConstructor;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.dima_maak.entities.Complaint;
 import tn.esprit.dima_maak.services.IComplaintService;
@@ -11,17 +12,18 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/complaint")
+@CrossOrigin("*")
 @AllArgsConstructor
 public class ComplaintRestController {
     private IComplaintService complaintService;
     public List<String> badWords = Arrays.asList("badword1", "badword2", "badword3");
 
     @PostMapping("/save")
-    public Complaint addComplaint(@RequestBody Complaint complaint){
+    public ResponseEntity<?> addComplaint(@RequestBody Complaint complaint){
         return complaintService.addComplaint(complaint);
     }
     @PutMapping("/update")
-    public Complaint updateComplaint(@RequestBody Complaint complaint){
+    public ResponseEntity<?> updateComplaint(@RequestBody Complaint complaint){
         return complaintService.updateComplaint(complaint);
     }
 
@@ -30,7 +32,7 @@ public class ComplaintRestController {
         return complaintService.findComplaintById(idComplaint);
     }
     @DeleteMapping("/delete/{id}")
-    public String deleteComplaint( Long id){
+    public String deleteComplaint(@PathVariable("id") Long id){
         complaintService.deleteComplaint(id);
         return "complaint deleted !";
     }
@@ -49,6 +51,7 @@ public class ComplaintRestController {
         return complaint;
     }
 }
+
 
 
 

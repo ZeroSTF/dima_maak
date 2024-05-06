@@ -1,6 +1,7 @@
 package tn.esprit.dima_maak.controllers;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.dima_maak.entities.Post;
 import tn.esprit.dima_maak.services.IPostService;
@@ -11,24 +12,28 @@ import java.util.List;
 @RestController
 @RequestMapping("/post")
 @AllArgsConstructor
+@CrossOrigin(origins = "*")
 public class PostRestController {
     private IPostService postService;
 
     @PostMapping("/save")
-    public Post addPost(@RequestBody Post post){
+    public ResponseEntity<?> addPost(@RequestBody Post post){
         return postService.addPost(post);
     }
     @PutMapping("/update")
-    public Post updatePost(@RequestBody Post post){
+    public ResponseEntity<?> updatePost(@RequestBody Post post){
         return postService.updatePost(post);
     }
-
+    @PostMapping("/favorites")
+    public void favorites(@RequestParam("idpost") Long idpost,@RequestParam("iduser") Long iduser){
+        postService.favoritePost(idpost, iduser);
+    }
     @GetMapping("/get/{idPost}")
     public Post getPost(@PathVariable("idPost") long idPost){
         return postService.findPostById(idPost);
     }
     @DeleteMapping("/delete/{id}")
-    public String deletePost( Long id){
+    public String deletePost(@PathVariable("id") Long id){
         postService.deletePost(id);
         return "Post deleted !";
     }
