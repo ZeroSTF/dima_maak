@@ -11,6 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/Premium")
+@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 
 public class PremiumController {
     private IPremiumService premiumservice;
@@ -28,7 +29,6 @@ public class PremiumController {
     @PostMapping("/payment/{idPremium}")
     public Premium payment (@PathVariable Long idPremium ){
         return premiumservice.payment(idPremium);
-
     }
     @GetMapping("/findbyid/{idpremium}")
     public Premium findpremiumbyid(@PathVariable Long idpremium){
@@ -43,6 +43,10 @@ public class PremiumController {
     @GetMapping("/all")
     public List<Premium> getallpremiums(){
         return premiumservice.getALL();
+    }
+    @GetMapping("/allpr")
+    public List<Premium> getallpremiumstns(@RequestParam("id") Long id){
+        return premiumservice.getALLpr(id);
     }
     @PutMapping("/updatepremium")
     public Premium updateprmium(@RequestBody Premium p)

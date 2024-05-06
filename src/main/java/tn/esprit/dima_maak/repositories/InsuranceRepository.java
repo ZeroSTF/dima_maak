@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import tn.esprit.dima_maak.entities.IType;
 import tn.esprit.dima_maak.entities.Insurance;
+import tn.esprit.dima_maak.entities.User;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -30,6 +31,5 @@ public interface InsuranceRepository extends CrudRepository<Insurance,Long> {
     float findTotalCoverageAmountByPackType(@Param("packtype")IType packType);
 
 
-
-
+    List<Insurance> findByUser(User user);
 }

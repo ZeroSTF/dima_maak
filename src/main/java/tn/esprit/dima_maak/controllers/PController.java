@@ -5,17 +5,18 @@ import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.*;
 import com.stripe.param.ChargeCreateParams;
-
+import jakarta.mail.*;
+import jakarta.mail.internet.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.dima_maak.entities.ChargeRequest;
+import tn.esprit.dima_maak.entities.Premium;
 import tn.esprit.dima_maak.entities.User;
 import tn.esprit.dima_maak.repositories.ChargeRepo;
+import tn.esprit.dima_maak.repositories.PremiumRepository;
 import tn.esprit.dima_maak.repositories.UserRepository;
 
 
-import javax.mail.*;
-import javax.mail.internet.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -35,11 +36,13 @@ public class PController {
 
     @Autowired
     UserRepository userRepository;
-
+    @Autowired
+    PremiumRepository  premiumRepository;
     @PostMapping("/charge")
-    public String charge(@RequestBody ChargeRequest chargeRequest, @RequestParam("iduser") Long iduser) throws StripeException {
-        User user = userRepository.findById(iduser).orElse(null);
 
+    public String charge(@RequestBody ChargeRequest chargeRequest,@RequestParam("iduser") Long iduser, @RequestParam("idpr") Long idpr) throws StripeException {
+        User user = userRepository.findById(iduser).orElse(null);
+        Premium premium = premiumRepository.findById(idpr).orElse(null);
 
         if (!user.getEmail().equals(chargeRequest.getEmail())) {
             return "Email user not exist";
@@ -64,20 +67,22 @@ public class PController {
 
         Charge charge = Charge.create(params);
         if (charge.getStatus().equals("succeeded")) {
-
+            premium.setStatus(true);
+            premium.setAmount(0f);
+            premiumRepository.save(premium);
             chargeRepo.save(chargeRequest);
-            sendemail(chargeRequest.getEmail(), user.getName());
+            sendemail(chargeRequest.getEmail(), user.getName(),chargeRequest.getAmount());
 
         }
         return charge.toJson();
 
     }
 
-    public void sendemail(String email,String nom) {
+    public void sendemail(String email,String nom,Long amount) {
         new Thread(() -> {
-
-                final String username = "klaimohamed1994@gmail.com";
-                final String password = "eblgesjukcqncydy";
+                Long total = amount/100;
+                final String username = "emnamahfoudhi02@gmail.com";
+                final String password = "zebadlujhwlaepni";
 
                 Properties props = new Properties();
                 props.put("mail.smtp.auth", "true");
@@ -170,9 +175,9 @@ public class PController {
                             "\t\t<div class=\"container\">\n" +
                             "\t\t\t<h1>Payment Receipt</h1>\n" +
                             "\t\t\t<p>Dear Mr/s " + nom + "Thank you for your payment. Below is your receipt:</p>\n" +
-//                        "\t\t\t\t\t\t<strong>Total :</strong>\n" +
-//                        "\t\t\t\t\t\t<strong>"+user.get+"TN" +
-//                        "</ strong>\n" +
+                        "\t\t\t\t\t\t<strong>Total :</strong>\n" +
+                        "\t\t\t\t\t\t<strong>"+ total +"TN" +
+                        "</ strong>\n" +
                             "\t\t\t<p>Please keep this receipt for your records. If you have any questions about your payment, please contact us at <a href=\"mailto:klaimohamed1994@gmail.com\">klaimohamed1994@gmail.com</a>.</p>\n" +
                             "\t\t</div>\n" +
                             "\t\t<div class=\"footer\">\n" +

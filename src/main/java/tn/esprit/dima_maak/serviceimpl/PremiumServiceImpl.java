@@ -35,10 +35,14 @@ public class PremiumServiceImpl implements IPremiumService {
     }
 
     @Override
+    public List<Premium> getALLpr(Long id) {
+        Insurance insurance = insurancerep.findById(id).orElse(null);
+        return  premrep.findPremiumByInsurance(insurance);
+    }
+    @Override
     public List<Premium> getALL() {
         return (List<Premium>) premrep.findAll();
     }
-
     @Override
     public Premium updatePremium(Premium p) {
         return premrep.save(p);

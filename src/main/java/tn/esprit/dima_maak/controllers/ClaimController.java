@@ -2,6 +2,7 @@ package tn.esprit.dima_maak.controllers;
 
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import tn.esprit.dima_maak.entities.*;
@@ -20,7 +21,7 @@ import java.util.Map;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/Claim")
-
+@CrossOrigin(origins = "*")
 public class ClaimController {
     @Autowired
     private IClaimService claimservice;
@@ -77,7 +78,7 @@ public class ClaimController {
     public String analyzeRisk(@PathVariable Long userId) {
         return claimservice.analyzeRisk(userId);
     }*/
-    @PutMapping ("/addclaimandassigntoinsurance/{idin}")
+    @PostMapping ("/addclaimandassigntoinsurance/{idin}")
     public Claim addclaimandassigntoinsurance (@RequestBody Claim c, @PathVariable Long idin)
     {
         return claimservice.addclaimandassigntoinsurance(c,idin);
@@ -99,8 +100,7 @@ public class ClaimController {
 
 
 
-    @GetMapping("/autoaddclaim")
-
+    @Scheduled(cron = "0 */2 * * * *")//kol 2 min
     public String autoadd() {
 
         Iterable<Claim> claims=claimRepository.findAll();
@@ -109,10 +109,11 @@ public class ClaimController {
         ){
             Weather weather = weatherService.getWeather(claim.getInsurance().getUser().getAddress().getCity());
             Map<String, Object> main = weather.getMain();
-            double temp = (double) main.get("temp") ;
+            //double temp = (double) main.get("temp") ;
 
-            //double temp= 1f;
+            double temp= 1f;
           // double temp= 45f;
+            System.out.println(temp);
             System.out.println("temp = "+ temp);
             if (claim.getInsurance().getInsuranceP().getType().equals(IType.Agriculteur_Insurance) && temp >=40){
                 Claim claim1=new Claim();
