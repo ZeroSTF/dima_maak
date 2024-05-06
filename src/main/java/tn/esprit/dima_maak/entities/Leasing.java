@@ -19,7 +19,8 @@ import java.time.LocalDate;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Leasing implements Serializable {
+
+public class Leasing  {
 
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Id
@@ -31,12 +32,11 @@ public class Leasing implements Serializable {
     private float monthlypayment;
     @Enumerated
     private LStatus status ;
-    private  Float depositamount ;
     private  Float penaltyfee ;
-    private  Float additionalfee ;
     private  Boolean renwealoption ;
     @Enumerated(EnumType.STRING)
     private  PStatus paymentstatus ;
+    //admin
     private float initialValue;
 //@JsonIgnore
 //    @OneToOne(mappedBy = "leasing")

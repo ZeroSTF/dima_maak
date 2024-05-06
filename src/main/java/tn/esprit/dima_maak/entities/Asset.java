@@ -16,7 +16,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Asset implements Serializable {
+public class Asset {
 
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Id
@@ -24,8 +24,8 @@ public class Asset implements Serializable {
     private Long assetid ;
     @Enumerated(EnumType.STRING)
     private  AssetType type ;
-    private  String description ;
-    private  Float  initialAmount ;
+    private  String description ,image;
+    private  Float  initialAmount,price ;
     private LocalDate purchasedate ;
     private  LocalDate WarrantyExpirationDate ;
     private    String         MaintenanceStatus ;
@@ -39,12 +39,10 @@ public class Asset implements Serializable {
       private  String EngineCondition ;
       private  Float Mileage ;
       private Float annualInterestRate;
-
-//    @OneToOne
-//    private Leasing leasing;
+      @JsonIgnore
       @OneToMany(mappedBy ="asset",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-
       private List<Demande> demandeList;
+@JsonIgnore
     @ManyToOne
     User user;
 

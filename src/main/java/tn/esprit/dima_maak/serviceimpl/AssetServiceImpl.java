@@ -2,6 +2,7 @@ package tn.esprit.dima_maak.serviceimpl;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import tn.esprit.dima_maak.entities.*;
 import tn.esprit.dima_maak.repositories.IAssetRepository;
 import tn.esprit.dima_maak.repositories.ILeasingRepository;
@@ -9,12 +10,13 @@ import tn.esprit.dima_maak.repositories.UserRepository;
 import tn.esprit.dima_maak.services.IAssetService;
 import tn.esprit.dima_maak.services.ILeasingService;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 
 @Service
@@ -26,14 +28,32 @@ public class AssetServiceImpl implements IAssetService {
     private final UserRepository userRepository;
     private final ILeasingRepository leasingRepository;
 
-    public Asset createAsset(Asset asset,Long iduser) {
-       // Leasing leasing =leasingRepository.findById(idlea).orElse(null);
+    public Asset createAsset(MultipartFile[] adsImages,Asset asset,Long iduser) throws IOException {
+
         User user=userRepository.findById(iduser).orElse(null);
-        //asset.setLeasing(leasing);
+        String uploadDirectory = "src/main/resources/static/images/ads";
+        String adsImagesString = "";
+        for (MultipartFile imageFile : adsImages) {
+            adsImagesString += saveImageToStorage(uploadDirectory, imageFile);
+        }
+        asset.setImage(adsImagesString);
         asset.setUser(user);
         return assetRepository.save(asset);
     }
+    public String saveImageToStorage(String uploadDirectory, MultipartFile imageFile) throws IOException {
+        String uniqueFileName = UUID.randomUUID().toString() + "_" + imageFile.getOriginalFilename();
 
+        Path uploadPath = Path.of(uploadDirectory);
+        Path filePath = uploadPath.resolve(uniqueFileName);
+
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath);
+        }
+
+        Files.copy(imageFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+        System.out.println(filePath);
+        return uniqueFileName;
+    }
     public Optional<Asset> getAssetById(Long idasset) {
         return assetRepository.findById(idasset);
     }
@@ -69,7 +89,7 @@ public class AssetServiceImpl implements IAssetService {
     public List<Asset> getAll() {
         return (List<Asset>) assetRepository.findAll();
     }
-
+//leasing
     public int calculateLeaseDuration(Leasing leasing) {
         LocalDate startDate = leasing.getStartdate();
         LocalDate endDate = leasing.getEnddate();
@@ -82,7 +102,7 @@ public class AssetServiceImpl implements IAssetService {
         return (int) months;
     }
 
-
+//leasging
     @Override
     public float calculateResidualValue( Leasing leasing) {
 
@@ -105,25 +125,28 @@ public class AssetServiceImpl implements IAssetService {
 
     }
 //|| asset.getLeasing() == null
-    public float calculateMonthlyPayment(Asset asset) {
-//        if (asset == null ) {
-//            throw new IllegalArgumentException("L'actif ou le contrat de location associé est null.");
-//        }
-//
-//        Leasing leasing = asset.getLeasing();
-//        float totalAmount = asset.getInitialAmount() != null ? asset.getInitialAmount() : 0.0f;
-//        float additionalFees = leasing.getAdditionalfee() != null ? leasing.getAdditionalfee() : 0.0f;
-//        int durationMonths = calculateLeaseDuration(leasing);
-//
-//
-//       float monthlyInterestRate = asset.getAnnualInterestRate() / 12 / 100;
-//
-//        float monthlyPayment = (totalAmount + additionalFees) * monthlyInterestRate /
-//                (1 - (float) Math.pow(1 + monthlyInterestRate, -durationMonths));
-//
-//        return Math.round(monthlyPayment * 100) / 100.0f;
-        return 0f;
+    /// monthly payment
+public float calculateMonthlyPayment(Demande demande) {
+    if (demande == null) {
+        throw new IllegalArgumentException("La demande est nulle.");
     }
+
+    float monthlyPayment = 0.0f;
+    for (Leasing leasing : demande.getLeasingList()) {
+        if (demande.getId() == leasing.getDemande().getId()) {
+            float totalAmount = demande.getAsset().getPrice() != null ? demande.getAsset().getPrice() : 0.0f;
+            float montantparmonth = totalAmount/12;
+            float monthlyPaymentPercentage = 0.25f;
+
+            monthlyPayment = montantparmonth * monthlyPaymentPercentage;
+            break;
+        }
+    }
+    return Math.round(monthlyPayment * 100) / 100.0f;
+}
+
+
+
 
     public float getInitialAmount(Asset asset) {
         return asset.getInitialAmount();
