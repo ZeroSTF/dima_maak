@@ -18,6 +18,7 @@ public class Loyalty {
     private LocalDateTime date;
     @Enumerated(EnumType.STRING)
     private Reason reason;
+    private Long value;
     @ManyToOne
     private User user;
 }
