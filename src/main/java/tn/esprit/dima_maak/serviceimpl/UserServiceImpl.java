@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -38,6 +39,7 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
     private final RoleRepository roleRepository;
     private final LocationRepository locationRepository;
     private final ConfirmationRepository confirmationRepository;
+    private final InsurancePRepository insurancePRepository;
     private final PasswordEncoder encoder;
 
     @Lazy
@@ -47,7 +49,7 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
     public static final String UPLOAD_DIR = "uploads/profiles/";
     private final IEmailService emailService;
     private final INotificationService notificationService;
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder encoder, ITokenService tokenService, ConfirmationRepository confirmationRepository, IEmailService emailService, INotificationService notificationService, LocationRepository locationRepository) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder encoder, ITokenService tokenService, ConfirmationRepository confirmationRepository, IEmailService emailService, INotificationService notificationService, LocationRepository locationRepository, InsurancePRepository insurancePRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.encoder = encoder;
@@ -56,6 +58,7 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
         this.emailService = emailService;
         this.notificationService = notificationService;
         this.locationRepository=locationRepository;
+        this.insurancePRepository=insurancePRepository;
     }
 
     @Override
@@ -76,8 +79,18 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
         }
         //////////////////////////////////////////////////////////////////////
         c.setPassword(encoder.encode(c.getPassword()));
-        c.setStatus(UStatus.Pending);
         Confirmation confirmation = new Confirmation(c);
+        Role userRole = roleRepository.findById(c.getRole().stream().findFirst().get().getId()).get();
+        Set<Role> authorities = new HashSet<>();
+        authorities.add(userRole);
+        c.setRole(authorities);
+        c.setCreditScore(0f);
+        if(c.getAddress()!=null) {
+            locationRepository.save(c.getAddress());
+        }
+        else{
+            System.out.println("NO LOCATION PASSED");
+        }
         userRepository.save(c);
         confirmationRepository.save(confirmation);
         /////////////////MAILING//////////////////////////
@@ -89,14 +102,20 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
 
     @Override
     public void removeUser(Long id) throws IOException {
-        Confirmation c = confirmationRepository.findConfirmationByUser(userRepository.findById(id).get());
-        if(c!=null){
-            confirmationRepository.delete(c);
-            if(userRepository.findById(id).get().getPhoto()!="default.jpg"){
-                this.deleteProfilePicture(userRepository.findById(id).get().getPhoto());
+        User user = userRepository.findById(id).orElse(null);
+        if(user != null){
+            if(!user.getPhoto().equals("default.jpg")){
+                this.deleteProfilePicture(user.getPhoto());
             }
+            Confirmation c = confirmationRepository.findConfirmationByUser(user);
+            if(c != null){
+                if(!"default.jpg".equals(user.getPhoto())){
+                    this.deleteProfilePicture(user.getPhoto());
+                }
+                confirmationRepository.delete(c);
+            }
+            userRepository.deleteById(id);
         }
-        userRepository.deleteById(id);
     }
 
     @Override
@@ -123,7 +142,7 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
         }
         //////////////////////////////////////////////////////////////////////
         String encodedPassword = encoder.encode(user.getPassword());
-        Role userRole = roleRepository.findByAuthority("USER").get();
+        Role userRole = roleRepository.findById(2L).get();
         Set<Role> authorities = new HashSet<>();
         authorities.add(userRole);
         user.setPassword(encodedPassword);
@@ -286,8 +305,55 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////
     public String generateAffiliateLink(User user){
-            return "http://localhost:8080/register/"+user.getId();
+            return "http://localhost:4200/signup/"+user.getId();
+    }
 
+    public int[] countUsers (){
+        int[] counts = new int[5];
+        counts[0] = userRepository.countUsers();
+        counts[1] = userRepository.countUsersWithSalaryLessThan1000();
+        counts[2] = userRepository.countUsersWithSalaryBetween1000And3000();
+        counts[3] = userRepository.countUsersWithSalaryBetween3000And6000();
+        counts[4] = userRepository.countUsersWithSalaryMoreThan6000();
+        return counts;
+    }
+
+    //User statistics by age
+    public int[] countUsersByAge(){
+        int[] counts = new int[4];
+        counts[0] = userRepository.countUsersBelow18();
+        counts[1] = userRepository.countUsersBetween18And25();
+        counts[2] = userRepository.countUsersBetween25And40();
+        counts[3] = userRepository.countUsersAbove40();
+        return counts;
+    }
+
+    //User statistics by location
+    public List<Object[]> findAllUserCoordinates(){
+        return userRepository.findAllUserCoordinates();
+    }
+
+    //Discount notification the first of every month
+    @Scheduled(cron = "1 1 1 1 * ?")
+    public void notifyUsers(){
+        //old man notification
+        //if 20% of users are above 40
+        if(userRepository.countUsersAbove40() > userRepository.countUsers()*0.2){
+            notificationService.sendHealthDiscountNotification();
+            List<InsuranceP> insurancePs=insurancePRepository.findByType(IType.Health_Insurance);
+            insurancePs.forEach(insuranceP -> {
+                insuranceP.setPremium(insuranceP.getPremium()*0.9f);
+                insurancePRepository.save(insuranceP);
+            });
+        }
+        if(userRepository.countUsersByJob("Farmer")+userRepository.countUsersByJob("Farm Owner")>userRepository.countUsers()*0.2){
+            notificationService.sendAgricultureDiscountNotification();
+            List<InsuranceP> insurancePs=insurancePRepository.findByType(IType.Agriculteur_Insurance);
+            insurancePs.forEach(insuranceP -> {
+                insuranceP.setPremium(insuranceP.getPremium()*0.9f);
+                insurancePRepository.save(insuranceP);
+            });
+        }
     }
 
     //////KHEDMET RAMI

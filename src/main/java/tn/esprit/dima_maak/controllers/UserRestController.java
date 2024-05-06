@@ -15,11 +15,6 @@ import org.springframework.web.server.ResponseStatusException;
 import tn.esprit.dima_maak.entities.User;
 import tn.esprit.dima_maak.services.IUserService;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import tn.esprit.dima_maak.entities.*;
-import tn.esprit.dima_maak.services.*;
-
 import java.io.File;
 
 import java.io.IOException;
@@ -82,7 +77,7 @@ public class UserRestController {
 
     @Operation(description = "assess user risk")
     @GetMapping("/assess/{user-id}")
-    public ResponseEntity<String> assessUserRisk(@PathVariable("user-id") Long userId) {
+    public ResponseEntity<?> assessUserRisk(@PathVariable("user-id") Long userId) {
         String riskCategory;
         try {
             riskCategory = userService.assessRisk(userId);
@@ -90,37 +85,33 @@ public class UserRestController {
             return ResponseEntity.internalServerError().body("Error assessing risk: " + e.getMessage());
         }
 
-        return ResponseEntity.ok("Risk Category: " + riskCategory);
+        return ResponseEntity.ok(riskCategory);
     }
 
 
     ///////////////////////////////////////////////////////////////PROFILE RELATED WORK (IN PROGRESS?)//////////////////////////////////////////////////////
-    @PostMapping("/upload")
+    @PostMapping("/upload/{user-id}")
     @Operation(description = "upload your own profile picture")
-    public ResponseEntity<String> uploadProfilePicture(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> uploadProfilePicture(@RequestParam("file") MultipartFile file, @PathVariable("user-id") Long userId) {
         // Check if file is empty
         if (file.isEmpty()) {
             return ResponseEntity.badRequest().body("Please upload a file");
         }
         try {
-            ////////////retrieving current user/////////////////////////////////
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String currentEmail = authentication.getName();
-            User currentUser = userService.loadUserByEmail(currentEmail);
-            ////////////////////////////////////////////////////////////////////
+            User user=userService.retrieveUser(userId);
             String fileName = userService.saveProfilePicture(file);
-            if(!currentUser.getPhoto().equals("default.jpg")){
-                userService.deleteProfilePicture(currentUser.getPhoto());
+            if(!user.getPhoto().equals("default.jpg")){
+                userService.deleteProfilePicture(user.getPhoto());
             }
-            currentUser.setPhoto(fileName);
-            userService.modifyUser(currentUser);
+            user.setPhoto(fileName);
+            userService.modifyUser(user);
             return ResponseEntity.ok().body("Profile picture uploaded successfully: "
-                    + currentUser.getSurname() + " "
-                    + currentUser.getName()
+                    + user.getSurname() + " "
+                    + user.getName()
                     + ", your profile picture file name is: "
-                    + currentUser.getPhoto());
+                    + user.getPhoto());
         } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload profile picture");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
@@ -168,6 +159,27 @@ public class UserRestController {
                 .body(imageData);
     }
 
+    //user statistics by salary
+    @Operation(description="Count users based on salary")
+    @GetMapping("/countUsers")
+    public int[] countUsers() {
+        return userService.countUsers();
+    }
+
+    //user statistics by age
+    @Operation(description="Count users based on age")
+    @GetMapping("/countUsersByAge")
+    public int[] countUsersByAge() {
+        return userService.countUsersByAge();
+    }
+    //user statistics by location
+    @Operation(description="Get all user coordinates")
+    @GetMapping("/findAllUserCoordinates")
+    public List<Object[]> findAllUserCoordinates() {
+        return userService.findAllUserCoordinates();
+    }
+
+
     //////KHEDMET RAMI
     @PutMapping("/users/{id}/updateBalance")
     public ResponseEntity<String> updateBalance(@PathVariable Long id, @RequestParam float returnAmount, @RequestParam float returnInterest, @RequestParam long sharesGain, @RequestParam float totalInvestment) {
@@ -180,3 +192,4 @@ public class UserRestController {
     }
 
 }
+

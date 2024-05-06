@@ -43,9 +43,7 @@ public class AuthenticationController {
         User user = new User(body.getCin(), body.getName(), body.getSurname(), body.getAddress(), body.getBirthDate(), body.getEmail(), body.getPassword(), body.getSalary(), body.getJob(), body.getRib());
         User registeredUser = userService.registerUser(user);
         User affiliateUser = userService.retrieveUser(userId);
-        affiliateUser.setLp(affiliateUser.getLp()+5);
         Loyalty loyalty = new Loyalty(null, LocalDateTime.now(), Reason.Recruitment, 5L, affiliateUser);
-        userService.modifyUser(affiliateUser);
         loyaltyService.addLoyalty(loyalty);
         if (registeredUser != null) {
             return ResponseEntity.ok(registeredUser);

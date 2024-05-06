@@ -10,6 +10,7 @@ import tn.esprit.dima_maak.repositories.NotificationRepository;
 import tn.esprit.dima_maak.repositories.UserRepository;
 import tn.esprit.dima_maak.services.INotificationService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,6 +38,7 @@ public class NotificationServiceImpl implements INotificationService {
     @Override
     public Notification addNotification(Notification notification) {
         notification.setStatus(false);
+        notification.setDate(LocalDateTime.now());
         return notificationRepository.save(notification);
     }
 
@@ -75,4 +77,22 @@ public class NotificationServiceImpl implements INotificationService {
 
     @Override
     public List<Notification> getByUser(User user){return notificationRepository.findNotificationsByUser(user);}
+
+    @Override
+    public void sendHealthDiscountNotification(){
+        List<User> users = userRepository.findUserUsers();
+        users.forEach(user -> {
+            Notification notification = new Notification(user, NType.Informational, "We have a 10% discount on all health insurance packs!");
+            notificationRepository.save(notification);
+        });
+    }
+
+    @Override
+    public void sendAgricultureDiscountNotification(){
+        List<User> users = userRepository.findUserUsers();
+        users.forEach(user -> {
+            Notification notification = new Notification(user, NType.Informational, "We have a 10% discount on all agriculture insurance packs!");
+            notificationRepository.save(notification);
+        });
+    }
 }

@@ -1,11 +1,15 @@
 package tn.esprit.dima_maak.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.boot.autoconfigure.web.WebProperties;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 
@@ -13,9 +17,12 @@ import java.time.LocalDate;
 @Entity
 @Getter
 @Setter
-public class Leasing {
+@AllArgsConstructor
+@NoArgsConstructor
 
-   @GeneratedValue(strategy = GenerationType.AUTO)
+public class Leasing  {
+
+   @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Id
    @Column(unique = true)
     private  Long leaseid ;
@@ -25,16 +32,20 @@ public class Leasing {
     private float monthlypayment;
     @Enumerated
     private LStatus status ;
-    private  Float depositamount ;
     private  Float penaltyfee ;
-    private  Float additionalfee ;
     private  Boolean renwealoption ;
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private  PStatus paymentstatus ;
-
-    @OneToOne(mappedBy = "leasing")
-    private Asset asset;
-    @OneToOne
+    //admin
+    private float initialValue;
+//@JsonIgnore
+//    @OneToOne(mappedBy = "leasing")
+//    private Asset asset;
+ @JsonIgnore
+    @ManyToOne
     private User user;
+ @JsonIgnore
+    @ManyToOne
+    Demande demande;
 }
 

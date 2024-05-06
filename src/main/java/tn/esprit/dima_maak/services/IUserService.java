@@ -22,6 +22,18 @@ public interface IUserService {
     public String assessRisk(Long userId);
     public String generateAffiliateLink(User user);
 
+    //User statics by salary
+    int[] countUsers ();
+
+    //User statistics by age
+    int[] countUsersByAge();
+
+    //User statistics by location
+    List<Object[]> findAllUserCoordinates();
+
+    //Scheduled discount notification
+    public void notifyUsers();
+
     ///KHEDMET RAMI
     void updateBalance(Long id, float returnAmount, float returnInterest, long sharesGain, float totalInvestment);
     public boolean hasInvestments(Long id);
