@@ -5,21 +5,25 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import tn.esprit.dima_maak.entities.Role;
+import tn.esprit.dima_maak.entities.TypeRole;
 import tn.esprit.dima_maak.entities.User;
 import tn.esprit.dima_maak.repositories.RoleRepository;
 import tn.esprit.dima_maak.repositories.UserRepository;
 
+import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 @SpringBootApplication
+@EnableScheduling
 @EnableAsync
 public class DimaMaakApplication {
 
@@ -31,13 +35,10 @@ public class DimaMaakApplication {
     @Bean
     CommandLineRunner run(RoleRepository roleRepository){
         return args -> {
-            if(roleRepository.findByAuthority("ADMIN").isPresent()) return;
-            Role adminRole = roleRepository.save(new Role(null, "ADMIN"));
-            roleRepository.save(new Role(null, "USER"));
-            /*Set<Role> roles = new HashSet<>();
-            roles.add(adminRole);
-            User riadhAdmin = new User( null,11440440L, "Chnitir", "Riadh", null, LocalDate.of(2001, 6, 5), "riadh.chnitir@esprit.tn", passwordEncoder.encode("111111"), 5000f, "Engineer", null, 500000f, null, roles, null, null, null, null, null);
-            userRepository.save(riadhAdmin);*/
+            if(roleRepository.findByType(TypeRole.ADMIN).isPresent() && roleRepository.findByType(TypeRole.USER).isPresent() && roleRepository.findByType(TypeRole.INVESTOR).isPresent()) return;
+            roleRepository.save(new Role(null, "ADMIN", TypeRole.ADMIN));
+            roleRepository.save(new Role(null, "USER", TypeRole.USER));
+            roleRepository.save(new Role(null, "USER", TypeRole.INVESTOR));
         };
 
 
