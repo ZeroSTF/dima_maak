@@ -12,6 +12,10 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+    User findUserByDemandeList(Demande demande);
+    Optional<User> findUserByEmail(String email);
+
+    List<User> findUsersByEmail(String email);
     @Query("select count(u) from User u ")
     int countUsers ();
     Optional<User> findByEmail(String email);
