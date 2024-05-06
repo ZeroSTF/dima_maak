@@ -10,6 +10,7 @@ public interface ILeasingService {
     Optional<Leasing> getLeasingById(Long leaseid);
     public Iterable<Leasing> leasingList ();
     public Leasing updateLeasing(Leasing l,Long id) ;
+    public Iterable<Leasing> leasingsbydemande (Long id);
     void deleteLeasingById(Long leaseid);
 
    String assignUserToLeasing(Long id, Long leaseid) ;

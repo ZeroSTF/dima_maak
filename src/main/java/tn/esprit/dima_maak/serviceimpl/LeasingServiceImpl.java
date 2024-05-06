@@ -2,6 +2,7 @@ package tn.esprit.dima_maak.serviceimpl;
 
 
 import lombok.AllArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import tn.esprit.dima_maak.entities.Demande;
 import tn.esprit.dima_maak.entities.Leasing;
@@ -28,10 +29,50 @@ public class LeasingServiceImpl implements ILeasingService {
     public Leasing createLeasing(Leasing l,Long iduser,Long iddemande) {
         Demande demande = iDemandeRepository.findById(iddemande).orElse(null);
         User user = userRepository.findById(iduser).orElse(null);
-        l.setDemande(demande);
-        l.setUser(user);
 
+        l.setDemande(demande);
+        float f =calculateMonthlyPayment(demande);
+        l.setMonthlypayment(f);
+        l.setUser(user);
+        l.setInitialValue(demande.getAsset().getPrice());
         return leasingRepository.save(l);
+    }
+    public float calculateMonthlyPayment(Demande demande) {
+        if (demande == null) {
+            throw new IllegalArgumentException("La demande est nulle.");
+        }
+
+
+
+        float totalAmount = demande.getAsset().getPrice() ;
+        float montantparmonth = totalAmount/12;
+        float monthlyPaymentPercentage = 0.25f;
+
+        float     monthlyPayment = montantparmonth * monthlyPaymentPercentage;
+
+
+
+        return Math.round(monthlyPayment * 100) / 100.0f;
+    }
+    @Scheduled(cron = "0/35 * * * * *")
+    public void checkRetard() {
+        Iterable<Leasing> leasings = leasingRepository.findLeasingByEnddateAfter(LocalDate.now());
+        for (Leasing leasing : leasings) {
+            int monthsElapsed = (int) ChronoUnit.MONTHS.between(leasing.getStartdate(), LocalDate.now());
+            float additionalAmount = 0.0f;
+
+            if (monthsElapsed >= 1 && monthsElapsed < 2) {
+                additionalAmount = leasing.getMonthlypayment() * 0.1f; // Add 10% after one month
+            } else if (monthsElapsed >= 2 && monthsElapsed < 4) {
+                additionalAmount = leasing.getMonthlypayment() * 0.2f; // Add 20% after two months
+            } else if (monthsElapsed >= 4) {
+                additionalAmount = leasing.getMonthlypayment() * 0.4f; // Add 20% after two months
+
+            }
+             float total = leasing.getMonthlypayment() + additionalAmount;
+            leasing.setMonthlypayment(total);
+
+        }
     }
 
     @Override
@@ -47,9 +88,7 @@ public class LeasingServiceImpl implements ILeasingService {
         leasing.setEnddate(l.getEnddate());
         leasing.setMonthlypayment(l.getMonthlypayment());
         leasing.setStatus(l.getStatus());
-        leasing.setDepositamount(l.getDepositamount());
         leasing.setPenaltyfee(l.getPenaltyfee());
-        leasing.setAdditionalfee(l.getAdditionalfee());
         leasing.setRenwealoption(l.getRenwealoption());
         leasing.setPaymentstatus(l.getPaymentstatus());
         leasing.setInitialValue(l.getInitialValue());
@@ -81,7 +120,7 @@ public class LeasingServiceImpl implements ILeasingService {
     @Override
     public float calculateAnnualInterestRate(Leasing leasing) {
 
-            User user = leasing.getUser();
+            User user = leasing.getDemande().getUser();
 
 
             Float creditScore = userRepository.findById(user.getId())
@@ -119,7 +158,16 @@ public class LeasingServiceImpl implements ILeasingService {
         return leasingRepository.findAll();
     }
 
+
+    @Override
+    public Iterable<Leasing> leasingsbydemande (Long id){
+        Iterable<Leasing> leasings= leasingRepository.findLeasingByDemande_Id(id);
+
+        return leasings;
     }
+
+}
+
 
 
 

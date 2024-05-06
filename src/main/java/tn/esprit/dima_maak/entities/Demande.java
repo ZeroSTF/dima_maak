@@ -27,16 +27,16 @@ public class Demande {
     private LocalDate requestDate;
     @Enumerated(EnumType.STRING)
     private LStatus status ;
-
+@JsonIgnore
     @ManyToOne
     @JoinColumn(name = "asset_id")
     private Asset asset;
-
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
 
     private User user;
-
+    @JsonIgnore
    @OneToMany(mappedBy = "demande")
     List<Leasing> leasingList;
 
