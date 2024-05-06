@@ -1,6 +1,9 @@
 package tn.esprit.dima_maak.serviceimpl;
 
 import lombok.AllArgsConstructor;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import tn.esprit.dima_maak.entities.Post;
 import tn.esprit.dima_maak.entities.User;
@@ -16,15 +19,59 @@ import java.util.List;
 @AllArgsConstructor
 public class PostServiceImpl implements IPostService {
     private IPostRepository postRepository;
+    @Autowired
+    ServiceBadworld serviceBadworld;
 
     @Override
-    public Post addPost(Post post) {
-        return postRepository.save(post);
+    public ResponseEntity<?> addPost(Post post) {
+        ResponseEntity<String> con = serviceBadworld.filterBadWords1(post.getContent());
+        String responseBody = con.getBody();
+        JSONObject jsonObject = new JSONObject(responseBody);
+        int badWordsTotal = jsonObject.getInt("bad_words_total");
+
+        if (badWordsTotal == 0) {
+            postRepository.save(post);
+            return ResponseEntity.ok().body(" post added ... ");
+        } else {
+            return ResponseEntity.badRequest().body("Bad words detected in the post. Please remove them.");
+        }
+
     }
-
     @Override
-    public Post updatePost(Post post) {
-        return postRepository.save(post);
+    public void favoritePost(Long postId, Long userId) {
+        Post post = postRepository.findById(postId).orElse(null);
+
+        if (post != null) {
+            if (!post.getFavorites().contains(userId)) {
+                post.getFavorites().add(userId);
+                postRepository.save(post);
+                System.out.println("Post favorited successfully by user: " + userId);
+            } else {
+                System.out.println("User: " + userId + " has already favorited this post.");
+            }
+        } else {
+            System.out.println("Post with ID: " + postId + " not found.");
+        }
+    }
+    @Override
+    public ResponseEntity<?> updatePost(Post post) {
+        Post post1=postRepository.findById(post.getId()).orElse(null);
+        ResponseEntity<String> con = serviceBadworld.filterBadWords1(post.getContent());
+        String responseBody = con.getBody();
+        JSONObject jsonObject = new JSONObject(responseBody);
+        int badWordsTotal = jsonObject.getInt("bad_words_total");
+
+        if (badWordsTotal == 0) {
+
+            post1.setTitle(post.getTitle());
+            post1.setContent(post.getContent());
+            post1.setCreatedDate(post.getCreatedDate());
+            postRepository.save(post);
+            return ResponseEntity.ok().body(" post updated ... ");
+        } else {
+            return ResponseEntity.badRequest().body("Bad words detected in the post. Please remove them.");
+        }
+
     }
 
     @Override
@@ -34,7 +81,7 @@ public class PostServiceImpl implements IPostService {
 
     @Override
     public void deletePost(Long id) {
-
+     postRepository.deleteById(id);
     }
 
     @Override

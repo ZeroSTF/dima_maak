@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -21,6 +22,8 @@ public class Post implements Serializable {
     private String content;
     private LocalDateTime createdDate;
     private int likes;
+    @ElementCollection
+    private List<Long> favorites = new ArrayList<>();
     @ManyToOne
     private User user;
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
