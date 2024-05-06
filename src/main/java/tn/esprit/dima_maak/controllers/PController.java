@@ -81,8 +81,8 @@ public class PController {
     public void sendemail(String email,String nom,Long amount) {
         new Thread(() -> {
                 Long total = amount/100;
-                final String username = "klaimohamed1994@gmail.com";
-                final String password = "eblgesjukcqncydy";
+                final String username = "emnamahfoudhi02@gmail.com";
+                final String password = "zebadlujhwlaepni";
 
                 Properties props = new Properties();
                 props.put("mail.smtp.auth", "true");

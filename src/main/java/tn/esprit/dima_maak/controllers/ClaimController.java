@@ -100,7 +100,7 @@ public class ClaimController {
 
 
 
-    @Scheduled(cron = "0/20 * * * * *") //kol 20s
+    @Scheduled(cron = "0 */2 * * * *")//kol 2 min
     public String autoadd() {
 
         Iterable<Claim> claims=claimRepository.findAll();

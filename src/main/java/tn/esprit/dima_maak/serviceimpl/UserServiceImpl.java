@@ -154,7 +154,7 @@ public class UserServiceImpl  implements IUserService, UserDetailsService {
             String token = tokenService.generateJwt(auth);
             User user = userRepository.findByEmail(email).get();
             notificationService.sendLowBalanceNotification(user, 100);//100 is the random threshold I chose
-            return new LoginResponseDTO(user.getSurname()+" "+user.getName(), token,user.getRole(),user.getId());
+            return new LoginResponseDTO(user.getName(), token);
         } catch (AuthenticationException e){
             //e.printStackTrace();
             return new LoginResponseDTO("No email to return", "Invalid email/password supplied");
