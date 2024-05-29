@@ -25,7 +25,6 @@ public class  Insurance implements Serializable {
     @Enumerated(EnumType.STRING)
     private  InStatus state;
 
-    @JsonIgnore
     @ManyToOne
     private User user;
     @JsonIgnore

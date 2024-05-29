@@ -12,7 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/post")
 @AllArgsConstructor
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 public class PostRestController {
     private IPostService postService;
 

@@ -53,7 +53,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .securityMatcher("/test/**")
+                //.securityMatcher("/test/**")
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/v3/api-docs/**", "/payment/charge", "/Premium/**","/Insurance/**","/InsuranceP/**","post/**","complaint/**","comment/**", "/text", "/swagger-ui/**", "/swagger-resources/**", "/auth/login", "/auth/logout", "/auth/register").permitAll();
                     //auth.requestMatchers("/admin/**").hasRole("ADMIN");

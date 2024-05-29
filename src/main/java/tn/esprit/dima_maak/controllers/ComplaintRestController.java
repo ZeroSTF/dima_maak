@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/complaint")
-@CrossOrigin("*")
+@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 @AllArgsConstructor
 public class ComplaintRestController {
     private IComplaintService complaintService;
